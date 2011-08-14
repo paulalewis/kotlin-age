@@ -1,0 +1,308 @@
+package com.castlefrog.agl.domains.havannah;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashSet;
+import java.util.Stack;
+import com.castlefrog.agl.IllegalActionException;
+import com.castlefrog.agl.Simulator;
+import com.castlefrog.agl.AbstractSimulator;
+import com.castlefrog.agl.TurnType;
+
+public final class HavannahSimulator extends AbstractSimulator<HavannahState, HavannahAction> {
+    public static final int MIN_BASE = 2;
+
+    /** length of a side of board */
+    private static int base_;
+    /** longest row of hexagons on board (always odd) */
+    private static int size_;
+    /** number of locations on board */
+    private static int nLocations_;
+    private static int[][] corners_;
+    private static int[][][] sides_;
+
+    public HavannahSimulator(int base,
+                             TurnType turnType) {
+        if (base < MIN_BASE)
+            throw new IllegalArgumentException("base < " + MIN_BASE);
+        nAgents_ = 2;
+        base_ = base;
+        size_ = 2 * base_ - 1;
+        nLocations_ = 3 * base_ * base_ - 3 * base_ + 1;
+        turnType_ = turnType;
+        corners_ = new int[][] {{ 0, 0 },
+                               { 0, base_ - 1 },
+                               { base_ - 1, 0 },
+                               { base_ - 1, size_ - 1 },
+                               { size_ - 1, base_ - 1 },
+                               { size_ - 1, size_ - 1 }};
+        sides_ = getSides();
+        state_ = getInitialState();
+        rewards_ = new int[nAgents_];
+        legalActions_ = new ArrayList<HashSet<HavannahAction>>();
+        legalActions_.add(new HashSet<HavannahAction>());
+        legalActions_.add(new HashSet<HavannahAction>());
+        computeLegalActions(null);
+    }
+
+    /**
+     * Contructor is used by the copy method.
+     */
+    private HavannahSimulator(HavannahState state,
+                              List<HashSet<HavannahAction>> legalActions,
+                              int[] rewards) {
+        nAgents_ = 2;
+        state_ = state.clone();
+        legalActions_ = new ArrayList<HashSet<HavannahAction>>();
+        for (HashSet<HavannahAction> actions: legalActions) {
+            HashSet<HavannahAction> temp = new HashSet<HavannahAction>();
+            for (HavannahAction action: actions)
+                temp.add(action);
+            legalActions_.add(temp);
+        }
+        rewards_ = new int[nAgents_];
+        for (int i = 0; i < nAgents_; i += 1)
+            rewards_[i] = rewards[i];
+    }
+
+    private int[][][] getSides() {
+        int[][][] sides = new int[6][base_ - 2][2];
+        for (int i = 0; i < base_ - 2; i += 1) {
+            sides[0][i][0] = 0;
+            sides[0][i][1] = i + 1;
+            sides[1][i][0] = i + 1;
+            sides[1][i][1] = 0;
+            sides[2][i][0] = i + 1;
+            sides[2][i][1] = base_ + i;
+            sides[3][i][0] = base_ + i;
+            sides[3][i][1] = size_ - 1;
+            sides[4][i][0] = size_ - 1;
+            sides[4][i][1] = base_ + i;
+            sides[5][i][0] = base_ + i;
+            sides[5][i][1] = i + 1;
+        }
+        return sides;
+    }
+
+    @Override
+    public Simulator<HavannahState, HavannahAction> clone() {
+        return new HavannahSimulator(state_,legalActions_,rewards_);
+    }
+
+    public void setState(HavannahState state) {
+        state_ = state.clone();
+        computeRewards(null);
+        computeLegalActions(null);
+    }
+
+    public void stateTransition(List<HavannahAction> actions) {
+        HavannahAction action = actions.get(state_.getAgentTurn());
+        if (!legalActions_.get(state_.getAgentTurn()).contains(action))
+            throw new IllegalActionException(action,state_);
+        state_.setLocation(action.getX(),action.getY(),state_.getAgentTurn() + 1);
+        state_.switchAgentTurn();
+        computeRewards(action);
+        computeLegalActions(action);
+    }
+
+    private void computeLegalActions(HavannahAction prevAction) {
+        if (rewards_[0] == 0) {
+            int agentTurn = state_.getAgentTurn();
+            int otherTurn = (agentTurn + 1) % 2;
+            legalActions_.set(agentTurn, legalActions_.get(otherTurn));
+            legalActions_.set(otherTurn, new HashSet<HavannahAction>());
+            HashSet<HavannahAction> legalActions = legalActions_.get(agentTurn);
+            if (prevAction != null && state_.getNPieces() > 2)
+                legalActions.remove(prevAction);
+            else {
+                legalActions.clear();
+                if (state_.getNPieces() == 1 && state_.getAgentTurn() == 1) {
+                    for (int y = 0; y < size_; y += 1) {
+                        int xMin = 0;
+                        int xMax = size_;
+                        if (y >= base_)
+                            xMin = y - base_ + 1;
+                        else
+                            xMax = base_ + y;
+                        for (int x = xMin; x < xMax; x += 1)
+                            legalActions.add(HavannahAction.valueOf(x,y));
+                    }
+                } else {
+                    for (int y = 0; y < size_; y += 1) {
+                        int xMin = 0;
+                        int xMax = size_;
+                        if (y >= base_)
+                            xMin = y - base_ + 1;
+                        else
+                            xMax = base_ + y;
+                        for (int x = xMin; x < xMax; x += 1)
+                            if (state_.getLocation(x,y) == 0)
+                                legalActions.add(HavannahAction.valueOf(x,y));
+                    }
+                }
+            }
+        } else
+            for (HashSet<HavannahAction> legalActions: legalActions_)
+                legalActions.clear();
+    }
+
+    private void computeRewards(HavannahAction prevAction) {
+        byte[][] locations = state_.getLocations();
+        boolean[][] visited = new boolean[size_][size_];
+        int yMin = 0;
+        int xMin = 0;
+        int yMax = size_;
+        int xMax = size_;
+        if (prevAction != null) {
+            xMin = prevAction.getX();
+            yMin = prevAction.getY();
+            xMax = xMin + 1;
+            yMax = yMin + 1;
+        }
+        for (int y = yMin; y < yMax; y += 1) {
+            for (int x = xMin; x < xMax; x += 1) {
+                // Checks: non empty location - hasn't been visited
+                if (locations[x][y] != 0 && visited[x][y] == false) {
+                    int result = dfsCornersSides(x, y, locations, visited);
+                    // count corners
+                    int corners = 0;
+                    for (int k = 0; k < 6; k += 1) {
+                        if (result % 2 == 1)
+                            corners += 1;
+                        result >>= 1;
+                    }
+                    // count sides
+                    int sides = 0;
+                    for (int k = 0; k < 6; k += 1) {
+                        if (result % 2 == 1)
+                            sides += 1;
+                        result >>= 1;
+                    }
+                    if (corners >= 2 || sides >= 3) {
+                        if (locations[x][y] == 1) {
+                            rewards_[0] = 1;
+                            rewards_[1] = -1;
+                            return;
+                        } else {
+                            rewards_[0] = -1;
+                            rewards_[1] = 1;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        locations = state_.getLocations();
+        visited = new boolean[size_][size_];
+        for (int y = 0; y < locations.length; y += 1) {
+            xMin = 0;
+            xMax = size_;
+            if (y >= base_)
+                xMin = y - base_ + 1;
+            else
+                xMax = base_ + y;
+            for (int x = xMin; x < xMax; x += 1) {
+                if (locations[x][y] == 0
+                        || locations[x][y] == state_.getAgentTurn() + 1)
+                    locations[x][y] = 1;
+                else
+                    locations[x][y] = 0;
+            }
+        }
+
+        yMin = 0;
+        xMin = 0;
+        yMax = size_;
+        xMax = size_;
+        if (prevAction != null) {
+            xMin = Math.max(prevAction.getX() - 1, 0);
+            yMin = Math.max(prevAction.getY() - 1, 0);
+            xMax = Math.min(prevAction.getX() + 2, size_);
+            yMax = Math.min(prevAction.getY() + 2, size_);
+        }
+
+        for (int y = yMin; y < yMax; y += 1) {
+            for (int x = xMin; x < xMax; x += 1) {
+                if (locations[x][y] != 0 && visited[x][y] == false) {
+                    if (dfsCornersSides(x, y, locations, visited) == 0) {
+                        if (state_.getAgentTurn() == 0) {
+                            rewards_[0] = -1;
+                            rewards_[1] = 1;
+                            return;
+                        } else {
+                            rewards_[0] = 1;
+                            rewards_[1] = -1;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        rewards_[0] = rewards_[1] = 0;
+    }
+
+    private int dfsCornersSides(int x0,
+                                int y0,
+                                byte[][] locations,
+                                boolean[][] visited) {
+        int value = 0;
+        Stack<HavannahAction> stack = new Stack<HavannahAction>();
+        stack.push(HavannahAction.valueOf(x0,y0));
+        visited[x0][y0] = true;
+        while (!stack.empty()) {
+            HavannahAction v = stack.pop();
+            int x = v.getX();
+            int y = v.getY();
+            value |= getCornerMask(x,y) | getSideMask(x,y);
+            for (int i = -1; i <= 1; i += 1) {
+                for (int j = -1; j <= 1; j += 1) {
+                    int xi = x + i;
+                    int yi = y + j;
+                    if (i + j != 0 && xi >= 0 && yi >= 0 &&
+                            xi < size_ && yi < size_ &&
+                            (yi < base_ && xi < base_ + yi ||
+                                yi >= base_ && xi > yi - base_)) {
+                        if (!visited[xi][yi] &&
+                                locations[xi][yi] == locations[x][y]) {
+                            stack.push(HavannahAction.valueOf(xi,yi));
+                            visited[xi][yi] = true;
+                        }
+                    }
+                }
+            }
+        }
+        return value;
+    }
+
+    private int getCornerMask(int x, int y) {
+        for (int i = 0; i < corners_.length; i += 1)
+            if (corners_[i][0] == x && corners_[i][1] == y)
+                return 1 << i;
+        return 0;
+    }
+
+    private int getSideMask(int x, int y) {
+        for (int i = 0; i < sides_.length; i += 1)
+            for (int j = 0; j < sides_[i].length; j += 1)
+                if (sides_[i][j][0] == x && sides_[i][j][1] == y)
+                    return 1 << (i + 6);
+        return 0;
+    }
+
+    public HavannahState getInitialState() {
+        return new HavannahState(new byte[size_][size_], 0);
+    }
+
+    public HavannahState getState() {
+        return state_.clone();
+    }
+    
+    public int getBase() {
+        return base_;
+    }
+    
+    public int getSize() {
+        return size_;
+    }
+}
