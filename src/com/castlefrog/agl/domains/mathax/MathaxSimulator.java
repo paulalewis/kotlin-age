@@ -270,10 +270,10 @@ public final class MathaxSimulator
                     case '-':
                         stack.push(stack.pop() - stack.pop());
                         break;
-                    case '×':
+                    case '\u00D7'://×
                         stack.push(stack.pop() * stack.pop());
                         break;
-                    case '÷':
+                    case '\u00f7'://÷
                         stack.push(stack.pop() / stack.pop());
                         break;
                     }

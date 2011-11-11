@@ -116,14 +116,14 @@ public final class Arbiter<S, A> {
     /**
      * undo a move.
      */
-    public void stepBack() {
+    public synchronized void stepBack() {
         if (history_.size() > 1) {
             history_.removeLast();
             world_.setState(history_.getState(history_.size() - 1));
         }
     }
 
-    public Simulator<S, A> getWorld() {
+    public synchronized Simulator<S, A> getWorld() {
         return world_.clone();
     }
 
