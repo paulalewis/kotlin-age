@@ -2,29 +2,30 @@ package com.castlefrog.agl.domains.go;
 
 import java.util.List;
 import java.util.ArrayList;
+import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 import com.castlefrog.agl.IllegalActionException;
 
-public final class GoSimulator implements Simulator<GoState, GoAction> {
-	private static final int N_AGENTS = 2;
-    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL_ORDER;
+public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
+    public static final int MIN_BOARD_SIZE = 5;
+    public static final int MAX_BOARD_SIZE = 19;
     
-    private static int size_;
-    private static boolean simultaneous_;
+    private static int boardSize_;
 
     private GoState state_;
     private List<GoAction> legalActions_;
     private int[] rewards_;
 
     public GoSimulator() {
-        this(19, false);
+        this(19, TurnType.SEQUENTIAL_ORDER);
     }
 
-    public GoSimulator(int size,
-                       boolean simultaneous) {
-        size_ = size;
-        simultaneous_ = simultaneous;
+    public GoSimulator(int boardSize,
+                       TurnType turnType) {
+        nAgents_ = 2;
+        boardSize_ = boardSize;
+        turnType_ = turnType;
     }
 
 	private GoSimulator(GoState state,
@@ -37,8 +38,8 @@ public final class GoSimulator implements Simulator<GoState, GoAction> {
                 legalActions_.add(action);
         }
         if (rewards != null) {
-            rewards_ = new int[N_AGENTS];
-            for (int i = 0; i < N_AGENTS; i += 1)
+            rewards_ = new int[nAgents_];
+            for (int i = 0; i < nAgents_; i += 1)
                 rewards_[i] = rewards[i];
         }
 	}
@@ -77,8 +78,8 @@ public final class GoSimulator implements Simulator<GoState, GoAction> {
         List<GoAction> legalActions = new ArrayList<GoAction>();
         legalActions.add(GoAction.valueOf(-1,-1));
         //TODO - not every open space on the board is always legal action
-        for (int i = 0; i < size_; i++)
-            for (int j = 0; j < size_; j++)
+        for (int i = 0; i < boardSize_; i += 1)
+            for (int j = 0; j < boardSize_; j += 1)
                 if (state_.getLocation(i, j) == 0)
                     legalActions.add(GoAction.valueOf(i, j));
         return legalActions;
@@ -92,16 +93,16 @@ public final class GoSimulator implements Simulator<GoState, GoAction> {
         if (state_.getPassFlag() == 2) {
             //TODO - compute points
         }
-        return new int[N_AGENTS];
+        return new int[nAgents_];
     }
 
     public GoState getInitialState() {
-        return new GoState(new byte[size_][size_], 0, 0);
+        return new GoState(new byte[boardSize_][boardSize_], 0, 0);
     }
 	
     public int[] getRewards() {
         int[] rewards = new int[2];
-        for (int i = 0; i < N_AGENTS; i += 1)
+        for (int i = 0; i < nAgents_; i += 1)
             rewards[i] = rewards_[i];
         return rewards;
 	}
@@ -125,7 +126,7 @@ public final class GoSimulator implements Simulator<GoState, GoAction> {
     public List<List<GoAction>> getLegalActions() {
         List<List<GoAction>> allLegalActions
             = new ArrayList<List<GoAction>>();
-        for (int i = 0; i < N_AGENTS; i += 1)
+        for (int i = 0; i < nAgents_; i += 1)
             allLegalActions.add(getLegalActions(i));
         return allLegalActions;
     }
@@ -140,23 +141,11 @@ public final class GoSimulator implements Simulator<GoState, GoAction> {
         return legalActions;
     }
 
-	public int getNAgents() {
-		return N_AGENTS;
-	}
-
     public int getSize() {
-        return size_;
+        return boardSize_;
     }
     
     public boolean hasLegalActions(int agentId) {
         return state_.getAgentTurn() == agentId && legalActions_.size() != 0;
-    }
-
-    public boolean isSimultaneous() {
-        return simultaneous_;
-    }
-
-    public TurnType getTurnType() {
-        return TURN_TYPE;
     }
 }

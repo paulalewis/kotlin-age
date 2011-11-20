@@ -1,16 +1,12 @@
 package com.castlefrog.agl.domains.go;
 
 public final class GoAction {
-    private static final int MAX_BOARD_SIZE = 19;
-    /** list of all possible go actions. */
     private static GoAction[][] actions_ = generateActions();
     /** special passing action */
     private static GoAction pass_ = new GoAction(-1, -1);
 
-    /** x coordinate. */
-	private int x_;
-    /** y coordinate. */
-	private int y_;
+	private final int x_;
+	private final int y_;
 	
 	private GoAction(int x, int y) {
 		x_ = x;
@@ -24,9 +20,10 @@ public final class GoAction {
     }
 
     private static GoAction[][] generateActions() {
-        GoAction[][] actions = new GoAction[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
-        for (int i = 0; i < MAX_BOARD_SIZE; i++)
-            for (int j = 0; j < MAX_BOARD_SIZE; j++)
+        int size = GoSimulator.MAX_BOARD_SIZE;
+        GoAction[][] actions = new GoAction[size][size];
+        for (int i = 0; i < size; i += 1)
+            for (int j = 0; j < size; j += 1)
                 actions[i][j] = new GoAction(i,j);
         return actions;
     }
@@ -45,7 +42,7 @@ public final class GoAction {
 	
 	@Override
 	public int hashCode() {
-		return x_ + MAX_BOARD_SIZE * y_;
+		return x_ + GoSimulator.MAX_BOARD_SIZE * y_;
 	}
 	
 	@Override
