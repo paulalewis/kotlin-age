@@ -1,25 +1,14 @@
 package com.castlefrog.agl.domains.hex;
 
-import java.util.Vector;
-
 /**
- * A Hex action is an immutable object that
- * contains the x and y coordinates of a move location.
+ * Immutable object that represents a hex action.
  */
 public final class HexAction {
-    /** list of all possible Hex actions */
-    private static Vector<Vector<HexAction>> actions_
-        = new Vector<Vector<HexAction>>();
+    private static HexAction[][] actions_ = generateActions();
 
-    /** x coordinate */
     private final byte x_;
-    /** y coordinate */
     private final byte y_;
 
-    /**
-     * Constructor used by static factory
-     * method to generate actions.
-     */
     private HexAction(int x,
                       int y) {
         x_ = (byte) x;
@@ -27,38 +16,23 @@ public final class HexAction {
     }
 
     /**
-     * Used to retrieve a pre generated action.
+     * Returns a hex action.
      * @param x x-coord
      * @param y y-coord
-     * @return action corrisponding to x and y coord
+     * @return
+     *      action corrisponding to x and y coord
      */
     public static HexAction valueOf(int x, int y) {
-        if (x >= actions_.size() || y >= actions_.size())
-            generateActions(Math.max(x + 1, y + 1));
-        return actions_.get(x).get(y);
+        return actions_[x][y];
     }
-
-    /**
-     * Generates set of all possible actions for a given
-     * board size.
-     *
-     * This method generates new actions if they don't
-     * already exist and copies already existing actions
-     * over to the larger array.
-     *
-     * @return
-     *      list of all possible actions
-     */
-    private static void generateActions(int size) {
-        actions_.setSize(size);
-        for (int i = 0; i < size; i += 1) {
-            if (actions_.get(i) == null)
-                actions_.set(i, new Vector<HexAction>());
-            actions_.get(i).setSize(size);
+    
+    private static HexAction[][] generateActions() {
+        int size = HexSimulator.MAX_BOARD_SIZE;
+        HexAction[][] actions = new HexAction[size][size];
+        for (int i = 0; i < size; i += 1)
             for (int j = 0; j < size; j += 1)
-                if (actions_.get(i).get(j) == null)
-                    actions_.get(i).set(j, new HexAction(i, j));
-        }
+                actions[i][j] = new HexAction(i,j);
+        return actions;
     }
 
     public int getX() {
@@ -71,7 +45,7 @@ public final class HexAction {
 
     @Override
     public int hashCode() {
-        return x_ + 17 * y_;
+        return x_ + HexSimulator.MAX_BOARD_SIZE * y_;
     }
 
     @Override
