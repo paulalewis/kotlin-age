@@ -16,6 +16,12 @@ public final class HavannahState implements Cloneable {
     /** number of pieces on board */
     private int nPieces_;
 
+    public enum Location {
+        EMPTY,
+        AGENT1,
+        AGENT2
+    }
+
     public HavannahState(byte[][] locations,
                          int agentTurn) {
         locations_ = new byte[locations.length][locations[0].length];
@@ -60,6 +66,10 @@ public final class HavannahState implements Cloneable {
         return locations_[x][y];
     }
 
+    public boolean isLocationEmpty(int x, int y) {
+        return locations_[x][y] == 0;
+    }
+
     public int getBase() {
         return (locations_.length + 1) / 2;
     }
@@ -89,6 +99,16 @@ public final class HavannahState implements Cloneable {
         else if (locations_[x][y] != 0 && value == 0)
             nPieces_ -= 1;
         locations_[x][y] = (byte) value;
+    }
+    
+    public void setLocation(int x,
+                            int y,
+                            Location value) {
+        if (locations_[x][y] == 0 && value != Location.EMPTY)
+            nPieces_ += 1;
+        else if (locations_[x][y] != 0 && value == Location.EMPTY)
+            nPieces_ -= 1;
+        locations_[x][y] = (byte) value.ordinal();
     }
 
     public void switchAgentTurn() {

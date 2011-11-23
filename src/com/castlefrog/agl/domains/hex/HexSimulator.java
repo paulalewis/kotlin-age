@@ -234,24 +234,27 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         return side;
     }
     
-    public List<HexAction> getWinningConnection() {
-        List<HexAction> connection;// = new ArrayList<HexAction>();
+    public int[][] getWinningConnection() {
+        int[][] connection = new int[boardSize_][boardSize_];
         if (rewards_[0] != 0) {
-            byte[][] locations = state_.getLocations();
-            boolean[][] visited = new boolean[boardSize_][boardSize_];
+            Simulator<HexState,HexAction> simulator = new HexSimulator(boardSize_, TurnType.SEQUENTIAL_ORDER);
+            HexState state = state_.clone();
             for (int i = 0; i < boardSize_; i += 1) {
-                if (locations[0][i] == 1 && visited[0][i] == false) {
-                    connection = dfsWin(0, i, locations, visited);
-                    if (connection.size() > 0)
-                        return connection;
-                } else if (locations[i][0] == 2 && visited[i][0] == false) {
-                    connection = dfsWin(i, 0, locations, visited);
-                    if (connection.size() > 0)
-                        return connection;
+                for (int j = 0; j < boardSize_; j += 1) {
+                    int location = state.getLocation(i,j);
+                    if (!state.isLocationEmpty(i,j) &&
+                            location != state.getAgentTurn() + 1) {
+                        state.setLocation(i,j,HexState.Location.EMPTY);
+                        simulator.setState(state);
+                        if (!simulator.isTerminalState()) {
+                            connection[i][j] = 1;
+                            state.setLocation(i,j,location);
+                        }
+                    }
                 }
             }
         }
-        return new ArrayList<HexAction>();
+        return connection;
     }
 
     public HexState getInitialState() {

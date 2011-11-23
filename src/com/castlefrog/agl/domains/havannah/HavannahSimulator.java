@@ -275,6 +275,29 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         return value;
     }
 
+    public int[][] getWinningConnection() {
+        int[][] connection = new int[size_][size_];
+        if (rewards_[0] != 0) {
+            Simulator<HavannahState,HavannahAction> simulator = new HavannahSimulator(base_, TurnType.SEQUENTIAL_ORDER);
+            HavannahState state = state_.clone();
+            for (int i = 0; i < size_; i += 1) {
+                for (int j = 0; j < size_; j += 1) {
+                    int location = state.getLocation(i,j);
+                    if (!state.isLocationEmpty(i,j) &&
+                            location != state.getAgentTurn() + 1) {
+                        state.setLocation(i,j,HavannahState.Location.EMPTY);
+                        simulator.setState(state);
+                        if (!simulator.isTerminalState()) {
+                            connection[i][j] = 1;
+                            state.setLocation(i,j,location);
+                        }
+                    }
+                }
+            }
+        }
+        return connection;
+    }
+
     private int getCornerMask(int x, int y) {
         for (int i = 0; i < corners_.length; i += 1)
             if (corners_[i][0] == x && corners_[i][1] == y)

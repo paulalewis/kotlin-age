@@ -1,21 +1,27 @@
 package com.castlefrog.agl.domains.hex;
 
 /*
- * A Hex state consists of a board of hexagon locations that are either
- * empty or have a piece controlled by one of two players.
+ * A Hex state consists of a board of hexagon locations
+ * that are either empty or have a piece controlled by
+ * one of two players.
  */
 public final class HexState implements Cloneable {
-    /**
-     * Representation of hex board.
-     * 0 = empty
-     * 1 = agent 0
-     * 2 = agent 1
-     */
+    /** Representation of hex board. */
     private byte[][] locations_;
     /** agent next to move */
     private byte agentTurn_;
     /** number pieces on board */
     private int nPieces_;
+
+    public enum Location {
+        EMPTY,
+        AGENT1,
+        AGENT2
+    }
+
+    public HexState(int size) {
+        locations_ = new byte[size][size];
+    }
 
     public HexState(byte[][] locations,
                     int agentTurn) {
@@ -31,8 +37,8 @@ public final class HexState implements Cloneable {
     }
     
     public HexState(byte[][] locations,
-                     int agentTurn,
-                     int nPieces) {
+                    int agentTurn,
+                    int nPieces) {
         locations_ = new byte[locations.length][locations[0].length];
         for (int i = 0; i < locations.length; i += 1)
             for (int j = 0; j < locations[0].length; j += 1)
@@ -57,7 +63,7 @@ public final class HexState implements Cloneable {
     public byte getLocation(int x, int y) {
         return locations_[x][y];
     }
-
+    
     public int getSize() {
         return locations_.length;
     }
@@ -70,12 +76,24 @@ public final class HexState implements Cloneable {
         return nPieces_;
     }
 
+    public boolean isLocationEmpty(int x, int y) {
+        return locations_[x][y] == 0;
+    }
+
     public void setLocation(int x, int y, int value) {
         if (locations_[x][y] == 0 && value != 0)
             nPieces_ += 1;
         else if (locations_[x][y] != 0 && value == 0)
             nPieces_ -= 1;
         locations_[x][y] = (byte) value;
+    }
+    
+    public void setLocation(int x, int y, Location value) {
+        if (locations_[x][y] == 0 && value != Location.EMPTY)
+            nPieces_ += 1;
+        else if (locations_[x][y] != 0 && value == Location.EMPTY)
+            nPieces_ -= 1;
+        locations_[x][y] = (byte) value.ordinal();
     }
 
     public void switchAgentTurn() {
