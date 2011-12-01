@@ -67,6 +67,20 @@ public final class Arbiter<S, A> {
             agents_.add(agent);
     }
     
+    public Arbiter(History<S, A> history,
+                   Simulator<S, A> world,
+                   List<Agent> agents) {
+        if (world.getNAgents() != agents.size())
+            throw new IllegalArgumentException("Expects " + world.getNAgents() + 
+                                               " agents but " + agents.size() + " provided.");
+        history_ = history;
+        world_ = world.clone();
+        world_.setState(history.getState(history.size() - 1));
+        agents_ = new ArrayList<Agent>();
+        for (Agent agent: agents)
+            agents_.add(agent);
+    }
+    
     /**
      * Reset the arbiter to a new initial
      * state so that another game may be played.

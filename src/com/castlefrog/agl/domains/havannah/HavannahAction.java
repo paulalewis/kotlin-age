@@ -1,8 +1,9 @@
 package com.castlefrog.agl.domains.havannah;
 
+import java.io.Serializable;
 import java.util.Vector;
 
-public final class HavannahAction {
+public final class HavannahAction implements Serializable {
     /** list of all possible Havannah actions */
     private static Vector<Vector<HavannahAction>> actions_
         = new Vector<Vector<HavannahAction>>();

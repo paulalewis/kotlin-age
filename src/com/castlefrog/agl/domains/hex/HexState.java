@@ -1,11 +1,13 @@
 package com.castlefrog.agl.domains.hex;
 
+import java.io.Serializable;
+
 /*
  * A Hex state consists of a board of hexagon locations
  * that are either empty or have a piece controlled by
  * one of two players.
  */
-public final class HexState implements Cloneable {
+public final class HexState implements Cloneable, Serializable {
     /** Representation of hex board. */
     private byte[][] locations_;
     /** agent next to move */

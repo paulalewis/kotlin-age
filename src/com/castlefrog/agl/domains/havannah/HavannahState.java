@@ -1,10 +1,12 @@
 package com.castlefrog.agl.domains.havannah;
 
+import java.io.Serializable;
+
 /**
  * A Havannah state consists of a board of hexagon locations that are either
  * empty or have a piece controlled by one of two players.
  */
-public final class HavannahState implements Cloneable {
+public final class HavannahState implements Cloneable, Serializable {
     /**
      * 0 is empty or not playable
      * 1 is player 1

@@ -1,9 +1,11 @@
 package com.castlefrog.agl.domains.hex;
 
+import java.io.Serializable;
+
 /**
  * Immutable object that represents a hex action.
  */
-public final class HexAction {
+public final class HexAction implements Serializable {
     private static HexAction[][] actions_ = generateActions();
 
     private final byte x_;
