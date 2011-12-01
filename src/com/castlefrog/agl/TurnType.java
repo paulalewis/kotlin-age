@@ -5,8 +5,8 @@ package com.castlefrog.agl;
  * mechanic the game uses.
  */
 public enum TurnType {
-    SEQUENTIAL_ORDER,
     RANDOM,
+    SEQUENTIAL_ORDER,
     RANDOM_ORDER,
     BIDDING,
     SIMULTANEOUS_PRIORITY

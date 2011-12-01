@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
  * simultaneous domains. Otherwise agents don't think
  * during the opponent's turn.
  * It records history and other game data.
+ * TODO - collect decicision times data somewhere other than history class
  */
 public final class Arbiter<S, A> {
     /** The actual domain being used */
@@ -60,7 +61,7 @@ public final class Arbiter<S, A> {
                                                " agents but " + agents.size() + " provided.");
         world_ = world.clone();
         world_.setState(initialState);
-        history_ = new History<S, A>(world_.getState(), world_);
+        history_ = new History<S, A>(world_.getState());
         agents_ = new ArrayList<Agent>();
         for (Agent agent: agents)
             agents_.add(agent);
@@ -72,7 +73,7 @@ public final class Arbiter<S, A> {
      */
     public synchronized void reset() {
         world_.setState(world_.getInitialState());
-        history_ = new History<S, A>(world_.getState(), world_);
+        history_ = new History<S, A>(world_.getState());
     }
 
     /**
@@ -81,7 +82,7 @@ public final class Arbiter<S, A> {
      */
     public synchronized void reset(S state) {
         world_.setState(state);
-        history_ = new History<S, A>(world_.getState(), world_);
+        history_ = new History<S, A>(world_.getState());
     }
 
     /**
@@ -109,7 +110,7 @@ public final class Arbiter<S, A> {
                 executor_.shutdown();
             }
             world_.stateTransition(actions);
-            history_.add(world_.getState(), actions, decisionTimes);
+            history_.add(world_.getState(), actions);
         }
     }
 
