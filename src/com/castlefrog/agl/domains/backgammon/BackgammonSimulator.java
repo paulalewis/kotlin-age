@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
@@ -13,15 +14,14 @@ import com.castlefrog.agl.TurnType;
  * 
  */
 public final class BackgammonSimulator
-    implements Simulator<BackgammonState, BackgammonAction> {
+    extends AbstractSimulator<BackgammonState, BackgammonAction> {
     private static final int N_AGENTS = 2;
-    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL_ORDER;
 
-    private BackgammonState state_;
     private List<BackgammonAction> legalActions_;
-    private int[] rewards_;
 
     public BackgammonSimulator() {
+        nAgents_ = N_AGENTS;
+        turnType_ = TurnType.SEQUENTIAL_ORDER;
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
         legalActions_ = new ArrayList<BackgammonAction>();
@@ -322,13 +322,5 @@ public final class BackgammonSimulator
 
     public boolean hasLegalActions(int agentId) {
         return state_.getAgentTurn() == agentId && legalActions_.size() != 0;
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
-    }
-
-    public TurnType getTurnType() {
-        return TURN_TYPE;
     }
 }

@@ -11,6 +11,7 @@ import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
 public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
+    public static final int N_AGENTS = 2;
     public static final int MIN_BOARD_SIZE = 5;
     public static final int MAX_BOARD_SIZE = 19;
     
@@ -26,7 +27,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
      */
     public HexSimulator(int boardSize,
                         TurnType turnType) {
-        nAgents_ = 2;
+        nAgents_ = N_AGENTS;
         if (boardSize < MIN_BOARD_SIZE || boardSize > MAX_BOARD_SIZE)
             throw new IllegalArgumentException("boardSize out of bounds: " +
                     MIN_BOARD_SIZE + " <= boardSize <= " + MAX_BOARD_SIZE);
@@ -46,7 +47,6 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     private HexSimulator(HexState state,
                          List<HashSet<HexAction>> legalActions,
                          int[] rewards) {
-        nAgents_ = 2;
         state_ = state.clone();
         legalActions_ = new ArrayList<HashSet<HexAction>>();
         for (HashSet<HexAction> actions: legalActions) {

@@ -38,8 +38,8 @@ public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
      * @return array of rewards for each agent.
      */
     public int[] getRewards() {
-        int[] rewards = new int[nAgents_];
-        for (int i = 0; i < nAgents_; i += 1)
+        int[] rewards = new int[rewards_.length];
+        for (int i = 0; i < rewards_.length; i += 1)
             rewards[i] = rewards_[i];
         return rewards;
     }

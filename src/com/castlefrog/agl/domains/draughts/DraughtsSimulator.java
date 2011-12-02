@@ -2,31 +2,33 @@ package com.castlefrog.agl.domains.draughts;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 import com.castlefrog.agl.IllegalActionException;
 
 public final class DraughtsSimulator
-    implements Simulator<DraughtsState, DraughtsAction> {
+    extends AbstractSimulator<DraughtsState, DraughtsAction> {
 	private static final int N_AGENTS = 2;
-    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL_ORDER;
     private static final int SIZE = 10;
 
-    private DraughtsState state_;
-    private List<DraughtsAction> legalActions_;
-    private int[] rewards_;
-
-    public DraughtsSimulator() {}
+    public DraughtsSimulator() {
+        nAgents_ = N_AGENTS;
+        turnType_ = TurnType.SEQUENTIAL_ORDER;
+    }
 
 	private DraughtsSimulator(DraughtsState state,
-                              List<DraughtsAction> legalActions,
+                              List<HashSet<DraughtsAction>> legalActions,
                               int[] rewards) {
 		state_ = state;
-        if (legalActions != null) {
-            legalActions_ = new ArrayList<DraughtsAction>();
-            for (DraughtsAction action: legalActions)
-                legalActions_.add(action);
+        legalActions_ = new ArrayList<HashSet<DraughtsAction>>();
+        for (HashSet<DraughtsAction> actions: legalActions) {
+            HashSet<DraughtsAction> temp = new HashSet<DraughtsAction>();
+            for (DraughtsAction action: actions)
+                temp.add(action);
+            legalActions_.add(temp);
         }
         if (rewards != null) {
             rewards_ = new int[N_AGENTS];
@@ -59,8 +61,8 @@ public final class DraughtsSimulator
 
     /**
      */
-	private List<DraughtsAction> computeLegalActions() {
-        List<DraughtsAction> legalActions = new ArrayList<DraughtsAction>();
+	private List<HashSet<DraughtsAction>> computeLegalActions() {
+        List<HashSet<DraughtsAction>> legalActions = new ArrayList<HashSet<DraughtsAction>>();
         //TODO - code here
         return legalActions;
 	}
@@ -74,52 +76,7 @@ public final class DraughtsSimulator
         return null;
     }
 	
-    public int[] getRewards() {
-        int[] rewards = new int[2];
-        for (int i = 0; i < N_AGENTS; i += 1)
-            rewards[i] = rewards_[i];
-        return rewards;
-	}
-
-    public int getReward(int agentId) {
-        return rewards_[agentId];
-    }
-
-    public boolean isTerminalState() {
-        return legalActions_.size() == 0;
-    }
-
     public DraughtsState getState() {
         return state_;
-    }
-    
-    public List<List<DraughtsAction>> getLegalActions() {
-        List<List<DraughtsAction>> allLegalActions
-            = new ArrayList<List<DraughtsAction>>();
-        for (int i = 0; i < N_AGENTS; i += 1)
-            allLegalActions.add(getLegalActions(i));
-        return allLegalActions;
-    }
-
-    public List<DraughtsAction> getLegalActions(int agentId) {
-        List<DraughtsAction> legalActions = new ArrayList<DraughtsAction>();
-        if (state_.getAgentTurn() == agentId)
-            for (DraughtsAction action: legalActions_)
-                legalActions.add(action);
-        else
-            legalActions.add(null);
-        return legalActions;
-    }
-    
-    public boolean hasLegalActions(int agentId) {
-        return state_.getAgentTurn() == agentId && legalActions_.size() != 0;
-    }
-
-	public int getNAgents() {
-		return N_AGENTS;
-	}
-
-    public TurnType getTurnType() {
-        return TURN_TYPE;
     }
 }

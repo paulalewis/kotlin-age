@@ -10,6 +10,7 @@ import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.TurnType;
 
 public final class HavannahSimulator extends AbstractSimulator<HavannahState, HavannahAction> {
+    public static final int N_AGENTS = 2;
     public static final int MIN_BASE = 2;
 
     /** length of a side of board */
@@ -25,7 +26,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
                              TurnType turnType) {
         if (base < MIN_BASE)
             throw new IllegalArgumentException("base < " + MIN_BASE);
-        nAgents_ = 2;
+        nAgents_ = N_AGENTS;
         base_ = base;
         size_ = 2 * base_ - 1;
         nLocations_ = 3 * base_ * base_ - 3 * base_ + 1;
@@ -51,7 +52,6 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     private HavannahSimulator(HavannahState state,
                               List<HashSet<HavannahAction>> legalActions,
                               int[] rewards) {
-        nAgents_ = 2;
         state_ = state.clone();
         legalActions_ = new ArrayList<HashSet<HavannahAction>>();
         for (HashSet<HavannahAction> actions: legalActions) {

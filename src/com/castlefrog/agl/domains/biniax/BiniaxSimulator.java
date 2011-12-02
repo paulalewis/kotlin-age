@@ -2,6 +2,8 @@ package com.castlefrog.agl.domains.biniax;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
@@ -10,7 +12,7 @@ import com.castlefrog.agl.TurnType;
  * Biniax is a single agent stochastic domain.
  */
 public final class BiniaxSimulator
-    implements Simulator<BiniaxState, BiniaxAction> {
+    extends AbstractSimulator<BiniaxState, BiniaxAction> {
     private static final int N_AGENTS = 1;
     private static final int BUFFER = 3;
     private static final byte N_FREE_MOVES = 2;
@@ -18,10 +20,6 @@ public final class BiniaxSimulator
     private static final int ELEMENT_INCREMENT_INTERVAL = 32;
     private static final int ELEMENT_LIMIT = BiniaxState.getMaxElements() + 1;
     private static final double IMPASSIBLE_CHANCE = 0;
-    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL_ORDER;
-
-    /** Current state of simulator. */
-    private BiniaxState state_;
 
     /** List of legal actions from current state. */
     private List<BiniaxAction> legalActions_;
@@ -33,6 +31,8 @@ public final class BiniaxSimulator
      * Create a Biniax simulator.
      */
     public BiniaxSimulator() {
+        nAgents_ = N_AGENTS;
+        turnType_ = TurnType.SEQUENTIAL_ORDER;
         state_ = getInitialState();
         legalActions_ = new ArrayList<BiniaxAction>();
         computeLegalActions();
@@ -272,32 +272,5 @@ public final class BiniaxSimulator
 
     public BiniaxState getState() {
         return state_;
-    }
-    
-    public List<List<BiniaxAction>> getLegalActions() {
-        List<List<BiniaxAction>> allLegalActions
-            = new ArrayList<List<BiniaxAction>>();
-        allLegalActions.add(getLegalActions(0));
-        return allLegalActions;
-    }
-
-    public List<BiniaxAction> getLegalActions(int agentId) {
-        List<BiniaxAction> legalActions
-            = new ArrayList<BiniaxAction>();
-        for (BiniaxAction action: legalActions_)
-            legalActions.add(action);
-        return legalActions;
-    }
-
-    public boolean hasLegalActions(int agentId) {
-        return legalActions_.size() != 0;
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
-    }
-
-    public TurnType getTurnType() {
-        return TURN_TYPE;
     }
 }
