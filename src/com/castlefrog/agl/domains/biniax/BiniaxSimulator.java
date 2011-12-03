@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.biniax;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
@@ -21,9 +22,6 @@ public final class BiniaxSimulator
     private static final int ELEMENT_LIMIT = BiniaxState.getMaxElements() + 1;
     private static final double IMPASSIBLE_CHANCE = 0;
 
-    /** List of legal actions from current state. */
-    private List<BiniaxAction> legalActions_;
-
     /** The number of distinct element types that can be generated */
     private int nElementTypes_;
     
@@ -34,7 +32,8 @@ public final class BiniaxSimulator
         nAgents_ = N_AGENTS;
         turnType_ = TurnType.SEQUENTIAL_ORDER;
         state_ = getInitialState();
-        legalActions_ = new ArrayList<BiniaxAction>();
+        legalActions_ = new ArrayList<HashSet<BiniaxAction>>();
+        legalActions_.add(new HashSet<BiniaxAction>());
         computeLegalActions();
     }
     
@@ -49,12 +48,16 @@ public final class BiniaxSimulator
      *            the total number of turns game has gone on for.
      */
     private BiniaxSimulator(BiniaxState state,
-                            List<BiniaxAction> legalActions,
+                            List<HashSet<BiniaxAction>> legalActions,
                             int nElementTypes) {
         state_ = state;
-        legalActions_ = new ArrayList<BiniaxAction>();
-        for (BiniaxAction action: legalActions)
-            legalActions_.add(action);
+        legalActions_ = new ArrayList<HashSet<BiniaxAction>>();
+        for (HashSet<BiniaxAction> actions: legalActions) {
+            HashSet<BiniaxAction> temp = new HashSet<BiniaxAction>();
+            for (BiniaxAction action: actions)
+                temp.add(action);
+            legalActions_.add(temp);
+        }
         nElementTypes_ = nElementTypes;
     }
 
@@ -70,7 +73,7 @@ public final class BiniaxSimulator
 
     public void stateTransition(List<BiniaxAction> actions) {
         BiniaxAction action = actions.get(0);
-        if (!legalActions_.contains(action))
+        if (!legalActions_.get(0).contains(action))
             throw new IllegalActionException(action, state_);
 
         byte[][] locations = state_.getLocations();
@@ -176,7 +179,7 @@ public final class BiniaxSimulator
      * @return List of legal actions
      */
     private void computeLegalActions() {
-        legalActions_.clear();
+        legalActions_.get(0).clear();
         int[] elementLocation = getElementLocation();
         int x = elementLocation[0];
         int y = elementLocation[1];
@@ -187,7 +190,7 @@ public final class BiniaxSimulator
                 && (locations[x][y - 1] == 0
                         || locations[x][y - 1] / ELEMENT_LIMIT == element || locations[x][y - 1]
                         % ELEMENT_LIMIT == element))
-            legalActions_.add(BiniaxAction.NORTH);
+            legalActions_.get(0).add(BiniaxAction.NORTH);
 
         if (x != BiniaxState.getWidth() - 1) {
             int nextElement = 0;
@@ -204,7 +207,7 @@ public final class BiniaxSimulator
                         || locations[x + 1][y - 1] == 0
                         || locations[x + 1][y - 1] / ELEMENT_LIMIT == nextElement
                         || locations[x + 1][y - 1] % ELEMENT_LIMIT == nextElement)
-                    legalActions_.add(BiniaxAction.EAST);
+                    legalActions_.get(0).add(BiniaxAction.EAST);
             }
         }
 
@@ -212,7 +215,7 @@ public final class BiniaxSimulator
                 && (locations[x][y + 1] == 0
                         || locations[x][y + 1] / ELEMENT_LIMIT == element || locations[x][y + 1]
                         % ELEMENT_LIMIT == element))
-            legalActions_.add(BiniaxAction.SOUTH);
+            legalActions_.get(0).add(BiniaxAction.SOUTH);
 
         if (x != 0) {
             int nextElement = 0;
@@ -229,7 +232,7 @@ public final class BiniaxSimulator
                         || locations[x - 1][y - 1] == 0
                         || locations[x - 1][y - 1] / ELEMENT_LIMIT == nextElement
                         || locations[x - 1][y - 1] % ELEMENT_LIMIT == nextElement)
-                    legalActions_.add(BiniaxAction.WEST);
+                    legalActions_.get(0).add(BiniaxAction.WEST);
             }
         }
     }
@@ -264,10 +267,6 @@ public final class BiniaxSimulator
 
     public int getReward(int agentId) {
         return 1;
-    }
-
-    public boolean isTerminalState() {
-        return legalActions_.size() == 0;
     }
 
     public BiniaxState getState() {
