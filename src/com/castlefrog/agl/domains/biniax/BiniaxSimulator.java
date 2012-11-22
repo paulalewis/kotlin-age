@@ -30,7 +30,7 @@ public final class BiniaxSimulator
      */
     public BiniaxSimulator() {
         nAgents_ = N_AGENTS;
-        turnType_ = TurnType.SEQUENTIAL_ORDER;
+        turnType_ = TurnType.SEQUENTIAL;
         state_ = getInitialState();
         legalActions_ = new ArrayList<HashSet<BiniaxAction>>();
         legalActions_.add(new HashSet<BiniaxAction>());

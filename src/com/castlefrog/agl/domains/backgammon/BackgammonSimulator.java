@@ -21,7 +21,7 @@ public final class BackgammonSimulator
 
     public BackgammonSimulator() {
         nAgents_ = N_AGENTS;
-        turnType_ = TurnType.SEQUENTIAL_ORDER;
+        turnType_ = TurnType.SEQUENTIAL;
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
         legalActions_ = new ArrayList<BackgammonAction>();

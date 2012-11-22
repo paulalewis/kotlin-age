@@ -68,7 +68,7 @@ public final class HexSimulator2
      * Create a default Hex simulator.
      */
     public HexSimulator2() {
-        this(DEFAULT_SIZE, TurnType.SEQUENTIAL_ORDER);
+        this(DEFAULT_SIZE, TurnType.SEQUENTIAL);
     }
 
     /**

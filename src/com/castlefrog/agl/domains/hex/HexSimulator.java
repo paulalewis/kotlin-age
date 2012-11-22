@@ -237,7 +237,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     public int[][] getWinningConnection() {
         int[][] connection = new int[boardSize_][boardSize_];
         if (rewards_[0] != 0) {
-            Simulator<HexState,HexAction> simulator = new HexSimulator(boardSize_, TurnType.SEQUENTIAL_ORDER);
+            Simulator<HexState,HexAction> simulator = new HexSimulator(boardSize_, TurnType.SEQUENTIAL);
             HexState state = state_.clone();
             for (int i = 0; i < boardSize_; i += 1) {
                 for (int j = 0; j < boardSize_; j += 1) {

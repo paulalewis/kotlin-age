@@ -278,7 +278,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     public int[][] getWinningConnection() {
         int[][] connection = new int[size_][size_];
         if (rewards_[0] != 0) {
-            Simulator<HavannahState,HavannahAction> simulator = new HavannahSimulator(base_, TurnType.SEQUENTIAL_ORDER);
+            Simulator<HavannahState,HavannahAction> simulator = new HavannahSimulator(base_, TurnType.SEQUENTIAL);
             HavannahState state = state_.clone();
             for (int i = 0; i < size_; i += 1) {
                 for (int j = 0; j < size_; j += 1) {

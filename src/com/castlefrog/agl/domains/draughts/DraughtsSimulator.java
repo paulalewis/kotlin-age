@@ -16,7 +16,7 @@ public final class DraughtsSimulator
 
     public DraughtsSimulator() {
         nAgents_ = N_AGENTS;
-        turnType_ = TurnType.SEQUENTIAL_ORDER;
+        turnType_ = TurnType.SEQUENTIAL;
     }
 
 	private DraughtsSimulator(DraughtsState state,
