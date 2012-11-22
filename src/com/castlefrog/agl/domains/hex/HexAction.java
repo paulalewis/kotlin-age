@@ -60,6 +60,6 @@ public final class HexAction implements Serializable {
 
     @Override
     public String toString() {
-        return "(" + x_ + "," + y_ + ")";
+        return "(" + ((char)(0x41 + x_)) + y_ + ")";
     }
 }
