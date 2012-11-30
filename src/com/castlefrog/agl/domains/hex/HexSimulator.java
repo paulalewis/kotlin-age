@@ -12,8 +12,8 @@ import com.castlefrog.agl.TurnType;
 
 public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     public static final int N_AGENTS = 2;
-    public static final int MIN_BOARD_SIZE = 5;
-    public static final int MAX_BOARD_SIZE = 19;
+    public static final int MIN_BOARD_SIZE = 1;
+    public static final int MAX_BOARD_SIZE = 26;
     
     private static int boardSize_;
     
