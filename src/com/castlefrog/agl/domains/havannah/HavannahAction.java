@@ -13,8 +13,6 @@ public final class HavannahAction implements Serializable {
     /** y coordinate */
     private final byte y_;
 
-    private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     private HavannahAction(int x, int y) {
         x_ = (byte) x;
         y_ = (byte) y;
