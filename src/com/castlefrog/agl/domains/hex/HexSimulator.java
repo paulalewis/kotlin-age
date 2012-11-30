@@ -13,6 +13,7 @@ import com.castlefrog.agl.TurnType;
 public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     public static final int N_AGENTS = 2;
     public static final int MIN_BOARD_SIZE = 1;
+    public static final int MAX_BOARD_SIZE = 26;
     
     private static int boardSize_;
     
@@ -27,8 +28,9 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     public HexSimulator(int boardSize,
                         TurnType turnType) {
         nAgents_ = N_AGENTS;
-        if (boardSize < MIN_BOARD_SIZE)
-            throw new IllegalArgumentException("Invalid board size: " + boardSize);
+        if (boardSize < MIN_BOARD_SIZE || boardSize > MAX_BOARD_SIZE)
+            throw new IllegalArgumentException("Invalid board size: (" + boardSize + ") " +
+                    MIN_BOARD_SIZE + " <= boardSize <= " + MAX_BOARD_SIZE);
         boardSize_ = boardSize;
         turnType_ = turnType;
         state_ = getInitialState();
