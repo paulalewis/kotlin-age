@@ -25,7 +25,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     public HavannahSimulator(int base,
                              TurnType turnType) {
         if (base < MIN_BASE)
-            throw new IllegalArgumentException("base < " + MIN_BASE);
+            throw new IllegalArgumentException("Invalid board size: " + base);
         nAgents_ = N_AGENTS;
         base_ = base;
         size_ = 2 * base_ - 1;
