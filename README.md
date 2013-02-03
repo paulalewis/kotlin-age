@@ -1,6 +1,7 @@
 Abstract Game Library
 =====================
 
+This sofware is available under the MIT license. See LICENSE.txt.
 About
 -----
 
