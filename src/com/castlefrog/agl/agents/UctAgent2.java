@@ -585,10 +585,14 @@ public final class UctAgent2 implements Agent {
         return totalRewards;
     }
 
+    public String getName() {
+        return "uct";
+    }
+
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("UCT Agent");
+        output.append(getName() + " agent");
         output.append("\n  Number of simulations =     " + nSimulations_);
         output.append("\n  UCT constant =              " + uctConstant_);
         output.append("\n  Sparse sample size =        ");

@@ -110,8 +110,12 @@ public class ExpectimaxAgent implements Agent {
         return totalRewards;
     }
 
+    public String getName() {
+        return "expectimax";
+    }
+
     @Override
     public String toString() {
-        return "Expectimax Agent";
+        return getName() + " agent";
     }
 }

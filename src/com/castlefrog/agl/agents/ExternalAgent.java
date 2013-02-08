@@ -36,4 +36,12 @@ public class ExternalAgent implements Agent {
         action_ = action;
         actionReady_.countDown();
     }
+
+    public String getName() {
+        return "external";
+    }
+
+    public String toString() {
+        return getName() + " agent";
+    }
 }
