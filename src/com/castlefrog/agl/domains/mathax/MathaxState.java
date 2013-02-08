@@ -212,8 +212,9 @@ public final class MathaxState implements Cloneable {
         output.append(nColors_ + ":" + nTurns_ + ":" + nFreeMoves_ + "\n");
         for (Element element: history_)
             output.append(element.toString() + " ");
+        output.append("\n");
         for (int i = 0; i < WIDTH; i += 1)
-            output.append("\n------");
+            output.append("------");
         output.append("-\n");
         for (int j = 0; j < HEIGHT; j += 1) {
             output.append(":");
