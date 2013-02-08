@@ -7,8 +7,8 @@ import java.util.List;
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Simulator;
 
-public final class HumanAgent implements Agent {
-    public HumanAgent() {}
+public final class ConsoleAgent implements Agent {
+    public ConsoleAgent() {}
 
     public <S, A> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
@@ -51,8 +51,12 @@ public final class HumanAgent implements Agent {
         return input;
     }
 
+    public String getName() {
+        return "console";
+    }
+
     @Override
     public String toString() {
-        return "Human Agent";
+        return getName() + " agent";
     }
 }
