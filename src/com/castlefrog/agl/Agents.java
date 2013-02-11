@@ -38,7 +38,6 @@ public class Agents {
      * @see AgentProvider
      */
     public static void registerProvider(String name, AgentProvider agentProvider) {
-        System.out.println("register: " + name);
         providers.put(name, agentProvider);
     }
 
