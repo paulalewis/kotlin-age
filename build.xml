@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="agl" default="default" basedir=".">
+<project name="agl" default="usage" basedir=".">
     <property name="src" location="src"/>
     <property name="bin" location="bin"/>
     <property name="dist" location="dist"/>
@@ -74,5 +74,8 @@
         <delete dir="${dist}"/>
     </target>
 
-    <target name="default" depends="install"/>
+    <target name="usage">
+        <echo message="  Execute 'ant -projecthelp' for build file help."/>
+        <echo message="  Execute 'ant -help' for Ant help."/>
+    </target>
 </project>
