@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<domainTest>
+    <nSimulations>1</nSimulations>
+    <world>
+        <name>biniax</name>
+    </world>
+    <simulator>
+        <name>biniax</name>
+    </simulator>
+    <agents>
+        <agent>
+            <name>uct</name>
+            <params>
+                <param>10</param>
+                <param>1</param>
+                <param>-1</param>
+                <param>1</param>
+            </params>
+        </agent>
+    </agents>
+</domainTest>

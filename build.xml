@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="agl" default="install" basedir=".">
+<project name="agl" default="default" basedir=".">
     <property name="src" location="src"/>
     <property name="bin" location="bin"/>
     <property name="dist" location="dist"/>
     <property name="lib" location="lib"/>
     <property name="res" location="res"/>
+    <property name="test.filename" value="DomainTest"/>
+    <property name="test.filepath" location="${res}/tests/example.xml"/>
+    <property name="test.output" location=""/>
     <property name="compile.debug" value="true"/>
 
     <!-- lib directory should contain any pre-built jar files needed to build the project -->
@@ -25,15 +28,18 @@
 
     <target name="compile" depends="init">
         <mkdir dir="${bin}"/>
-        <javac deprecation="on" srcdir="${src}" destdir="${bin}"
+        <javac deprecation="on"
+               srcdir="${src}"
+               destdir="${bin}"
                source="1.6" target="1.6"
                includeAntRuntime="no"
-               classpathref="lib.path" debug="${compile.debug}">
+               classpathref="lib.path"
+               debug="${compile.debug}">
                <compilerarg value="-Xlint:unchecked"/>
         </javac>
     </target>
 
-    <target name="install" depends="compile">
+    <target name="dist" depends="compile">
         <mkdir dir="${dist}"/>
         <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${bin}">
             <!-- Inject resources -->
@@ -42,13 +48,31 @@
             <zipgroupfileset refid="lib.jars"/>
         </jar>
     </target>
+    
+    <target name="install" depends="compile">
+        <mkdir dir="${dist}"/>
+        <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${bin}">
+            <manifest>
+                <attribute name="Main-Class" value="com.castlefrog.agl.${test.filename}"/>
+            </manifest>
+            <!-- Inject resources -->
+            <fileset dir="${res}/"/>
+            <!-- Merge library jars into final jar file -->
+            <zipgroupfileset refid="lib.jars"/>
+        </jar>
+    </target>
 
-    <target name="run" depends="install">
-        <java jar="${dist}/${ant.project.name}.jar" fork="true"/>
+    <target name="run">
+        <java jar="${dist}/${ant.project.name}.jar" fork="true">
+            <arg value="${test.filepath}"/>
+            <arg value="${output.filepath}"/>
+        </java>
     </target>
 
     <target name="clean">
         <delete dir="${bin}"/>
         <delete dir="${dist}"/>
     </target>
+
+    <target name="default" depends="install"/>
 </project>
