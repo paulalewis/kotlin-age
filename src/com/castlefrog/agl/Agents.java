@@ -19,16 +19,6 @@ public class Agents {
 
     private static final Map<String, AgentProvider> providers = new ConcurrentHashMap<String, AgentProvider>();
 
-    static {
-        // register default agents
-        try {
-            Class.forName("com.castlefrog.agl.agents.RandomAgentProvider");
-            Class.forName("com.castlefrog.agl.agents.ConsoleAgentProvider");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     // provider api
     
     /**

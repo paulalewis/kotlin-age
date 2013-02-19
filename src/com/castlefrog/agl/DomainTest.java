@@ -174,8 +174,13 @@ public class DomainTest {
             throw new IllegalArgumentException("invalid simulator: " + name);
     }
 
-    private void registerAgents() {
+    /**
+     * Register agents from the xml filepath.
+     */
+    private void registerAgents(String filepath) {
         try {
+            Class.forName("com.castlefrog.agl.agents.ConsoleAgentProvider");
+            Class.forName("com.castlefrog.agl.agents.RandomAgentProvider");
             Class.forName("com.castlefrog.agl.agents.UctAgentProvider");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
