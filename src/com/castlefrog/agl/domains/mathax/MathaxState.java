@@ -210,6 +210,8 @@ public final class MathaxState implements Cloneable {
     public String toString() {
         StringBuilder output = new StringBuilder();
         output.append(nColors_ + ":" + nTurns_ + ":" + nFreeMoves_ + "\n");
+        for (int i = 0; i < MAX_HISTORY_SIZE - history_.size(); i++)
+            output.append("   ");
         for (Element element: history_)
             output.append(element.toString() + " ");
         output.append("\n");

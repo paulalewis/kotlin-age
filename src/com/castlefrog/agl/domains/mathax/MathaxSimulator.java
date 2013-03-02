@@ -19,6 +19,8 @@ public final class MathaxSimulator
     public static final int INITIAL_COLORS = 4;
     public static final int MAX_COLORS = 6;
     public static final int COLOR_INCREMENT_INTERVAL = 128;
+        
+    private static final String SYMBOLS = "0123456789+-*/";
 
     /**
      * Create a mathax simulator set to an initial state.
@@ -157,7 +159,6 @@ public final class MathaxSimulator
     }
 
     private Element[] generateRandomElementPair(int nColors) {
-        final String SYMBOLS = "0123456789+-×÷";
         int color1 = (int) (Math.random() * nColors);
         int color2 = (int) (Math.random() * (nColors - 1));
         if (color2 >= color1)
@@ -171,7 +172,6 @@ public final class MathaxSimulator
     }
     
     private Element[] generateRandomElementPair(int nColors, int initColor) {
-        final String SYMBOLS = "0123456789+-×÷";
         int color1 = initColor;
         int color2 = (int) (Math.random() * (nColors - 1));
         if (color2 >= color1)
