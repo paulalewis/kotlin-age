@@ -131,6 +131,8 @@ public class DomainTest {
                 DecimalFormat df = new DecimalFormat("#.###");
                 int buffer = 10;
                 for (int j = 0; j < agents.size(); j++) {
+                    output.append(agents.get(j).toString());
+                    output.append("\n");
                     double[] rewards = rewardsData.get(j);
                     double[] avgMoveTimes = avgMoveTimeData.get(j);
                     Mean mean = new Mean();
@@ -151,14 +153,6 @@ public class DomainTest {
                     for (int k = temp.length(); k < buffer; k++)
                         output.append(" ");
                     output.append(temp);
-                    output.append("\n");
-                    /*for (int k = 0; k < agentArgs.get(j).length; k++) {
-                        for (int l = agentArgs.get(j)[k].length(); l < buffer; l++)
-                            output.append(" ");
-                        output.append(agentArgs.get(j)[k]);
-                        if (k < agentArgs.get(j).length - 1)
-                            output.append(",");
-                    }*/
                     output.append("\n");
                 }
                 
