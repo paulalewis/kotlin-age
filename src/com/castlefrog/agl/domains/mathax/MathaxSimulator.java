@@ -308,7 +308,7 @@ public final class MathaxSimulator
                 }
         }
         locations[MathaxState.WIDTH / 2][MathaxState.HEIGHT - 1][0] = new Element(initColor, '0');
-        return new MathaxState(locations, new LinkedList<Element>(), MAX_FREE_MOVES, 0, INITIAL_COLORS);
+        return new MathaxState(locations, new LinkedList<Element>(), MAX_FREE_MOVES, 0, INITIAL_COLORS, 0);
     }
 
     public MathaxState getState() {

@@ -20,6 +20,7 @@ public final class MathaxState implements Cloneable {
     private int nTurns_;
     /** number of colors currently generated */
     private int nColors_;
+    private int score_;
 
     /** x location of avatar */
     private int avatarX_;
@@ -30,7 +31,8 @@ public final class MathaxState implements Cloneable {
                        List<Element> history,
                        int nFreeMoves,
                        int nTurns,
-                       int nColors) {
+                       int nColors,
+                       int score) {
         locations_ = new Element[WIDTH][HEIGHT][N_ELEMENTS];
         for (int i = 0; i < WIDTH; i += 1)
             for (int j = 0; j < HEIGHT; j += 1) {
@@ -47,6 +49,7 @@ public final class MathaxState implements Cloneable {
         nFreeMoves_ = nFreeMoves;
         nTurns_ = nTurns;
         nColors_ = nColors;
+        score_ = score;
     }
     
     public MathaxState(Element[][][] locations,
@@ -54,6 +57,7 @@ public final class MathaxState implements Cloneable {
                        int nFreeMoves,
                        int nTurns,
                        int nColors,
+                       int score,
                        int avatarX,
                        int avatarY) {
         locations_ = new Element[WIDTH][HEIGHT][N_ELEMENTS];
@@ -67,6 +71,7 @@ public final class MathaxState implements Cloneable {
         nFreeMoves_ = nFreeMoves;
         nTurns_ = nTurns;
         nColors_ = nColors;
+        score_ = score;
         avatarX_ = avatarX;
         avatarY_ = avatarY;
     }
@@ -74,7 +79,7 @@ public final class MathaxState implements Cloneable {
     @Override
     public MathaxState clone() {
         return new MathaxState(locations_, history_, nFreeMoves_,
-                nTurns_, nColors_, avatarX_, avatarY_);
+                nTurns_, nColors_, score_, avatarX_, avatarY_);
     }
 
     public Element[] getLocation(int x, int y) {
@@ -102,6 +107,10 @@ public final class MathaxState implements Cloneable {
 
     public int getNColors() {
         return nColors_;
+    }
+
+    public int getScore() {
+        return score_;
     }
 
     public int getAvatarX() {
@@ -172,6 +181,14 @@ public final class MathaxState implements Cloneable {
         nColors_ = nColors;
     }
 
+    public void setScore(int score) {
+        score_ = score;
+    }
+
+    public void modScore(int score) {
+        score_ += score;
+    }
+
     @Override
     public int hashCode() {
         int code = 7 + nFreeMoves_;
@@ -183,6 +200,7 @@ public final class MathaxState implements Cloneable {
             code = 11 * code + element.hashCode();
         code = 11 * code + nTurns_;
         code = 11 * code + nColors_;
+        code = 11 * code + score_;
         return code;
     }
 
@@ -199,17 +217,16 @@ public final class MathaxState implements Cloneable {
         for (int i = 0; i < history_.size(); i += 1)
             if (!history_.get(i).equals(state.getHistory().get(i)))
                 return false;
-        if (nFreeMoves_ != state.getNFreeMoves())
-            return false;
-        if (nColors_ != state.getNColors())
-            return false;
-        return nTurns_ == state.getNTurns();
+        return nFreeMoves_ == state.getNFreeMoves() && 
+               nColors_ == state.getNColors() &&
+               nTurns_ == state.getNTurns() &&
+               score_ == state.getScore();
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append(nColors_ + ":" + nTurns_ + ":" + nFreeMoves_ + "\n");
+        output.append(nColors_ + ":" + nTurns_ + ":" + nFreeMoves_ + ":" + score_ + "\n");
         for (int i = 0; i < MAX_HISTORY_SIZE - history_.size(); i++)
             output.append("   ");
         for (Element element: history_)
