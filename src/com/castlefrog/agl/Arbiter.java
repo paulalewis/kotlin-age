@@ -24,6 +24,7 @@ public final class Arbiter<S, A> {
     /** Information stored about game */
     private History<S, A> history_;
     private List<Agent> agents_;
+    private long[] decisionTimes_;
     
     private ExecutorService executor_;
     private CountDownLatch actionsReady_;
@@ -43,11 +44,11 @@ public final class Arbiter<S, A> {
 
         public void run() {
             if (world_.hasLegalActions(agentId_)) {
-                long startTime = System.nanoTime();
+                long startTime = System.currentTimeMillis();
                 S state = world_.getState();
                 A action = agents_.get(agentId_).selectAction(agentId_, state, world_.clone());
                 actions_.set(agentId_, action);
-                decisionTimes_[agentId_] = System.nanoTime() - startTime;
+                decisionTimes_[agentId_] = System.currentTimeMillis() - startTime;
             }
             actionsReady_.countDown();
         }
@@ -65,6 +66,7 @@ public final class Arbiter<S, A> {
         agents_ = new ArrayList<Agent>();
         for (Agent agent: agents)
             agents_.add(agent);
+        decisionTimes_ = new long[world.getNAgents()];
     }
     
     public Arbiter(History<S, A> history,
@@ -79,6 +81,7 @@ public final class Arbiter<S, A> {
         agents_ = new ArrayList<Agent>();
         for (Agent agent: agents)
             agents_.add(agent);
+        decisionTimes_ = new long[world.getNAgents()];
     }
     
     /**
@@ -111,12 +114,11 @@ public final class Arbiter<S, A> {
         if (!world_.isTerminalState()) {
             Vector<A> actions = new Vector<A>();
             actions.setSize(world_.getNAgents());
-            long[] decisionTimes = new long[world_.getNAgents()];
             actionsReady_ = new CountDownLatch(world_.getNAgents());
             executor_ = Executors.newFixedThreadPool(world_.getNAgents());
             try {
                 for (int i = 0; i < world_.getNAgents(); i += 1)
-                    executor_.execute(new AgentAction(i, actions, decisionTimes));
+                    executor_.execute(new AgentAction(i, actions, decisionTimes_));
                 actionsReady_.await();
             } catch (InterruptedException e) {
                 throw new InterruptedException();
@@ -151,5 +153,13 @@ public final class Arbiter<S, A> {
 
     public History<S, A> getHistory() {
         return history_;
+    }
+    
+    public long getDecisionTime(int agentId) {
+        return decisionTimes_[agentId];
+    }
+
+    public long getReward(int agentId) {
+        return world_.getReward(agentId);
     }
 }

@@ -19,7 +19,6 @@ public final class History<S, A> implements Serializable {
 
     private final class Node implements Serializable {
         private S state_;
-
         private List<A> actions_;
 
         public Node(S state, List<A> actions) {

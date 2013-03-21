@@ -12,11 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import org.xml.sax.SAXException;
 
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Agents;
@@ -53,7 +59,7 @@ public class DomainTest {
                 if (!doc.getDocumentElement().getNodeName().equals(TEST_ROOT_NAME))
                     throw new IllegalArgumentException("Root tag should be '" + TEST_ROOT_NAME + "'");
                 int nSimulations = Integer.parseInt(getTagValue("nSimulations",doc.getDocumentElement()));
-                NodeList nList = doc.getElementsByTagName("simulator");
+                NodeList nList = doc.getElementsByTagName("world");
                 Element element = (Element) nList.item(0);
                 String simulatorName = getTagValue("name", element);
                 Simulator<?, ?> world = selectSimulator(simulatorName, null);
@@ -66,78 +72,108 @@ public class DomainTest {
                     if (agentNode.getNodeType() == Node.ELEMENT_NODE) {
                         String name = getTagValue("name", (Element) agentNode);
                         NodeList paramList = doc.getElementsByTagName("params");
-                        NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
-                        String[] params = new String[paramNodes.getLength()];
-                        for (int j = 0; j < paramNodes.getLength(); j += 1) {
-                            Node paramNode = paramNodes.item(j);
-                            if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
-                                params[j] = paramNode.getTextContent();
+                        String[] params = null;
+                        if (paramList.getLength() != 0) {
+                            NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
+                            params = new String[paramNodes.getLength()];
+                            for (int j = 0; j < paramNodes.getLength(); j += 1) {
+                                Node paramNode = paramNodes.item(j);
+                                if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
+                                    params[j] = paramNode.getTextContent();
+                                }
                             }
                         }
                         agents.add(Agents.getAgent(name, params));
                     }
                 }
 
+                List<double[]> rewardsData = new ArrayList<double[]>();
+                List<double[]> avgMoveTimeData = new ArrayList<double[]>();
+                for (int i = 0; i < agents.size(); i += 1) {
+                    rewardsData.add(new double[nSimulations]);
+                    avgMoveTimeData.add(new double[nSimulations]);
+                }
                 Arbiter<?, ?> arbiter = new Arbiter(world.getInitialState(), world, agents);
                 for (int i = 0; i < nSimulations; i += 1) {
+                    arbiter.reset();
                     try {
-                        while (!arbiter.getWorld().isTerminalState())
+                        int count = 0;
+                        while (!arbiter.getWorld().isTerminalState()) {
                             arbiter.step();
+                            count += 1;
+                            for (int j = 0; j < agents.size(); j += 1) {
+                                rewardsData.get(j)[i] += arbiter.getReward(j);
+                                avgMoveTimeData.get(j)[i] += arbiter.getDecisionTime(j);
+                            }
+                        }
+                        for (int j = 0; count != 0 && j < agents.size(); j += 1) {
+                            avgMoveTimeData.get(j)[i] /= count;
+                        }
                     } catch (InterruptedException e) {}
                 }
 
-                if (nSimulations == 1)
-                    System.out.println(arbiter.getHistory());
-            } catch (Exception e) {
+                // output
+                StringBuilder output = new StringBuilder();
+                
+                if (nSimulations == 1) {
+                    output.append(arbiter.getHistory());
+                }
+
+                // #nSimulations - world - simulator
+                output.append("#");
+                output.append(nSimulations);
+                output.append(" - ");
+                output.append(world.getClass().getSimpleName());
+                output.append(" - ");
+                output.append(simulatedWorld.getClass().getSimpleName());
+                output.append("\n");
+
+                DecimalFormat df = new DecimalFormat("#.###");
+                int buffer = 10;
+                for (int j = 0; j < agents.size(); j++) {
+                    double[] rewards = rewardsData.get(j);
+                    double[] avgMoveTimes = avgMoveTimeData.get(j);
+                    Mean mean = new Mean();
+                    String temp = df.format(mean.evaluate(rewards));
+                    for (int k = temp.length(); k < buffer; k++)
+                        output.append(" ");
+                    output.append(temp + ",");
+                    StandardDeviation sd = new StandardDeviation();
+                    temp = df.format(sd.evaluate(rewards));
+                    for (int k = temp.length(); k < buffer; k++)
+                        output.append(" ");
+                    output.append(temp + ",");
+                    temp = df.format(mean.evaluate(avgMoveTimes));
+                    for (int k = temp.length(); k < buffer; k++)
+                        output.append(" ");
+                    output.append(temp + ",");
+                    temp = df.format(sd.evaluate(avgMoveTimes));
+                    for (int k = temp.length(); k < buffer; k++)
+                        output.append(" ");
+                    output.append(temp);
+                    output.append("\n");
+                    /*for (int k = 0; k < agentArgs.get(j).length; k++) {
+                        for (int l = agentArgs.get(j)[k].length(); l < buffer; l++)
+                            output.append(" ");
+                        output.append(agentArgs.get(j)[k]);
+                        if (k < agentArgs.get(j).length - 1)
+                            output.append(",");
+                    }*/
+                    output.append("\n");
+                }
+                
+                if (args.length == 2) {
+                    recordResults(args[1], output.toString());
+                } else {
+                    System.out.println(output.toString());
+                }
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            // Output format
-            // nTrials, avgRewards, stdRewards, avgMoveTime, stdMoveTime,
-            // agent, param1, param2, ... paramN
-            /*DecimalFormat df = new DecimalFormat("#.###");
-            StringBuilder output = new StringBuilder();
-            output.append("#");
-            output.append(nTrials);
-            output.append(" - ");
-            output.append(world.getClass().getSimpleName());
-            output.append(" - ");
-            output.append(simulatedWorld.getClass().getSimpleName());
-            output.append("\n");
-            String temp;
-            int buffer = 10;
-            for (int j = 0; j < agents.size(); j++) {
-                double[] rewardsData = arbiter.getRewardsData(j);
-                double[] avgMoveTimeData = arbiter.getAvgMoveTimeData(j);
-                temp = df.format(Statistics.computeMean(rewardsData));
-                for (int k = temp.length(); k < buffer; k++)
-                    output.append(" ");
-                output.append(temp + ",");
-                temp = df.format(Statistics
-                        .computeStandardDeviation(rewardsData));
-                for (int k = temp.length(); k < buffer; k++)
-                    output.append(" ");
-                output.append(temp + ",");
-                temp = df.format(Statistics.computeMean(avgMoveTimeData));
-                for (int k = temp.length(); k < buffer; k++)
-                    output.append(" ");
-                output.append(temp + ",");
-                temp = df.format(Statistics
-                        .computeStandardDeviation(avgMoveTimeData));
-                for (int k = temp.length(); k < buffer; k++)
-                    output.append(" ");
-                output.append(temp + ",");
-                for (int k = 0; k < agentArgs.get(j).length; k++) {
-                    for (int l = agentArgs.get(j)[k].length(); l < buffer; l++)
-                        output.append(" ");
-                    output.append(agentArgs.get(j)[k]);
-                    if (k < agentArgs.get(j).length - 1)
-                        output.append(",");
-                }
-                output.append("\n");
-            }
-
-            recordResults("domainResults.xml", output.toString());*/
-
         } else
             System.out.println("Illegal arguments\nusage: java -jar DomainTest.jar test_filepath [output_filepath]");
     }
@@ -149,7 +185,7 @@ public class DomainTest {
 
     private void recordResults(String filepath, String results) {
         //if it doesnt exist create it
-        File xmlFile = new File(filepath);
+        //new File(filepath);
         try {
             BufferedWriter output = new BufferedWriter(new FileWriter(filepath, true));
             output.write(results);
@@ -174,10 +210,7 @@ public class DomainTest {
             throw new IllegalArgumentException("invalid simulator: " + name);
     }
 
-    /**
-     * Register agents from the xml filepath.
-     */
-    private void registerAgents(String filepath) {
+    private void registerAgents() {
         try {
             Class.forName("com.castlefrog.agl.agents.ConsoleAgentProvider");
             Class.forName("com.castlefrog.agl.agents.RandomAgentProvider");
