@@ -15,7 +15,7 @@ import com.castlefrog.agl.Simulator;
 public final class UctAgent2 implements Agent {
     /** number of simulations to run */
     private int nSimulations_;
-    /** UCT Constant. */
+    /** UCT constant */
     private double uctConstant_;
     /**
      * Maximum number of state samples to inspect from each action.
@@ -586,22 +586,20 @@ public final class UctAgent2 implements Agent {
     }
 
     public String getName() {
-        return "uct";
+        return "UCT";
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
         output.append(getName() + " agent");
-        output.append("\n  Number of simulations =     " + nSimulations_);
+        output.append("\n  number of simulations =     " + nSimulations_);
         output.append("\n  UCT constant =              " + uctConstant_);
-        output.append("\n  Sparse sample size =        ");
         if (sparseSampleSize_ > 0)
-            output.append(sparseSampleSize_);
-        else
-            output.append("\u221e");
-        output.append("\n  Number of ensembles =       " + nEnsembles_);
-        output.append("\n  All actions as first =       " + allActionsAsFirst_);
+            output.append("\n  sparse sample size:        " + sparseSampleSize_);
+        if (nEnsembles_ > 1)
+            output.append("\n  number of ensembles =       " + nEnsembles_);
+        output.append("\n  all actions as first =       " + allActionsAsFirst_);
         return output.toString();
     }
 }

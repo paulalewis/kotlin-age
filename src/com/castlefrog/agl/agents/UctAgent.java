@@ -15,7 +15,7 @@ public final class UctAgent implements Agent {
     /** number of simulations to run */
     private int nSimulations_;
 
-    /** UCT Constant. */
+    /** UCT constant */
     private double uctConstant_;
 
     /**
@@ -462,21 +462,19 @@ public final class UctAgent implements Agent {
     }
 
     public String getName() {
-        return "uct";
+        return "UCT";
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
         output.append(getName() + " agent");
-        output.append("\n  Number of Simulations:     " + nSimulations_);
-        output.append("\n  UCT Constant(s):              " + uctConstant_);
+        output.append("\n  number of simulations:     " + nSimulations_);
+        output.append("\n  UCT constant:              " + uctConstant_);
         if (sparseSampleSize_ > 0)
-            output
-                    .append("\n  Sparse Sample Size:        "
-                            + sparseSampleSize_);
+            output.append("\n  sparse sample size:        " + sparseSampleSize_);
         if (nEnsembles_ > 1) {
-            output.append("\n  Number of Ensembles:       " + nEnsembles_);
+            output.append("\n  number of ensembles:       " + nEnsembles_);
         }
         return output.toString();
     }
