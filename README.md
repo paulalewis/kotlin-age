@@ -7,6 +7,8 @@ About
 -----
 
 Library for creating abstract games and agents to play those games.
+This software can be used to test the strength and speed of various
+algorithms in various domains.
 
 Setup
 -----
@@ -20,7 +22,9 @@ Run
 
 Run DomainTest.java
 
-    ant run <test_filepath> [output_filepath]
+    java -jar agl.jar <test_filepath> [output_filepath]
+
+Some example test files are located in res/domainTests/.
 
 Create Library
 --------------
