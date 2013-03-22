@@ -55,11 +55,12 @@ public final class HexState implements Cloneable, Serializable {
     }
 
     public byte[][] getLocations() {
-        byte[][] locations = new byte[locations_.length][locations_.length];
-        for (int i = 0; i < locations_.length; i += 1)
-            for (int j = 0; j < locations_.length; j += 1)
-                locations[i][j] = locations_[i][j];
-        return locations;
+        //byte[][] locations = new byte[locations_.length][locations_.length];
+        //for (int i = 0; i < locations_.length; i += 1)
+        //    for (int j = 0; j < locations_.length; j += 1)
+        //        locations[i][j] = locations_[i][j];
+        //return locations;
+        return locations_;
     }
 
     public byte getLocation(int x, int y) {
