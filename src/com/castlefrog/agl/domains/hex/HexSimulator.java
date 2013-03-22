@@ -126,7 +126,8 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
                         rewards_[1] = -1;
                         return;
                     }
-                } else if (locations[i][0] == 2 && visited[i][0] == false) {
+                }
+                if (locations[i][0] == 2 && visited[i][0] == false) {
                     if ((dfsSides(i, 0, locations, visited) & 12) == 12) {
                         rewards_[0] = -1;
                         rewards_[1] = 1;
