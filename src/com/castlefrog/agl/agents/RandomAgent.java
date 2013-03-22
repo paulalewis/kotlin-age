@@ -1,7 +1,6 @@
 package com.castlefrog.agl.agents;
 
 import com.castlefrog.agl.Agent;
-import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Simulator;
 
 import java.util.List;

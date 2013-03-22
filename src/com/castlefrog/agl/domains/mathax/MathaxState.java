@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.mathax;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public final class MathaxState implements Cloneable {

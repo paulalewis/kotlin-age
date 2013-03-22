@@ -1,6 +1,5 @@
 package com.castlefrog.agl.agents;
 
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Simulator;

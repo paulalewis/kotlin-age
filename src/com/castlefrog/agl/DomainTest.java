@@ -1,12 +1,9 @@
 package com.castlefrog.agl;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +26,6 @@ import com.castlefrog.agl.Agents;
 import com.castlefrog.agl.Arbiter;
 import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.Simulators;
-import com.castlefrog.agl.TurnType;
 
 /**
  * This class is used to run tests between agents on simulators.

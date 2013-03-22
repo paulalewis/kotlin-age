@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.backgammon;
 
 import com.castlefrog.agl.SimulatorProvider;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.Simulators;
 
 public class BackgammonSimulatorProvider implements SimulatorProvider {
@@ -15,7 +14,7 @@ public class BackgammonSimulatorProvider implements SimulatorProvider {
         return new BackgammonSimulatorProvider();
     }
 
-    public Simulator newSimulator(String[] args) {
+    public BackgammonSimulator newSimulator(String[] args) {
         return new BackgammonSimulator();
     }
 }

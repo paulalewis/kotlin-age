@@ -35,7 +35,7 @@ public class Simulators {
      * @param name string to associate with provider
      * @param args array of arguments for simulator constructor
      */
-    public static Simulator getSimulator(String name, String[] args) {
+    public static Simulator<?, ?> getSimulator(String name, String[] args) {
         SimulatorProvider simulatorProvider = providers.get(name);
         if (simulatorProvider == null)
             throw new IllegalArgumentException("No simulator registered with name: " + name);

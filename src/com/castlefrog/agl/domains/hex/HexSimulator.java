@@ -185,7 +185,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         return value;
     }
 
-    private List<HexAction> dfsWin(int x0,
+    /*private List<HexAction> dfsWin(int x0,
                                    int y0,
                                    byte[][] locations,
                                    boolean[][] visited) {
@@ -219,7 +219,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         if (value != 3 && value != 12)
             connection.clear();
         return connection;
-    }
+    }*/
 
     private int getLocationMask(int x, int y) {
         int side = 0;

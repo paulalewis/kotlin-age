@@ -1,6 +1,5 @@
 package com.castlefrog.agl.agents;
 
-import java.util.HashSet;
 import java.util.List;
 
 import com.castlefrog.agl.Agent;

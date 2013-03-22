@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.riltos;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RiltosState implements Cloneable {

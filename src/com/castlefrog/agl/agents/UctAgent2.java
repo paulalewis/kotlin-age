@@ -2,7 +2,6 @@ package com.castlefrog.agl.agents;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.HashSet;
 import com.castlefrog.agl.Agent;

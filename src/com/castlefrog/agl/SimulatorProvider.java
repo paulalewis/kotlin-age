@@ -1,5 +1,5 @@
 package com.castlefrog.agl;
 
 public interface SimulatorProvider {
-    Simulator newSimulator(String[] args);
+    Simulator<?, ?> newSimulator(String[] args);
 }
