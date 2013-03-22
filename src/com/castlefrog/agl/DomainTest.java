@@ -135,30 +135,22 @@ public class DomainTest {
                 output.append("\n");
 
                 DecimalFormat df = new DecimalFormat("#.###");
-                int buffer = 10;
                 for (int j = 0; j < agents.size(); j++) {
                     output.append(agents.get(j).toString());
                     output.append("\n");
                     double[] rewards = rewardsData.get(j);
                     double[] avgMoveTimes = avgMoveTimeData.get(j);
                     Mean mean = new Mean();
-                    String temp = df.format(mean.evaluate(rewards));
-                    for (int k = temp.length(); k < buffer; k++)
-                        output.append(" ");
-                    output.append(temp + ",");
                     StandardDeviation sd = new StandardDeviation();
-                    temp = df.format(sd.evaluate(rewards));
-                    for (int k = temp.length(); k < buffer; k++)
-                        output.append(" ");
-                    output.append(temp + ",");
-                    temp = df.format(mean.evaluate(avgMoveTimes));
-                    for (int k = temp.length(); k < buffer; k++)
-                        output.append(" ");
-                    output.append(temp + ",");
-                    temp = df.format(sd.evaluate(avgMoveTimes));
-                    for (int k = temp.length(); k < buffer; k++)
-                        output.append(" ");
-                    output.append(temp);
+                    output.append("  reward:         avg = ");
+                    output.append(df.format(mean.evaluate(rewards)));
+                    output.append(" std = ");
+                    output.append(df.format(sd.evaluate(rewards)));
+                    output.append("\n");
+                    output.append("  move time (ms): avg = ");
+                    output.append(df.format(mean.evaluate(avgMoveTimes)));
+                    output.append(" std = ");
+                    output.append(df.format(sd.evaluate(avgMoveTimes)));
                     output.append("\n");
                 }
                 
