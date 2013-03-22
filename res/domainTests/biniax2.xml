@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<domainTest>
+    <nSimulations>100</nSimulations>
+    <world>
+        <name>biniax</name>
+    </world>
+    <agents>
+        <agent>
+            <name>random</name>
+        </agent>
+    </agents>
+</domainTest>

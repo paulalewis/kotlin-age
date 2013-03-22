@@ -3,14 +3,10 @@
     <nSimulations>1</nSimulations>
     <world>
         <name>hex</name>
-        <param>
-            <name>size</name>
-            <value>11</value>
-        </param>
-        <param>
-            <name>turn type</name>
-            <value>SEQUENTIAL_ORDER</value>
-        </param>
+        <params>
+            <param>11</param>
+            <param>SEQUENTIAL</param>
+        </params>
     </world>
     <agents>
         <agent>

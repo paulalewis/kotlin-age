@@ -28,12 +28,8 @@ import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Agents;
 import com.castlefrog.agl.Arbiter;
 import com.castlefrog.agl.Simulator;
+import com.castlefrog.agl.Simulators;
 import com.castlefrog.agl.TurnType;
-import com.castlefrog.agl.domains.backgammon.BackgammonSimulator;
-import com.castlefrog.agl.domains.biniax.BiniaxSimulator;
-import com.castlefrog.agl.domains.havannah.HavannahSimulator;
-import com.castlefrog.agl.domains.hex.HexSimulator;
-import com.castlefrog.agl.domains.mathax.MathaxSimulator;
 
 /**
  * This class is used to run tests between agents on simulators.
@@ -47,6 +43,7 @@ public class DomainTest {
      */
     public DomainTest(String[] args) {
         if (args.length == 1 || args.length == 2) {
+            registerSimulators();
             registerAgents();
             try {
                 List<Agent> agents = new ArrayList<Agent>();
@@ -62,16 +59,27 @@ public class DomainTest {
                 NodeList nList = doc.getElementsByTagName("world");
                 Element element = (Element) nList.item(0);
                 String simulatorName = getTagValue("name", element);
-                Simulator<?, ?> world = selectSimulator(simulatorName, null);
-                Simulator<?, ?> simulatedWorld = selectSimulator(simulatorName, null);
+                NodeList paramList = element.getElementsByTagName("params");
+                String[] simulatorParams = null;
+                if (paramList.getLength() != 0) {
+                    NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
+                    simulatorParams = new String[paramNodes.getLength()];
+                    for (int j = 0; j < paramNodes.getLength(); j += 1) {
+                        Node paramNode = paramNodes.item(j);
+                        if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
+                            simulatorParams[j] = paramNode.getTextContent();
+                        }
+                    }
+                }
+                Simulator<?, ?> world = Simulators.getSimulator(simulatorName, simulatorParams);
 
                 NodeList agentList = doc.getElementsByTagName("agents");
                 NodeList agentNodes = ((Element)agentList.item(0)).getElementsByTagName("agent");
                 for (int i = 0; i < agentNodes.getLength(); i += 1) {
-                    Node agentNode = agentNodes.item(i);
+                    Element agentNode = (Element)agentNodes.item(i);
                     if (agentNode.getNodeType() == Node.ELEMENT_NODE) {
                         String name = getTagValue("name", (Element) agentNode);
-                        NodeList paramList = doc.getElementsByTagName("params");
+                        paramList = agentNode.getElementsByTagName("params");
                         String[] params = null;
                         if (paramList.getLength() != 0) {
                             NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
@@ -119,13 +127,11 @@ public class DomainTest {
                     output.append(arbiter.getHistory());
                 }
 
-                // #nSimulations - world - simulator
+                // #nSimulations - world
                 output.append("#");
                 output.append(nSimulations);
                 output.append(" - ");
                 output.append(world.getClass().getSimpleName());
-                output.append(" - ");
-                output.append(simulatedWorld.getClass().getSimpleName());
                 output.append("\n");
 
                 DecimalFormat df = new DecimalFormat("#.###");
@@ -178,8 +184,6 @@ public class DomainTest {
     }
 
     private void recordResults(String filepath, String results) {
-        //if it doesnt exist create it
-        //new File(filepath);
         try {
             BufferedWriter output = new BufferedWriter(new FileWriter(filepath, true));
             output.write(results);
@@ -189,20 +193,17 @@ public class DomainTest {
         }
     }
 
-    private Simulator<?, ?> selectSimulator(String name, String[] args) {
-        if (name.equalsIgnoreCase("backgammon"))
-            return new BackgammonSimulator();
-        else if (name.equalsIgnoreCase("biniax"))
-            return new BiniaxSimulator();
-        else if (name.equalsIgnoreCase("havannah"))
-            return new HavannahSimulator(Integer.valueOf(args[0]), TurnType.SEQUENTIAL);
-        else if (name.equalsIgnoreCase("hex"))
-        	return new HexSimulator(Integer.valueOf(args[0]), TurnType.SEQUENTIAL);
-        else if (name.equalsIgnoreCase("mathax"))
-        	return new MathaxSimulator();
-        else
-            throw new IllegalArgumentException("invalid simulator: " + name);
+    private void registerSimulators() {
+        try {
+            Class.forName("com.castlefrog.agl.domains.backgammon.BackgammonSimulatorProvider");
+            Class.forName("com.castlefrog.agl.domains.biniax.BiniaxSimulatorProvider");
+            Class.forName("com.castlefrog.agl.domains.havannah.HavannahSimulatorProvider");
+            Class.forName("com.castlefrog.agl.domains.hex.HexSimulatorProvider");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     private void registerAgents() {
         try {

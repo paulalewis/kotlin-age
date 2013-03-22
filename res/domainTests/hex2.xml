@@ -2,9 +2,16 @@
 <domainTest>
     <nSimulations>1</nSimulations>
     <world>
-        <name>biniax</name>
+        <name>hex</name>
+        <params>
+            <param>11</param>
+            <param>SEQUENTIAL</param>
+        </params>
     </world>
     <agents>
+        <agent>
+            <name>random</name>
+        </agent>
         <agent>
             <name>uct</name>
             <params>
