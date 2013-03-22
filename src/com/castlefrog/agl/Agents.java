@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.castlefrog.agl.agents.RandomAgentProvider;
-import com.castlefrog.agl.agents.ConsoleAgentProvider;
-
 /**
  * Used as an api for providers to include agents
  * and clients to use those agents.
