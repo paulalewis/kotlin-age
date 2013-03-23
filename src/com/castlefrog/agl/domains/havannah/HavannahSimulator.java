@@ -18,7 +18,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     /** longest row of hexagons on board (always odd) */
     private static int size_;
     /** number of locations on board */
-    private static int nLocations_;
+    //private static int nLocations_;
     private static int[][] corners_;
     private static int[][][] sides_;
 
@@ -29,7 +29,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         nAgents_ = N_AGENTS;
         base_ = base;
         size_ = 2 * base_ - 1;
-        nLocations_ = 3 * base_ * base_ - 3 * base_ + 1;
+        //nLocations_ = 3 * base_ * base_ - 3 * base_ + 1;
         turnType_ = turnType;
         corners_ = new int[][] {{ 0, 0 },
                                { 0, base_ - 1 },
