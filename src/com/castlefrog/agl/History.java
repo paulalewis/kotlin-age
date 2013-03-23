@@ -10,10 +10,14 @@ import java.util.List;
  * A history may be saved or loaded to a file.
  */
 public final class History<S, A> implements Serializable {
-    private List<Node> nodes_;
+	private static final long serialVersionUID = 1L;
+	
+	private List<Node> nodes_;
 
     private final class Node implements Serializable {
-        private S state_;
+		private static final long serialVersionUID = 1L;
+		
+		private S state_;
         private List<A> actions_;
 
         public Node(S state, List<A> actions) {

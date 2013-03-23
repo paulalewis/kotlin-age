@@ -6,7 +6,9 @@ import java.io.Serializable;
  * Immutable object that represents a hex action.
  */
 public final class HexAction implements Serializable {
-    private static HexAction[][] actions_ = generateActions();
+	private static final long serialVersionUID = 1L;
+
+	private static HexAction[][] actions_ = generateActions();
 
     private final byte x_;
     private final byte y_;

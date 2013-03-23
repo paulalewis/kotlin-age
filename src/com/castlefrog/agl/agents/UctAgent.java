@@ -177,12 +177,12 @@ public final class UctAgent implements Agent {
             return children_;
         }
 
-        public List<List<A>> getLegalActions() {
+        /*public List<List<A>> getLegalActions() {
             List<List<A>> legalActions = new ArrayList<List<A>>();
             for (ActionNode<S, A> child: children_)
                 legalActions.add(child.getActions());
             return legalActions;
-        }
+        }*/
     }
 
     private class ActionNode<S, A> extends Node {

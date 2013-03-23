@@ -7,7 +7,8 @@ import java.io.Serializable;
  * empty or have a piece controlled by one of two players.
  */
 public final class HavannahState implements Cloneable, Serializable {
-    /**
+	private static final long serialVersionUID = 1L;
+	/**
      * 0 is empty or not playable
      * 1 is player 1
      * 2 is player 2

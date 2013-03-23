@@ -8,7 +8,8 @@ import java.io.Serializable;
  * one of two players.
  */
 public final class HexState implements Cloneable, Serializable {
-    /** Representation of hex board. */
+	private static final long serialVersionUID = 1L;
+	/** Representation of hex board. */
     private byte[][] locations_;
     /** agent next to move */
     private byte agentTurn_;

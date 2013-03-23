@@ -12,7 +12,7 @@ import com.castlefrog.agl.IllegalActionException;
 public final class DraughtsSimulator
     extends AbstractSimulator<DraughtsState, DraughtsAction> {
 	private static final int N_AGENTS = 2;
-    private static final int SIZE = 10;
+    //private static final int SIZE = 10;
 
     public DraughtsSimulator() {
         nAgents_ = N_AGENTS;

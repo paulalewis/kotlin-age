@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.Vector;
 
 public final class HavannahAction implements Serializable {
-    /** list of all possible Havannah actions */
+	private static final long serialVersionUID = 1L;
+
+	/** list of all possible Havannah actions */
     private static Vector<Vector<HavannahAction>> actions_
         = new Vector<Vector<HavannahAction>>();
 

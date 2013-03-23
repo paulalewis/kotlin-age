@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
  * simultaneous domains. Otherwise agents don't think
  * during the opponent's turn.
  * It records history and other game data.
- * TODO - collect decicision times data somewhere other than history class
  */
 public final class Arbiter<S, A> {
     /** The actual domain being used */
