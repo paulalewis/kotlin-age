@@ -12,12 +12,10 @@ import com.castlefrog.agl.IllegalActionException;
 public final class DraughtsSimulator
     extends AbstractSimulator<DraughtsState, DraughtsAction> {
 	private static final int N_AGENTS = 2;
-    //private static final int SIZE = 10;
+    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
+    private static final int SIZE = 10;
 
-    public DraughtsSimulator() {
-        nAgents_ = N_AGENTS;
-        turnType_ = TurnType.SEQUENTIAL;
-    }
+    public DraughtsSimulator() {}
 
 	private DraughtsSimulator(DraughtsState state,
                               List<HashSet<DraughtsAction>> legalActions,
@@ -78,5 +76,13 @@ public final class DraughtsSimulator
 	
     public DraughtsState getState() {
         return state_;
+    }
+
+    public int getNAgents() {
+        return N_AGENTS;
+    }
+
+    public TurnType getTurnType() {
+        return TURN_TYPE;
     }
 }

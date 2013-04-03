@@ -15,7 +15,8 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     public static final int MIN_BOARD_SIZE = 1;
     public static final int MAX_BOARD_SIZE = 26;
     
-    private static int boardSize_;
+    private int boardSize_;
+    private TurnType turnType_;
     
     /**
      * Create a hex simulator.
@@ -27,14 +28,13 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
      */
     public HexSimulator(int boardSize,
                         TurnType turnType) {
-        nAgents_ = N_AGENTS;
         if (boardSize < MIN_BOARD_SIZE || boardSize > MAX_BOARD_SIZE)
             throw new IllegalArgumentException("Invalid board size: (" + boardSize + ") " +
                     MIN_BOARD_SIZE + " <= boardSize <= " + MAX_BOARD_SIZE);
         boardSize_ = boardSize;
         turnType_ = turnType;
         state_ = getInitialState();
-        rewards_ = new int[nAgents_];
+        rewards_ = new int[N_AGENTS];
         legalActions_ = new ArrayList<HashSet<HexAction>>();
         legalActions_.add(new HashSet<HexAction>());
         legalActions_.add(new HashSet<HexAction>());
@@ -44,9 +44,13 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     /**
      * Contructor is used by the copy method.
      */
-    private HexSimulator(HexState state,
+    private HexSimulator(int boardSize,
+                         TurnType turnType,
+                         HexState state,
                          List<HashSet<HexAction>> legalActions,
                          int[] rewards) {
+        boardSize_ = boardSize;
+        turnType_ = turnType;
         state_ = state.clone();
         legalActions_ = new ArrayList<HashSet<HexAction>>();
         for (HashSet<HexAction> actions: legalActions) {
@@ -55,14 +59,14 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
                 temp.add(action);
             legalActions_.add(temp);
         }
-        rewards_ = new int[nAgents_];
-        for (int i = 0; i < nAgents_; i += 1)
+        rewards_ = new int[N_AGENTS];
+        for (int i = 0; i < N_AGENTS; i += 1)
             rewards_[i] = rewards[i];
     }
 
     @Override
     public Simulator<HexState, HexAction> clone() {
-        return new HexSimulator(state_, legalActions_, rewards_);
+        return new HexSimulator(boardSize_, turnType_, state_, legalActions_, rewards_);
     }
 
     public void setState(HexState state) {
@@ -268,5 +272,13 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     
     public int getBoardSize() {
         return boardSize_;
+    }
+
+    public int getNAgents() {
+        return N_AGENTS;
+    }
+
+    public TurnType getTurnType() {
+        return turnType_;
     }
 }

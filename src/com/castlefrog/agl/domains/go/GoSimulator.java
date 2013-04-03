@@ -12,7 +12,8 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
     public static final int MIN_BOARD_SIZE = 5;
     public static final int MAX_BOARD_SIZE = 19;
     
-    private static int boardSize_;
+    private int boardSize_;
+    private TurnType turnType_;
 
     private GoState state_;
     private List<GoAction> legalActions_;
@@ -20,14 +21,17 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
 
     public GoSimulator(int boardSize,
                        TurnType turnType) {
-        nAgents_ = N_AGENTS;
         boardSize_ = boardSize;
         turnType_ = turnType;
     }
 
-	private GoSimulator(GoState state,
+	private GoSimulator(int boardSize,
+                        TurnType turnType,
+                        GoState state,
                         List<GoAction> legalActions,
                         int[] rewards) {
+        boardSize_ = boardSize;
+        turnType_ = turnType;
 		state_ = state;
         if (legalActions != null) {
             legalActions_ = new ArrayList<GoAction>();
@@ -35,15 +39,15 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
                 legalActions_.add(action);
         }
         if (rewards != null) {
-            rewards_ = new int[nAgents_];
-            for (int i = 0; i < nAgents_; i += 1)
+            rewards_ = new int[N_AGENTS];
+            for (int i = 0; i < N_AGENTS; i += 1)
                 rewards_[i] = rewards[i];
         }
 	}
 
     @Override
 	public Simulator<GoState, GoAction> clone() {
-        return new GoSimulator(state_, legalActions_, rewards_);
+        return new GoSimulator(boardSize_, turnType_, state_, legalActions_, rewards_);
 	}
 	
     public void setState(GoState state) {
@@ -90,7 +94,7 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
         if (state_.getPassFlag() == 2) {
             //TODO - compute points
         }
-        return new int[nAgents_];
+        return new int[N_AGENTS];
     }
 
     public GoState getInitialState() {
@@ -99,7 +103,7 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
 	
     public int[] getRewards() {
         int[] rewards = new int[2];
-        for (int i = 0; i < nAgents_; i += 1)
+        for (int i = 0; i < N_AGENTS; i += 1)
             rewards[i] = rewards_[i];
         return rewards;
 	}
@@ -123,7 +127,7 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
     public List<List<GoAction>> getLegalActions() {
         List<List<GoAction>> allLegalActions
             = new ArrayList<List<GoAction>>();
-        for (int i = 0; i < nAgents_; i += 1)
+        for (int i = 0; i < N_AGENTS; i += 1)
             allLegalActions.add(getLegalActions(i));
         return allLegalActions;
     }
@@ -144,5 +148,13 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
     
     public boolean hasLegalActions(int agentId) {
         return state_.getAgentTurn() == agentId && legalActions_.size() != 0;
+    }
+
+    public int getNAgents() {
+        return N_AGENTS;
+    }
+
+    public TurnType getTurnType() {
+        return turnType_;
     }
 }

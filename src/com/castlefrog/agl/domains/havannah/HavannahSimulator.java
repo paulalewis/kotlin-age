@@ -13,33 +13,28 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     public static final int N_AGENTS = 2;
     public static final int MIN_BASE = 2;
 
+    private TurnType turnType_;
     /** length of a side of board */
-    private static int base_;
+    private int base_;
     /** longest row of hexagons on board (always odd) */
-    private static int size_;
+    private int size_;
     /** number of locations on board */
     //private static int nLocations_;
-    private static int[][] corners_;
-    private static int[][][] sides_;
+    private int[][] corners_;
+    private int[][][] sides_;
 
     public HavannahSimulator(int base,
                              TurnType turnType) {
         if (base < MIN_BASE)
             throw new IllegalArgumentException("Invalid board size: " + base);
-        nAgents_ = N_AGENTS;
         base_ = base;
         size_ = 2 * base_ - 1;
         //nLocations_ = 3 * base_ * base_ - 3 * base_ + 1;
         turnType_ = turnType;
-        corners_ = new int[][] {{ 0, 0 },
-                               { 0, base_ - 1 },
-                               { base_ - 1, 0 },
-                               { base_ - 1, size_ - 1 },
-                               { size_ - 1, base_ - 1 },
-                               { size_ - 1, size_ - 1 }};
+        corners_ = getCorners();
         sides_ = getSides();
         state_ = getInitialState();
-        rewards_ = new int[nAgents_];
+        rewards_ = new int[N_AGENTS];
         legalActions_ = new ArrayList<HashSet<HavannahAction>>();
         legalActions_.add(new HashSet<HavannahAction>());
         legalActions_.add(new HashSet<HavannahAction>());
@@ -49,9 +44,19 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     /**
      * Contructor is used by the copy method.
      */
-    private HavannahSimulator(HavannahState state,
+    private HavannahSimulator(int base,
+                              int size,
+                              int[][] corners,
+                              int[][][] sides,
+                              TurnType turnType,
+                              HavannahState state,
                               List<HashSet<HavannahAction>> legalActions,
                               int[] rewards) {
+        base_ = base;
+        size_ = size;
+        corners_ = corners;
+        sides_ = sides;
+        turnType_ = turnType;
         state_ = state.clone();
         legalActions_ = new ArrayList<HashSet<HavannahAction>>();
         for (HashSet<HavannahAction> actions: legalActions) {
@@ -60,9 +65,18 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
                 temp.add(action);
             legalActions_.add(temp);
         }
-        rewards_ = new int[nAgents_];
-        for (int i = 0; i < nAgents_; i += 1)
+        rewards_ = new int[N_AGENTS];
+        for (int i = 0; i < N_AGENTS; i += 1)
             rewards_[i] = rewards[i];
+    }
+
+    private int[][] getCorners() {
+        return new int[][] {{0, 0},
+                            {0, base_ - 1},
+                            {base_ - 1, 0},
+                            {base_ - 1, size_ - 1},
+                            {size_ - 1, base_ - 1},
+                            {size_ - 1, size_ - 1}};
     }
 
     private int[][][] getSides() {
@@ -86,7 +100,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
 
     @Override
     public Simulator<HavannahState, HavannahAction> clone() {
-        return new HavannahSimulator(state_,legalActions_,rewards_);
+        return new HavannahSimulator(base_, size_, corners_, sides_, turnType_, state_, legalActions_, rewards_);
     }
 
     public void setState(HavannahState state) {
@@ -327,5 +341,13 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     
     public int getSize() {
         return size_;
+    }
+
+    public int getNAgents() {
+        return N_AGENTS;
+    }
+
+    public TurnType getTurnType() {
+        return turnType_;
     }
 }

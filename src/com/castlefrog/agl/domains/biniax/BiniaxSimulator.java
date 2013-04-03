@@ -15,6 +15,7 @@ import com.castlefrog.agl.TurnType;
 public final class BiniaxSimulator
     extends AbstractSimulator<BiniaxState, BiniaxAction> {
     private static final int N_AGENTS = 1;
+    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
     private static final int BUFFER = 3;
     private static final byte N_FREE_MOVES = 2;
     private static final int INITIAL_ELEMENTS = 4;
@@ -29,8 +30,6 @@ public final class BiniaxSimulator
      * Create a Biniax simulator.
      */
     public BiniaxSimulator() {
-        nAgents_ = N_AGENTS;
-        turnType_ = TurnType.SEQUENTIAL;
         state_ = getInitialState();
         legalActions_ = new ArrayList<HashSet<BiniaxAction>>();
         legalActions_.add(new HashSet<BiniaxAction>());
@@ -271,5 +270,13 @@ public final class BiniaxSimulator
 
     public BiniaxState getState() {
         return state_;
+    }
+
+    public int getNAgents() {
+        return N_AGENTS;
+    }
+
+    public TurnType getTurnType() {
+        return TURN_TYPE;
     }
 }

@@ -10,11 +10,6 @@ import java.util.HashSet;
  * type. It also generates initial states for the given domain.
  */
 public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
-    /** number of agents in domain */
-    protected static int nAgents_;
-    /** type of turn order in domain */
-    protected static TurnType turnType_;
-
     protected S state_;
     protected List<HashSet<A>> legalActions_;
     protected int[] rewards_;
@@ -59,7 +54,7 @@ public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
      * @return true if current state is terminal.
      */
     public boolean isTerminalState() {
-        for (int i = 0; i < nAgents_; i += 1)
+        for (int i = 0; i < getNAgents(); i += 1)
             if (hasLegalActions(i))
                 return false;
         return true;
@@ -83,7 +78,7 @@ public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
      */
     public List<List<A>> getLegalActions() {
         List<List<A>> allLegalActions = new ArrayList<List<A>>();
-        for (int i = 0; i < nAgents_; i += 1)
+        for (int i = 0; i < getNAgents(); i += 1)
             allLegalActions.add(getLegalActions(i));
         return allLegalActions;
     }
@@ -116,26 +111,5 @@ public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
      */
     public boolean hasLegalActions(int agentId) {
         return legalActions_.get(agentId).size() != 0;
-    }
-
-    /**
-     * Gets the number of agents in the given domain.
-     *
-     * @return
-     *      number of agents.
-     */
-    public int getNAgents() {
-        assert nAgents_ > 0;
-        return nAgents_;
-    }
-
-    /**
-     * Get the turn type of this domain.
-     *
-     * @return
-     *      turn type object.
-     */
-    public TurnType getTurnType() {
-        return turnType_;
     }
 }

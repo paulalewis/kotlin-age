@@ -13,15 +13,13 @@ import com.castlefrog.agl.TurnType;
  * Backgammon has about 100 actions per game.
  * 
  */
-public final class BackgammonSimulator
-    extends AbstractSimulator<BackgammonState, BackgammonAction> {
+public final class BackgammonSimulator extends AbstractSimulator<BackgammonState, BackgammonAction> {
     private static final int N_AGENTS = 2;
+    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
 
     private List<BackgammonAction> legalActions_;
 
     public BackgammonSimulator() {
-        nAgents_ = N_AGENTS;
-        turnType_ = TurnType.SEQUENTIAL;
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
         legalActions_ = new ArrayList<BackgammonAction>();
@@ -322,5 +320,13 @@ public final class BackgammonSimulator
 
     public boolean hasLegalActions(int agentId) {
         return state_.getAgentTurn() == agentId && legalActions_.size() != 0;
+    }
+
+    public int getNAgents() {
+        return N_AGENTS;
+    }
+
+    public TurnType getTurnType() {
+        return TURN_TYPE;
     }
 }
