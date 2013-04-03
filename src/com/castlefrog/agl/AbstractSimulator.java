@@ -5,25 +5,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- * A simulator controls the state transitions of a given domain.
- * A simulator is associated with a domain specific state and action
- * type. It also generates initial states for the given domain.
+ * AbstractSimulator implements common functionality for
+ * many simulators.
  */
 public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
     protected S state_;
     protected List<HashSet<A>> legalActions_;
     protected int[] rewards_;
 
-    /**
-     * The simulator can create a deep copy of itself.
-     * @return a copy of this simulator
-     */
     public abstract Simulator<S, A> clone();
 
-    /**
-     * Sets simulator to an arbitrary state.
-     * @param state any legal state.
-     */
     //public void setState(S state) {
     //    state_ = state.clone();
     //}

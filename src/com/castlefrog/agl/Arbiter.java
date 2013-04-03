@@ -10,16 +10,13 @@ import java.util.concurrent.Executors;
 /**
  * Arbiter is used to regulate agents with the simulator.
  * It allows each agent to run in its own thread for
- * simultaneous domains. Otherwise agents don't think
- * during the opponent's turn.
- * It records history and other game data.
+ * simultaneous domains and records history and other game data.
  */
 public final class Arbiter<S, A> {
     /** The actual domain being used */
     private Simulator<S, A> world_;
-    /** List of simulators to use for each agent */
+    /** Simulator to use for each agent */
     private List<Simulator<S,A>> simulators_ = new ArrayList<Simulator<S,A>>();
-    /** Information stored about game */
     private History<S, A> history_;
     private List<Agent> agents_ = new ArrayList<Agent>();
     private long[] decisionTimes_;
