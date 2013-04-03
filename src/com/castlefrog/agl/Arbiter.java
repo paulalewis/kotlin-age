@@ -18,10 +18,10 @@ public final class Arbiter<S, A> {
     /** The actual domain being used */
     private Simulator<S, A> world_;
     /** List of simulators to use for each agent */
-    //private List<Simulator<S,A>> simulators_;
+    private List<Simulator<S,A>> simulators_ = new ArrayList<Simulator<S,A>>();
     /** Information stored about game */
     private History<S, A> history_;
-    private List<Agent> agents_;
+    private List<Agent> agents_ = new ArrayList<Agent>();
     private long[] decisionTimes_;
     
     private ExecutorService executor_;
@@ -44,7 +44,7 @@ public final class Arbiter<S, A> {
             if (world_.hasLegalActions(agentId_)) {
                 long startTime = System.currentTimeMillis();
                 S state = world_.getState();
-                A action = agents_.get(agentId_).selectAction(agentId_, state, world_.clone());
+                A action = agents_.get(agentId_).selectAction(agentId_, state, simulators_.get(agentId_));
                 actions_.set(agentId_, action);
                 decisionTimes_[agentId_] = System.currentTimeMillis() - startTime;
             }
@@ -61,9 +61,10 @@ public final class Arbiter<S, A> {
         world_ = world.clone();
         world_.setState(initialState);
         history_ = new History<S, A>(world_.getState());
-        agents_ = new ArrayList<Agent>();
-        for (Agent agent: agents)
+        for (Agent agent: agents) {
             agents_.add(agent);
+            simulators_.add(world.clone());
+        }
         decisionTimes_ = new long[world.getNAgents()];
     }
     
@@ -76,9 +77,10 @@ public final class Arbiter<S, A> {
         history_ = history;
         world_ = world.clone();
         world_.setState(history.getState(history.size() - 1));
-        agents_ = new ArrayList<Agent>();
-        for (Agent agent: agents)
+        for (Agent agent: agents) {
             agents_.add(agent);
+            simulators_.add(world.clone());
+        }
         decisionTimes_ = new long[world.getNAgents()];
     }
     
