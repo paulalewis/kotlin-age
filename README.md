@@ -10,6 +10,18 @@ Library for creating abstract games and agents to play those games.
 This software can be used to test the strength and speed of various
 algorithms in various domains.
 
+List of working domains:
+- backgammon
+- biniax
+- havannah
+- hex
+
+Liste of working agents:
+- console
+- external
+- random
+- uct
+
 Setup
 -----
 
