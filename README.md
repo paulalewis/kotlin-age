@@ -24,9 +24,8 @@ List of working agents:
 Setup
 -----
 
-1. Install ant
-2. clean the project `ant clean`
-3. build the project `ant install`
+1. Install ant 1.8.2
+2. Install java sdk 1.6
 
 Build
 -----
