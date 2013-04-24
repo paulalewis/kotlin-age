@@ -114,9 +114,10 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
                                 legalActions.add(HexAction.valueOf(i,j));
                 }
             }
-        } else
+        } else {
             for (HashSet<HexAction> legalActions: legalActions_)
                 legalActions.clear();
+        }
     }
 
     private void computeRewards() {

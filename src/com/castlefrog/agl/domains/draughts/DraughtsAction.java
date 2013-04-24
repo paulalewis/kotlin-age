@@ -55,6 +55,6 @@ public final class DraughtsAction {
 
     @Override
     public String toString() {
-        return "(" + fx_ + "," + fy_ + "," + tx_ + "," + ty_ + ")";
+        return "(" + fx_ + "," + fy_ + "-" + tx_ + "," + ty_ + ")";
     }
 }
