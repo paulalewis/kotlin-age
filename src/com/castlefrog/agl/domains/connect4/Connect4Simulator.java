@@ -19,10 +19,12 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
     private int[] height_ = null;
 
     public Connect4Simulator() {
-        setInitialState();
+        state_ = getInitialState();
+        rewards_ = new int[N_AGENTS];
         legalActions_ = new ArrayList<HashSet<Connect4Action>>();
         legalActions_.add(new HashSet<Connect4Action>());
         legalActions_.add(new HashSet<Connect4Action>());
+        computeLegalActions();
     }
 
     private Connect4Simulator(Connect4State state,
@@ -48,12 +50,6 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
     @Override
     public Simulator<Connect4State, Connect4Action> clone() {
         return new Connect4Simulator(state_, legalActions_, rewards_, height_);
-    }
-
-    private void setInitialState() {
-        state_ = new Connect4State(new long[2], 0);
-        computeRewards();
-        computeLegalActions();
     }
 
     public void setState(Connect4State state) {
@@ -89,13 +85,14 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
             throw new IllegalActionException(action,state_);
         long[] bitBoards = state_.getBitBoards();
         bitBoards[state_.getAgentTurn()] ^= (1L << (height_[action.getLocation()]++));
-        state_ = new Connect4State(bitBoards, state_.getAgentTurn());
+        state_ = new Connect4State(bitBoards, state_.getNextAgentTurn());
         computeRewards();
         computeLegalActions();
     }
 
     private void computeLegalActions() {
-        legalActions_ = new ArrayList<HashSet<Connect4Action>>();
+        legalActions_.get(0).clear();
+        legalActions_.get(1).clear();
         computeHeight();
         if (rewards_[0] == 0) {
             long bitBoard = state_.getBitBoards()[state_.getAgentTurn()];

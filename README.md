@@ -12,6 +12,7 @@ domains, but it could be expanded to include other AI algorithms and domains.
 List of working domains:
 - backgammon
 - biniax
+- connect4 
 - havannah
 - hex
 

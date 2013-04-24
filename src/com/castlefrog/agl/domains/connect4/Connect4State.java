@@ -7,11 +7,9 @@ package com.castlefrog.agl.domains.connect4;
  */
 public class Connect4State {
     private static final int WIDTH = 7;
-
     private static final int HEIGHT = 6;
 
     private long[] bitBoards_;
-
     private byte agentTurn_;
 
     public Connect4State(long[] bitBoards, int agentTurn) {
@@ -36,6 +34,10 @@ public class Connect4State {
 
     public int getAgentTurn() {
         return agentTurn_;
+    }
+    
+    public int getNextAgentTurn() {
+        return (agentTurn_ + 1) % 2;
     }
 
     @Override
