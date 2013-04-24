@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <domainTest>
-    <nSimulations>100</nSimulations>
+    <nSimulations>1</nSimulations>
     <world>
-        <name>biniax</name>
+        <name>backgammon</name>
     </world>
     <agents>
+        <agent>
+            <name>console</name>
+        </agent>
         <agent>
             <name>random</name>
         </agent>

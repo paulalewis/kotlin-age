@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <domainTest>
-    <nSimulations>100</nSimulations>
+    <nSimulations>1</nSimulations>
     <world>
-        <name>hex</name>
+        <name>havannah</name>
         <params>
-            <param>11</param>
+            <param>6</param>
             <param>SEQUENTIAL</param>
         </params>
     </world>
     <agents>
         <agent>
-            <name>random</name>
+            <name>console</name>
         </agent>
         <agent>
             <name>uct</name>
             <params>
-                <param>10</param>
+                <param>100</param>
                 <param>1</param>
                 <param>-1</param>
                 <param>1</param>

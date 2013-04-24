@@ -13,7 +13,13 @@
             <name>console</name>
         </agent>
         <agent>
-            <name>random</name>
+            <name>uct</name>
+            <params>
+                <param>100</param>
+                <param>1</param>
+                <param>-1</param>
+                <param>1</param>
+            </params>
         </agent>
     </agents>
 </domainTest>
