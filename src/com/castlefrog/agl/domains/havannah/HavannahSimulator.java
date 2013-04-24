@@ -1,12 +1,13 @@
 package com.castlefrog.agl.domains.havannah;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
+
+import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.Simulator;
-import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.TurnType;
 
 public final class HavannahSimulator extends AbstractSimulator<HavannahState, HavannahAction> {

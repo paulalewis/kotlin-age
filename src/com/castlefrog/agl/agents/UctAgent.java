@@ -3,6 +3,7 @@ package com.castlefrog.agl.agents;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Simulator;
 

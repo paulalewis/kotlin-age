@@ -1,11 +1,12 @@
 package com.castlefrog.agl.domains.go;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
 import com.castlefrog.agl.AbstractSimulator;
+import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
-import com.castlefrog.agl.IllegalActionException;
 
 public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
     public static final int N_AGENTS = 2;

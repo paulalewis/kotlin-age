@@ -1,7 +1,7 @@
 package com.castlefrog.agl.agents;
 
-import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Agent;
+import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Agents;
 
 public class RandomAgentProvider implements AgentProvider {

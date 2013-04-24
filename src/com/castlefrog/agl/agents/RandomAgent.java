@@ -1,9 +1,9 @@
 package com.castlefrog.agl.agents;
 
+import java.util.List;
+
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Simulator;
-
-import java.util.List;
 
 /**
  * This agent selects a random action from the list
