@@ -135,7 +135,6 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
     public Connect4State getState() {
         return state_;
     }
-    
 
     public int getNAgents() {
         return N_AGENTS;
