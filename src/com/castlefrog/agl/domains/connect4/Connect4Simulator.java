@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4Action> {
@@ -47,9 +46,12 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
             height_[i] = height[i];
     }
 
-    @Override
-    public Simulator<Connect4State, Connect4Action> clone() {
+    public Connect4Simulator clone() {
         return new Connect4Simulator(state_, legalActions_, rewards_, height_);
+    }
+    
+    public static Connect4Simulator create(List<String> params) {
+    	return new Connect4Simulator();
     }
 
     public void setState(Connect4State state) {

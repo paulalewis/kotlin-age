@@ -6,14 +6,12 @@ import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 /**
  * Biniax is a single agent stochastic domain.
  */
-public final class BiniaxSimulator
-    extends AbstractSimulator<BiniaxState, BiniaxAction> {
+public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, BiniaxAction> {
     private static final int N_AGENTS = 1;
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
     private static final int BUFFER = 3;
@@ -60,9 +58,12 @@ public final class BiniaxSimulator
         nElementTypes_ = nElementTypes;
     }
 
-    @Override
-    public Simulator<BiniaxState, BiniaxAction> clone() {
+    public BiniaxSimulator clone() {
         return new BiniaxSimulator(state_, legalActions_, nElementTypes_);
+    }
+    
+    public static BiniaxSimulator create(List<String> params) {
+        return new BiniaxSimulator();
     }
 
     public void setState(BiniaxState state) {

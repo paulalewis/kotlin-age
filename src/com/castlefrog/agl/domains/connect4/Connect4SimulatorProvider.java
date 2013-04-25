@@ -1,5 +1,7 @@
 package com.castlefrog.agl.domains.connect4;
 
+import java.util.List;
+
 import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;
 
@@ -14,7 +16,7 @@ public class Connect4SimulatorProvider implements SimulatorProvider {
         return new Connect4SimulatorProvider();
     }
 
-    public Connect4Simulator newSimulator(String[] args) {
-        return new Connect4Simulator();
+    public Connect4Simulator newSimulator(List<String> params) {
+        return Connect4Simulator.create(params);
     }
 }

@@ -33,13 +33,13 @@ public class Simulators {
     /**
      * Clients use this method to get a new instance of a simulator.
      * @param name string to associate with provider
-     * @param args array of arguments for simulator constructor
+     * @param params array of arguments for simulator constructor
      */
-    public static Simulator<?, ?> getSimulator(String name, String[] args) {
+    public static Simulator<?, ?> getSimulator(String name, List<String> params) {
         SimulatorProvider simulatorProvider = providers.get(name);
         if (simulatorProvider == null)
             throw new IllegalArgumentException("No simulator registered with name: " + name);
-        return simulatorProvider.newSimulator(args);
+        return simulatorProvider.newSimulator(params);
     }
 
     /**

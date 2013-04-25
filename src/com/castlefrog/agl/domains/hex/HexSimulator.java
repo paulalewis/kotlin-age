@@ -64,9 +64,16 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
             rewards_[i] = rewards[i];
     }
 
-    @Override
-    public Simulator<HexState, HexAction> clone() {
+    public HexSimulator clone() {
         return new HexSimulator(boardSize_, turnType_, state_, legalActions_, rewards_);
+    }
+    
+    public static HexSimulator create(List<String> params) {
+        try {
+    		return new HexSimulator(Integer.valueOf(params.get(0)), TurnType.valueOf(TurnType.class, params.get(1)));
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.toString());
+        }
     }
 
     public void setState(HexState state) {

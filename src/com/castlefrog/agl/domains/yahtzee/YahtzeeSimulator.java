@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 public class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAction> {
@@ -41,9 +40,12 @@ public class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAct
         nCategoriesLeft_ = nCategoriesLeft;
     }
 
-    @Override
-    public Simulator<YahtzeeState, YahtzeeAction> clone() {
+    public YahtzeeSimulator clone() {
         return new YahtzeeSimulator(state_, legalActions_, rewards_, nCategoriesLeft_);
+    }
+    
+    public YahtzeeSimulator create(List<String> params) {
+    	return new YahtzeeSimulator();
     }
 
     public void setState(YahtzeeState state) {

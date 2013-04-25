@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 /**
@@ -44,9 +43,12 @@ public class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
             rewards_[i] = rewards[i];
     }
 
-    @Override
-    public Simulator<EwnState, EwnAction> clone() {
+    public EwnSimulator clone() {
         return new EwnSimulator(state_, legalActions_, rewards_);
+    }
+    
+    public static EwnSimulator create(List<String> params) {
+    	return new EwnSimulator();
     }
 
     public void setState(EwnState state) {

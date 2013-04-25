@@ -1,5 +1,7 @@
 package com.castlefrog.agl.domains.ewn;
 
+import java.util.List;
+
 import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;
 
@@ -14,7 +16,7 @@ public class EwnSimulatorProvider implements SimulatorProvider {
         return new EwnSimulatorProvider();
     }
 
-    public EwnSimulator newSimulator(String[] args) {
-        return new EwnSimulator();
+    public EwnSimulator newSimulator(List<String> params) {
+        return EwnSimulator.create(params);
     }
 }

@@ -99,9 +99,16 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         return sides;
     }
 
-    @Override
-    public Simulator<HavannahState, HavannahAction> clone() {
+    public HavannahSimulator clone() {
         return new HavannahSimulator(base_, size_, corners_, sides_, turnType_, state_, legalActions_, rewards_);
+    }
+    
+    public static HavannahSimulator create(List<String> params) throws IllegalArgumentException {
+    	try {
+    		return new HavannahSimulator(Integer.valueOf(params.get(0)), TurnType.valueOf(TurnType.class, params.get(1)));
+    	} catch (Exception e) {
+    		throw new IllegalArgumentException(e.toString());
+    	}
     }
 
     public void setState(HavannahState state) {

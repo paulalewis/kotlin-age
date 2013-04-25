@@ -1,5 +1,7 @@
 package com.castlefrog.agl.domains.biniax;
 
+import java.util.List;
+
 import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;
 
@@ -14,7 +16,7 @@ public class BiniaxSimulatorProvider implements SimulatorProvider {
         return new BiniaxSimulatorProvider();
     }
 
-    public BiniaxSimulator newSimulator(String[] args) {
-        return new BiniaxSimulator();
+    public BiniaxSimulator newSimulator(List<String> params) {
+        return BiniaxSimulator.create(params);
     }
 }

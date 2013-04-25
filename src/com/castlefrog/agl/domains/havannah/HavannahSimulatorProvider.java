@@ -1,8 +1,9 @@
 package com.castlefrog.agl.domains.havannah;
 
+import java.util.List;
+
 import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;
-import com.castlefrog.agl.TurnType;
 
 public class HavannahSimulatorProvider implements SimulatorProvider {
     static {
@@ -15,7 +16,7 @@ public class HavannahSimulatorProvider implements SimulatorProvider {
         return new HavannahSimulatorProvider();
     }
 
-    public HavannahSimulator newSimulator(String[] args) {
-        return new HavannahSimulator(Integer.valueOf(args[0]), TurnType.valueOf(TurnType.class, args[1]));
+    public HavannahSimulator newSimulator(List<String> params) {
+        return HavannahSimulator.create(params);
     }
 }

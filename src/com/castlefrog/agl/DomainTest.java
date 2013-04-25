@@ -49,14 +49,14 @@ public class DomainTest {
                 Element element = (Element) nList.item(0);
                 String simulatorName = getTagValue("name", element);
                 NodeList paramList = element.getElementsByTagName("params");
-                String[] simulatorParams = null;
+                List<String> simulatorParams = new ArrayList<String>();
                 if (paramList.getLength() != 0) {
                     NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
-                    simulatorParams = new String[paramNodes.getLength()];
+                    //simulatorParams = new String[paramNodes.getLength()];
                     for (int j = 0; j < paramNodes.getLength(); j += 1) {
                         Node paramNode = paramNodes.item(j);
                         if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
-                            simulatorParams[j] = paramNode.getTextContent();
+                            simulatorParams.add(paramNode.getTextContent());
                         }
                     }
                 }

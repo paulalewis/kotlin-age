@@ -1,8 +1,9 @@
 package com.castlefrog.agl.domains.hex;
 
+import java.util.List;
+
 import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;
-import com.castlefrog.agl.TurnType;
 
 public class HexSimulatorProvider implements SimulatorProvider {
     static {
@@ -15,7 +16,7 @@ public class HexSimulatorProvider implements SimulatorProvider {
         return new HexSimulatorProvider();
     }
 
-    public HexSimulator newSimulator(String[] args) {
-        return new HexSimulator(Integer.valueOf(args[0]), TurnType.valueOf(TurnType.class, args[1]));
+    public HexSimulator newSimulator(List<String> params) throws IllegalArgumentException {
+        return HexSimulator.create(params);
     }
 }

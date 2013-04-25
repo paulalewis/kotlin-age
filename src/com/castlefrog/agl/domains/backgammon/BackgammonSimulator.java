@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 /**
@@ -38,9 +37,12 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
             rewards_[i] = rewards[i];
     }
 
-    @Override
-    public Simulator<BackgammonState, BackgammonAction> clone() {
+    public BackgammonSimulator clone() {
         return new BackgammonSimulator(state_, legalActions_, rewards_);
+    }
+    
+    public static BackgammonSimulator create(List<String> params) {
+        return new BackgammonSimulator();
     }
 
     public void setState(BackgammonState state) {

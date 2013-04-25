@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
@@ -46,9 +45,16 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
         }
 	}
 
-    @Override
-	public Simulator<GoState, GoAction> clone() {
+	public GoSimulator clone() {
         return new GoSimulator(boardSize_, turnType_, state_, legalActions_, rewards_);
+	}
+	
+	public static GoSimulator create(List<String> params) throws IllegalArgumentException {
+		try {
+			return new GoSimulator(Integer.parseInt(params.get(0)), TurnType.valueOf(TurnType.class, params.get(1)));
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.toString());
+		}
 	}
 	
     public void setState(GoState state) {

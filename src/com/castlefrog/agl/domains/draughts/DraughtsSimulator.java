@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 public final class DraughtsSimulator
@@ -34,10 +33,13 @@ public final class DraughtsSimulator
                 rewards_[i] = rewards[i];
         }
 	}
-	
-    @Override
-	public Simulator<DraughtsState, DraughtsAction> clone() {
+
+	public DraughtsSimulator clone() {
         return new DraughtsSimulator(state_, legalActions_, rewards_);
+	}
+	
+	public static DraughtsSimulator create(List<String> params) {
+		return new DraughtsSimulator();
 	}
 	
     public void setState(DraughtsState state) {
