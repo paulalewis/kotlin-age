@@ -178,9 +178,11 @@ public class DomainTest {
         try {
             Class.forName("com.castlefrog.agl.domains.backgammon.BackgammonSimulatorProvider");
             Class.forName("com.castlefrog.agl.domains.biniax.BiniaxSimulatorProvider");
+            Class.forName("com.castlefrog.agl.domains.ewn.EwnSimulatorProvider");
             Class.forName("com.castlefrog.agl.domains.connect4.Connect4SimulatorProvider");
             Class.forName("com.castlefrog.agl.domains.havannah.HavannahSimulatorProvider");
             Class.forName("com.castlefrog.agl.domains.hex.HexSimulatorProvider");
+            Class.forName("com.castlefrog.agl.domains.yahtzee.YahtzeeSimulatorProvider");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
