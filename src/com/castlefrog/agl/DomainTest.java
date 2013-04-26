@@ -52,7 +52,6 @@ public class DomainTest {
                 List<String> simulatorParams = new ArrayList<String>();
                 if (paramList.getLength() != 0) {
                     NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
-                    //simulatorParams = new String[paramNodes.getLength()];
                     for (int j = 0; j < paramNodes.getLength(); j += 1) {
                         Node paramNode = paramNodes.item(j);
                         if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -69,14 +68,13 @@ public class DomainTest {
                     if (agentNode.getNodeType() == Node.ELEMENT_NODE) {
                         String name = getTagValue("name", (Element) agentNode);
                         paramList = agentNode.getElementsByTagName("params");
-                        String[] params = null;
+                        List<String> params = new ArrayList<String>();
                         if (paramList.getLength() != 0) {
                             NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
-                            params = new String[paramNodes.getLength()];
                             for (int j = 0; j < paramNodes.getLength(); j += 1) {
                                 Node paramNode = paramNodes.item(j);
                                 if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
-                                    params[j] = paramNode.getTextContent();
+                                    params.add(paramNode.getTextContent());
                                 }
                             }
                         }

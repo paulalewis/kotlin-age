@@ -1,5 +1,7 @@
 package com.castlefrog.agl.agents;
 
+import java.util.List;
+
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Agents;
@@ -15,7 +17,7 @@ public class UctAgentProvider implements AgentProvider {
         return new UctAgentProvider();
     }
 
-    public Agent newAgent(String[] args) {
-        return new UctAgent(Integer.parseInt(args[0]), Double.parseDouble(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+    public Agent newAgent(List<String> params) {
+        return new UctAgent(Integer.parseInt(params.get(0)), Double.parseDouble(params.get(1)), Integer.parseInt(params.get(2)), Integer.parseInt(params.get(3)));
     }
 }

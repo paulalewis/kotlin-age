@@ -1,5 +1,7 @@
 package com.castlefrog.agl.agents;
 
+import java.util.List;
+
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Agents;
@@ -17,7 +19,7 @@ public class ConsoleAgentProvider implements AgentProvider {
         return new ConsoleAgentProvider();
     }
 
-    public Agent newAgent(String[] args) {
+    public Agent newAgent(List<String> params) {
         if (instance == null)
             instance = new ConsoleAgent();
         return instance;

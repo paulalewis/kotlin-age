@@ -1,5 +1,7 @@
 package com.castlefrog.agl;
 
+import java.util.List;
+
 public interface AgentProvider {
-    Agent newAgent(String[] args);
+    Agent newAgent(List<String> params);
 }

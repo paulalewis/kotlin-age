@@ -33,13 +33,13 @@ public class Agents {
     /**
      * Clients use this method to get a new instance of an agent.
      * @param name string to associate with provider
-     * @param args array of arguments for agent constructor
+     * @param params list of arguments for agent constructor
      */
-    public static Agent getAgent(String name, String[] args) {
+    public static Agent getAgent(String name, List<String> params) {
         AgentProvider agentProvider = providers.get(name);
         if (agentProvider == null)
             throw new IllegalArgumentException("No agent registered with name: " + name);
-        return agentProvider.newAgent(args);
+        return agentProvider.newAgent(params);
     }
 
     /**
