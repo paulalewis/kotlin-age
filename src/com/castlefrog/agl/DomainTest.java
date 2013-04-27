@@ -93,7 +93,7 @@ public class DomainTest {
                     arbiter.reset();
                     try {
                         int count = 0;
-                        while (!arbiter.getWorld().isTerminalState()) {
+                        while (!arbiter.isTerminalState()) {
                             arbiter.step();
                             count += 1;
                             for (int j = 0; j < agents.size(); j += 1) {

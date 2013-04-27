@@ -137,8 +137,8 @@ public final class Arbiter<S, A> {
         }
     }
 
-    public synchronized Simulator<S, A> getWorld() {
-        return world_.clone();
+    public boolean isTerminalState() {
+        return world_.isTerminalState();
     }
 
     public List<Agent> getAgents() {
