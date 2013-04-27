@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.connect4;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
@@ -20,20 +19,20 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
     public Connect4Simulator() {
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<HashSet<Connect4Action>>();
-        legalActions_.add(new HashSet<Connect4Action>());
-        legalActions_.add(new HashSet<Connect4Action>());
+        legalActions_ = new ArrayList<List<Connect4Action>>();
+        legalActions_.add(new ArrayList<Connect4Action>());
+        legalActions_.add(new ArrayList<Connect4Action>());
         computeLegalActions();
     }
 
     private Connect4Simulator(Connect4State state,
-                              List<HashSet<Connect4Action>> legalActions,
+                              List<List<Connect4Action>> legalActions,
                               int[] rewards,
                               int[] height) {
         state_ = state;
-        legalActions_ = new ArrayList<HashSet<Connect4Action>>();
-        for (HashSet<Connect4Action> actions: legalActions) {
-            HashSet<Connect4Action> temp = new HashSet<Connect4Action>();
+        legalActions_ = new ArrayList<List<Connect4Action>>();
+        for (List<Connect4Action> actions: legalActions) {
+            List<Connect4Action> temp = new ArrayList<Connect4Action>();
             for (Connect4Action action: actions)
                 temp.add(action);
             legalActions_.add(temp);
@@ -60,7 +59,7 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
         computeLegalActions();
     }
 
-    public void setState(Connect4State state, List<HashSet<Connect4Action>> legalActions) {
+    public void setState(Connect4State state, List<List<Connect4Action>> legalActions) {
         state_ = state;
         legalActions_ = legalActions;
         if (legalActions_.size() == 0)

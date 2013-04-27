@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.havannah;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
@@ -36,9 +35,9 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         sides_ = getSides();
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<HashSet<HavannahAction>>();
-        legalActions_.add(new HashSet<HavannahAction>());
-        legalActions_.add(new HashSet<HavannahAction>());
+        legalActions_ = new ArrayList<List<HavannahAction>>();
+        legalActions_.add(new ArrayList<HavannahAction>());
+        legalActions_.add(new ArrayList<HavannahAction>());
         computeLegalActions(null);
     }
 
@@ -51,7 +50,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
                               int[][][] sides,
                               TurnType turnType,
                               HavannahState state,
-                              List<HashSet<HavannahAction>> legalActions,
+                              List<List<HavannahAction>> legalActions,
                               int[] rewards) {
         base_ = base;
         size_ = size;
@@ -59,9 +58,9 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         sides_ = sides;
         turnType_ = turnType;
         state_ = state.clone();
-        legalActions_ = new ArrayList<HashSet<HavannahAction>>();
-        for (HashSet<HavannahAction> actions: legalActions) {
-            HashSet<HavannahAction> temp = new HashSet<HavannahAction>();
+        legalActions_ = new ArrayList<List<HavannahAction>>();
+        for (List<HavannahAction> actions: legalActions) {
+            List<HavannahAction> temp = new ArrayList<HavannahAction>();
             for (HavannahAction action: actions)
                 temp.add(action);
             legalActions_.add(temp);
@@ -132,8 +131,8 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
             int agentTurn = state_.getAgentTurn();
             int otherTurn = (agentTurn + 1) % 2;
             legalActions_.set(agentTurn, legalActions_.get(otherTurn));
-            legalActions_.set(otherTurn, new HashSet<HavannahAction>());
-            HashSet<HavannahAction> legalActions = legalActions_.get(agentTurn);
+            legalActions_.set(otherTurn, new ArrayList<HavannahAction>());
+            List<HavannahAction> legalActions = legalActions_.get(agentTurn);
             if (prevAction != null && state_.getNPieces() > 2)
                 legalActions.remove(prevAction);
             else {
@@ -164,7 +163,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
                 }
             }
         } else
-            for (HashSet<HavannahAction> legalActions: legalActions_)
+            for (List<HavannahAction> legalActions: legalActions_)
                 legalActions.clear();
     }
 

@@ -1,7 +1,6 @@
 package com.castlefrog.agl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -10,10 +9,16 @@ import java.util.List;
  */
 public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
     protected S state_;
-    protected List<HashSet<A>> legalActions_;
+    protected List<List<A>> legalActions_;
     protected int[] rewards_;
 
     public abstract Simulator<S, A> clone();
+    
+    /*public AbstractSimulator(AbstractSimulator<S, A> simulator) {
+    	state_ = simulator.getState();
+        legalActions_ = simulator.getLegalActions();
+        rewards_ = simulator.getRewards();
+    }*/
 
     //public void setState(S state) {
     //    state_ = state.clone();

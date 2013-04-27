@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.biniax;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
@@ -29,8 +28,8 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
      */
     public BiniaxSimulator() {
         state_ = getInitialState();
-        legalActions_ = new ArrayList<HashSet<BiniaxAction>>();
-        legalActions_.add(new HashSet<BiniaxAction>());
+        legalActions_ = new ArrayList<List<BiniaxAction>>();
+        legalActions_.add(new ArrayList<BiniaxAction>());
         computeLegalActions();
     }
     
@@ -45,12 +44,12 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
      *            the total number of turns game has gone on for.
      */
     private BiniaxSimulator(BiniaxState state,
-                            List<HashSet<BiniaxAction>> legalActions,
+                            List<List<BiniaxAction>> legalActions,
                             int nElementTypes) {
         state_ = state;
-        legalActions_ = new ArrayList<HashSet<BiniaxAction>>();
-        for (HashSet<BiniaxAction> actions: legalActions) {
-            HashSet<BiniaxAction> temp = new HashSet<BiniaxAction>();
+        legalActions_ = new ArrayList<List<BiniaxAction>>();
+        for (List<BiniaxAction> actions: legalActions) {
+            List<BiniaxAction> temp = new ArrayList<BiniaxAction>();
             for (BiniaxAction action: actions)
                 temp.add(action);
             legalActions_.add(temp);

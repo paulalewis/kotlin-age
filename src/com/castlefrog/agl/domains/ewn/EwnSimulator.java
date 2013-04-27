@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.ewn;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
@@ -21,19 +20,19 @@ public class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
     public EwnSimulator() {
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<HashSet<EwnAction>>();
-        legalActions_.add(new HashSet<EwnAction>());
-        legalActions_.add(new HashSet<EwnAction>());
+        legalActions_ = new ArrayList<List<EwnAction>>();
+        legalActions_.add(new ArrayList<EwnAction>());
+        legalActions_.add(new ArrayList<EwnAction>());
         computeLegalActions();
     }
 
     private EwnSimulator(EwnState state,
-                         List<HashSet<EwnAction>> legalActions,
+                         List<List<EwnAction>> legalActions,
                          int[] rewards) {
         state_ = state;
-        legalActions_ = new ArrayList<HashSet<EwnAction>>();
-        for (HashSet<EwnAction> actions: legalActions) {
-            HashSet<EwnAction> temp = new HashSet<EwnAction>();
+        legalActions_ = new ArrayList<List<EwnAction>>();
+        for (List<EwnAction> actions: legalActions) {
+            List<EwnAction> temp = new ArrayList<EwnAction>();
             for (EwnAction action: actions)
                 temp.add(action);
             legalActions_.add(temp);
@@ -57,7 +56,7 @@ public class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
         computeLegalActions();
     }
 
-    public void setState(EwnState state, List<HashSet<EwnAction>> legalActions) {
+    public void setState(EwnState state, List<List<EwnAction>> legalActions) {
         state_ = state;
         legalActions_ = legalActions;
         if (legalActions_.size() == 0)

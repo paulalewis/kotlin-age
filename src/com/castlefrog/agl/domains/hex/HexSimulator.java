@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.hex;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
@@ -35,9 +34,9 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         turnType_ = turnType;
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<HashSet<HexAction>>();
-        legalActions_.add(new HashSet<HexAction>());
-        legalActions_.add(new HashSet<HexAction>());
+        legalActions_ = new ArrayList<List<HexAction>>();
+        legalActions_.add(new ArrayList<HexAction>());
+        legalActions_.add(new ArrayList<HexAction>());
         computeLegalActions(null);
     }
 
@@ -47,14 +46,14 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     private HexSimulator(int boardSize,
                          TurnType turnType,
                          HexState state,
-                         List<HashSet<HexAction>> legalActions,
+                         List<List<HexAction>> legalActions,
                          int[] rewards) {
         boardSize_ = boardSize;
         turnType_ = turnType;
         state_ = state.clone();
-        legalActions_ = new ArrayList<HashSet<HexAction>>();
-        for (HashSet<HexAction> actions: legalActions) {
-            HashSet<HexAction> temp = new HashSet<HexAction>();
+        legalActions_ = new ArrayList<List<HexAction>>();
+        for (List<HexAction> actions: legalActions) {
+            List<HexAction> temp = new ArrayList<HexAction>();
             for (HexAction action: actions)
                 temp.add(action);
             legalActions_.add(temp);
@@ -104,8 +103,8 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
             int agentTurn = state_.getAgentTurn();
             int otherTurn = (agentTurn + 1) % 2;
             legalActions_.set(agentTurn, legalActions_.get(otherTurn));
-            legalActions_.set(otherTurn, new HashSet<HexAction>());
-            HashSet<HexAction> legalActions = legalActions_.get(agentTurn);
+            legalActions_.set(otherTurn, new ArrayList<HexAction>());
+            List<HexAction> legalActions = legalActions_.get(agentTurn);
             if (prevAction != null && state_.getNPieces() > 2) {
                 legalActions.remove(prevAction);
             } else {
@@ -122,7 +121,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
                 }
             }
         } else {
-            for (HashSet<HexAction> legalActions: legalActions_)
+            for (List<HexAction> legalActions: legalActions_)
                 legalActions.clear();
         }
     }

@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.yahtzee;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
@@ -17,19 +16,19 @@ public class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAct
         state_ = getInitialState();
         nCategoriesLeft_ = 13;
         rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<HashSet<YahtzeeAction>>();
-        legalActions_.add(new HashSet<YahtzeeAction>());
+        legalActions_ = new ArrayList<List<YahtzeeAction>>();
+        legalActions_.add(new ArrayList<YahtzeeAction>());
         computeLegalActions();
     }
 
     private YahtzeeSimulator(YahtzeeState state,
-                             List<HashSet<YahtzeeAction>> legalActions,
+                             List<List<YahtzeeAction>> legalActions,
                              int[] rewards,
                              int nCategoriesLeft) {
         state_ = state;
-        legalActions_ = new ArrayList<HashSet<YahtzeeAction>>();
-        for (HashSet<YahtzeeAction> actions: legalActions) {
-            HashSet<YahtzeeAction> temp = new HashSet<YahtzeeAction>();
+        legalActions_ = new ArrayList<List<YahtzeeAction>>();
+        for (List<YahtzeeAction> actions: legalActions) {
+            List<YahtzeeAction> temp = new ArrayList<YahtzeeAction>();
             for (YahtzeeAction action: actions)
                 temp.add(action);
             legalActions_.add(temp);
@@ -55,7 +54,7 @@ public class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAct
         computeCategoriesLeft();
     }
 
-    public void setState(YahtzeeState state, List<HashSet<YahtzeeAction>> legalActions) {
+    public void setState(YahtzeeState state, List<List<YahtzeeAction>> legalActions) {
         state_ = state;
         legalActions_ = legalActions;
         computeRewards();

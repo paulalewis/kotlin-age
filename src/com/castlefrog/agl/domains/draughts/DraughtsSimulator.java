@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.draughts;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
@@ -12,17 +11,17 @@ public final class DraughtsSimulator
     extends AbstractSimulator<DraughtsState, DraughtsAction> {
 	private static final int N_AGENTS = 2;
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
-    private static final int SIZE = 10;
+    //private static final int SIZE = 10;
 
     public DraughtsSimulator() {}
 
 	private DraughtsSimulator(DraughtsState state,
-                              List<HashSet<DraughtsAction>> legalActions,
+                              List<List<DraughtsAction>> legalActions,
                               int[] rewards) {
 		state_ = state;
-        legalActions_ = new ArrayList<HashSet<DraughtsAction>>();
-        for (HashSet<DraughtsAction> actions: legalActions) {
-            HashSet<DraughtsAction> temp = new HashSet<DraughtsAction>();
+        legalActions_ = new ArrayList<List<DraughtsAction>>();
+        for (List<DraughtsAction> actions: legalActions) {
+            List<DraughtsAction> temp = new ArrayList<DraughtsAction>();
             for (DraughtsAction action: actions)
                 temp.add(action);
             legalActions_.add(temp);
@@ -61,8 +60,8 @@ public final class DraughtsSimulator
 
     /**
      */
-	private List<HashSet<DraughtsAction>> computeLegalActions() {
-        List<HashSet<DraughtsAction>> legalActions = new ArrayList<HashSet<DraughtsAction>>();
+	private List<List<DraughtsAction>> computeLegalActions() {
+        List<List<DraughtsAction>> legalActions = new ArrayList<List<DraughtsAction>>();
         //TODO - code here
         return legalActions;
 	}
