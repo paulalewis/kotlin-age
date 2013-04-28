@@ -14,11 +14,15 @@ public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
 
     public abstract Simulator<S, A> clone();
     
-    /*public AbstractSimulator(AbstractSimulator<S, A> simulator) {
+    protected AbstractSimulator() {
+    	//state_ = getInitialState();
+    }
+    
+    protected AbstractSimulator(AbstractSimulator<S, A> simulator) {
     	state_ = simulator.getState();
         legalActions_ = simulator.getLegalActions();
         rewards_ = simulator.getRewards();
-    }*/
+    }
 
     //public void setState(S state) {
     //    state_ = state.clone();

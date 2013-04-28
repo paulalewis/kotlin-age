@@ -25,28 +25,16 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
         computeLegalActions();
     }
 
-    private Connect4Simulator(Connect4State state,
-                              List<List<Connect4Action>> legalActions,
-                              int[] rewards,
+    private Connect4Simulator(Connect4Simulator simulator,
                               int[] height) {
-        state_ = state;
-        legalActions_ = new ArrayList<List<Connect4Action>>();
-        for (List<Connect4Action> actions: legalActions) {
-            List<Connect4Action> temp = new ArrayList<Connect4Action>();
-            for (Connect4Action action: actions)
-                temp.add(action);
-            legalActions_.add(temp);
-        }
-        rewards_ = new int[N_AGENTS];
-        for (int i = 0; i < N_AGENTS; i += 1)
-            rewards_[i] = rewards[i];
+        super(simulator);
         height_ = new int[height.length];
         for (int i = 0; i < height.length; i += 1)
             height_[i] = height[i];
     }
 
     public Connect4Simulator clone() {
-        return new Connect4Simulator(state_, legalActions_, rewards_, height_);
+        return new Connect4Simulator(this, height_);
     }
     
     public static Connect4Simulator create(List<String> params) {

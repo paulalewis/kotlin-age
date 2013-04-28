@@ -13,28 +13,21 @@ public final class DraughtsSimulator
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
     //private static final int SIZE = 10;
 
-    public DraughtsSimulator() {}
-
-	private DraughtsSimulator(DraughtsState state,
-                              List<List<DraughtsAction>> legalActions,
-                              int[] rewards) {
-		state_ = state;
+    public DraughtsSimulator() {
+        state_ = getInitialState();
+        rewards_ = new int[N_AGENTS];
         legalActions_ = new ArrayList<List<DraughtsAction>>();
-        for (List<DraughtsAction> actions: legalActions) {
-            List<DraughtsAction> temp = new ArrayList<DraughtsAction>();
-            for (DraughtsAction action: actions)
-                temp.add(action);
-            legalActions_.add(temp);
-        }
-        if (rewards != null) {
-            rewards_ = new int[N_AGENTS];
-            for (int i = 0; i < N_AGENTS; i += 1)
-                rewards_[i] = rewards[i];
-        }
-	}
+        legalActions_.add(new ArrayList<DraughtsAction>());
+        legalActions_.add(new ArrayList<DraughtsAction>());
+        computeLegalActions();
+    }
+
+    private DraughtsSimulator(DraughtsSimulator simulator) {
+        super(simulator);
+    }
 
 	public DraughtsSimulator clone() {
-        return new DraughtsSimulator(state_, legalActions_, rewards_);
+        return new DraughtsSimulator(this);
 	}
 	
 	public static DraughtsSimulator create(List<String> params) {

@@ -16,29 +16,21 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
     private static final int N_AGENTS = 2;
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
 
-    private List<BackgammonAction> legalActions_;
-
     public BackgammonSimulator() {
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<BackgammonAction>();
+        legalActions_ = new ArrayList<List<BackgammonAction>>();
+        legalActions_.add(new ArrayList<BackgammonAction>());
+        legalActions_.add(new ArrayList<BackgammonAction>());
         computeLegalActions();
     }
 
-    private BackgammonSimulator(BackgammonState state,
-                                List<BackgammonAction> legalActions,
-                                int[] rewards) {
-        state_ = state;
-        legalActions_ = new ArrayList<BackgammonAction>();
-        for (BackgammonAction action: legalActions)
-            legalActions_.add(action);
-        rewards_ = new int[N_AGENTS];
-        for (int i = 0; i < N_AGENTS; i += 1)
-            rewards_[i] = rewards[i];
+    private BackgammonSimulator(BackgammonSimulator simulator) {
+        super(simulator);
     }
 
     public BackgammonSimulator clone() {
-        return new BackgammonSimulator(state_, legalActions_, rewards_);
+        return new BackgammonSimulator(this);
     }
     
     public static BackgammonSimulator create(List<String> params) {
@@ -53,8 +45,8 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
 
     public void stateTransition(List<BackgammonAction> actions) {
         BackgammonAction action = actions.get(state_.getAgentTurn());
-        if (!legalActions_.contains(action))
-            throw new IllegalActionException(action, state_);
+        if (!legalActions_.get(state_.getAgentTurn()).contains(action))
+            throw new IllegalActionException(action,state_);
 
         byte[] locations = state_.getLocations();
 
@@ -89,7 +81,9 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
     }
 
     private void computeLegalActions() {
-        legalActions_.clear();
+        legalActions_.get(0).clear();
+        legalActions_.get(1).clear();
+        List<BackgammonAction> legalActions = legalActions_.get(state_.getAgentTurn());
         byte[] locations = state_.getLocations();
         byte[] dice = state_.getDice();
         int piece;
@@ -116,16 +110,16 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
                 if (locations[i] * piece == -1)
                     locations[i] = 0;
 
-            legalActions_ = dfs(locations, new LinkedList<BackgammonMove>(), values, piece, depth);
+            legalActions = dfs(locations, new LinkedList<BackgammonMove>(), values, piece, depth);
 
             // Prune moves that are too small
             int max = 0;
-            for (BackgammonAction legalAction : legalActions_)
+            for (BackgammonAction legalAction : legalActions)
                 if (legalAction.size() > max)
                     max = legalAction.size();
-            for (int i = 0; i < legalActions_.size(); i++)
-                if (legalActions_.get(i).size() != max)
-                    legalActions_.remove(i--);
+            for (int i = 0; i < legalActions.size(); i++)
+                if (legalActions.get(i).size() != max)
+                    legalActions.remove(i--);
         }
     }
 
@@ -220,20 +214,6 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
         return true;
     }
 
-    // private int moveOffDistance(byte[] locations, int piece) {
-    // int distance = 0;
-    // if (piece > 0) {
-    // for (int i = 0; i < 19; i++)
-    // if (locations[i] > 0)
-    // distance += 1;
-    // } else {
-    // for (int i = 7; i < BackgammonState.getNumberOfLocations(); i++)
-    // if (locations[i] < 0)
-    // distance += 1;
-    // }
-    // return distance;
-    // }
-
     /**
      * @return {-1,1} for loss and {1,-1} for win at terminal state otherwise
      *         returns {0,0}
@@ -283,47 +263,10 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
         return new BackgammonState(locations, dice, agentTurn);
     }
 
-    public int[] getRewards() {
-        int[] rewards = new int[N_AGENTS];
-        for (int i = 0; i < N_AGENTS; i += 1)
-            rewards[i] = rewards_[i];
-        return rewards;
-    }
-
-    public int getReward(int agentId) {
-        return rewards_[agentId];
-    }
-
-    public boolean isTerminalState() {
-        return legalActions_.size() == 0;
-    }
-
     public BackgammonState getState() {
         return state_;
     }
     
-    public List<List<BackgammonAction>> getLegalActions() {
-        List<List<BackgammonAction>> allLegalActions
-            = new ArrayList<List<BackgammonAction>>();
-        for (int i = 0; i < N_AGENTS; i += 1)
-            allLegalActions.add(getLegalActions(i));
-        return allLegalActions;
-    }
-
-    public List<BackgammonAction> getLegalActions(int agentId) {
-        List<BackgammonAction> legalActions = new ArrayList<BackgammonAction>();
-        if (state_.getAgentTurn() == agentId)
-            for (BackgammonAction action: legalActions_)
-                legalActions.add(action);
-        else
-            legalActions.add(null);
-        return legalActions;
-    }
-
-    public boolean hasLegalActions(int agentId) {
-        return state_.getAgentTurn() == agentId && legalActions_.size() != 0;
-    }
-
     public int getNAgents() {
         return N_AGENTS;
     }

@@ -41,33 +41,15 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         computeLegalActions(null);
     }
 
-    /**
-     * Contructor is used by the copy method.
-     */
-    private HavannahSimulator(int base,
-                              int size,
+    private HavannahSimulator(HavannahSimulator simulator,
                               int[][] corners,
-                              int[][][] sides,
-                              TurnType turnType,
-                              HavannahState state,
-                              List<List<HavannahAction>> legalActions,
-                              int[] rewards) {
-        base_ = base;
-        size_ = size;
+                              int[][][] sides) {
+        super(simulator);
+        base_ = simulator.getBase();
+        size_ = simulator.getSize();
         corners_ = corners;
         sides_ = sides;
-        turnType_ = turnType;
-        state_ = state.clone();
-        legalActions_ = new ArrayList<List<HavannahAction>>();
-        for (List<HavannahAction> actions: legalActions) {
-            List<HavannahAction> temp = new ArrayList<HavannahAction>();
-            for (HavannahAction action: actions)
-                temp.add(action);
-            legalActions_.add(temp);
-        }
-        rewards_ = new int[N_AGENTS];
-        for (int i = 0; i < N_AGENTS; i += 1)
-            rewards_[i] = rewards[i];
+        turnType_ = getTurnType();
     }
 
     private int[][] getCorners() {
@@ -99,7 +81,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     }
 
     public HavannahSimulator clone() {
-        return new HavannahSimulator(base_, size_, corners_, sides_, turnType_, state_, legalActions_, rewards_);
+        return new HavannahSimulator(this, corners_, sides_);
     }
     
     public static HavannahSimulator create(List<String> params) throws IllegalArgumentException {

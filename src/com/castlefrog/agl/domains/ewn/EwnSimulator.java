@@ -26,24 +26,12 @@ public class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
         computeLegalActions();
     }
 
-    private EwnSimulator(EwnState state,
-                         List<List<EwnAction>> legalActions,
-                         int[] rewards) {
-        state_ = state;
-        legalActions_ = new ArrayList<List<EwnAction>>();
-        for (List<EwnAction> actions: legalActions) {
-            List<EwnAction> temp = new ArrayList<EwnAction>();
-            for (EwnAction action: actions)
-                temp.add(action);
-            legalActions_.add(temp);
-        }
-        rewards_ = new int[N_AGENTS];
-        for (int i = 0; i < N_AGENTS; i += 1)
-            rewards_[i] = rewards[i];
+    private EwnSimulator(EwnSimulator simulator) {
+        super(simulator);
     }
 
     public EwnSimulator clone() {
-        return new EwnSimulator(state_, legalActions_, rewards_);
+        return new EwnSimulator(this);
     }
     
     public static EwnSimulator create(List<String> params) {

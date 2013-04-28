@@ -30,35 +30,18 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
         state_ = getInitialState();
         legalActions_ = new ArrayList<List<BiniaxAction>>();
         legalActions_.add(new ArrayList<BiniaxAction>());
+        rewards_ = new int[] {1};
         computeLegalActions();
     }
     
-    /**
-     * Create a Biniax simulator and set the state.
-     * 
-     * @param state
-     *            simulator set to given biniax state.
-     * @param nElementTypes
-     *            number of elements possible in element pairs.
-     * @param turns
-     *            the total number of turns game has gone on for.
-     */
-    private BiniaxSimulator(BiniaxState state,
-                            List<List<BiniaxAction>> legalActions,
+    private BiniaxSimulator(BiniaxSimulator simulator,
                             int nElementTypes) {
-        state_ = state;
-        legalActions_ = new ArrayList<List<BiniaxAction>>();
-        for (List<BiniaxAction> actions: legalActions) {
-            List<BiniaxAction> temp = new ArrayList<BiniaxAction>();
-            for (BiniaxAction action: actions)
-                temp.add(action);
-            legalActions_.add(temp);
-        }
+        super(simulator);
         nElementTypes_ = nElementTypes;
     }
 
     public BiniaxSimulator clone() {
-        return new BiniaxSimulator(state_, legalActions_, nElementTypes_);
+        return new BiniaxSimulator(this, nElementTypes_);
     }
     
     public static BiniaxSimulator create(List<String> params) {
@@ -244,8 +227,7 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
      */
     public BiniaxState getInitialState() {
         nElementTypes_ = INITIAL_ELEMENTS;
-        byte[][] locations = new byte[BiniaxState.getWidth()][BiniaxState
-                .getHeight()];
+        byte[][] locations = new byte[BiniaxState.getWidth()][BiniaxState.getHeight()];
         for (int i = 0; i < BiniaxState.getHeight(); i++) {
             int emptyLocation = (int) (Math.random() * BiniaxState.getWidth());
             for (int j = 0; j < BiniaxState.getWidth(); j++)
@@ -258,14 +240,6 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
         }
         locations[BiniaxState.getWidth() / 2][BiniaxState.getHeight() - 1] = 1;
         return new BiniaxState(locations, N_FREE_MOVES, 0);
-    }
-
-    public int[] getRewards() {
-        return new int[] {1};
-    }
-
-    public int getReward(int agentId) {
-        return 1;
     }
 
     public BiniaxState getState() {

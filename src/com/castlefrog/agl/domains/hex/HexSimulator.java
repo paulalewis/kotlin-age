@@ -39,32 +39,15 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         legalActions_.add(new ArrayList<HexAction>());
         computeLegalActions(null);
     }
-
-    /**
-     * Contructor is used by the copy method.
-     */
-    private HexSimulator(int boardSize,
-                         TurnType turnType,
-                         HexState state,
-                         List<List<HexAction>> legalActions,
-                         int[] rewards) {
-        boardSize_ = boardSize;
-        turnType_ = turnType;
-        state_ = state.clone();
-        legalActions_ = new ArrayList<List<HexAction>>();
-        for (List<HexAction> actions: legalActions) {
-            List<HexAction> temp = new ArrayList<HexAction>();
-            for (HexAction action: actions)
-                temp.add(action);
-            legalActions_.add(temp);
-        }
-        rewards_ = new int[N_AGENTS];
-        for (int i = 0; i < N_AGENTS; i += 1)
-            rewards_[i] = rewards[i];
+    
+    private HexSimulator(HexSimulator simulator) {
+        super(simulator);
+        boardSize_ = simulator.getBoardSize();
+        turnType_ = simulator.getTurnType();
     }
 
     public HexSimulator clone() {
-        return new HexSimulator(boardSize_, turnType_, state_, legalActions_, rewards_);
+        return new HexSimulator(this);
     }
     
     public static HexSimulator create(List<String> params) {

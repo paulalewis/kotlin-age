@@ -21,26 +21,14 @@ public class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAct
         computeLegalActions();
     }
 
-    private YahtzeeSimulator(YahtzeeState state,
-                             List<List<YahtzeeAction>> legalActions,
-                             int[] rewards,
+    private YahtzeeSimulator(YahtzeeSimulator simulator,
                              int nCategoriesLeft) {
-        state_ = state;
-        legalActions_ = new ArrayList<List<YahtzeeAction>>();
-        for (List<YahtzeeAction> actions: legalActions) {
-            List<YahtzeeAction> temp = new ArrayList<YahtzeeAction>();
-            for (YahtzeeAction action: actions)
-                temp.add(action);
-            legalActions_.add(temp);
-        }
-        rewards_ = new int[N_AGENTS];
-        for (int i = 0; i < N_AGENTS; i += 1)
-            rewards_[i] = rewards[i];
+        super(simulator);
         nCategoriesLeft_ = nCategoriesLeft;
     }
 
     public YahtzeeSimulator clone() {
-        return new YahtzeeSimulator(state_, legalActions_, rewards_, nCategoriesLeft_);
+        return new YahtzeeSimulator(this, nCategoriesLeft_);
     }
     
     public YahtzeeSimulator create(List<String> params) {
