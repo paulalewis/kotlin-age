@@ -9,8 +9,8 @@ public class YahtzeeRollAction extends YahtzeeAction {
     private byte[] selected_;
 
     private YahtzeeRollAction(byte[] selected) {
-        selected_ = new byte[YahtzeeState.getNumValues()];
-        for (int i = 0; i < YahtzeeState.getNumValues(); i++)
+        selected_ = new byte[YahtzeeState.N_VALUES];
+        for (int i = 0; i < YahtzeeState.N_VALUES; i++)
             selected_[i] = selected[i];
     }
 
@@ -42,7 +42,7 @@ public class YahtzeeRollAction extends YahtzeeAction {
         if (!(object instanceof YahtzeeRollAction))
             return false;
         YahtzeeRollAction action = (YahtzeeRollAction) object;
-        for (int i = 0; i < YahtzeeState.getNumValues(); i++)
+        for (int i = 0; i < YahtzeeState.N_VALUES; i++)
             if (selected_[i] != action.getSelected(i))
                 return false;
         return true;
