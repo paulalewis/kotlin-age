@@ -51,33 +51,39 @@ public final class Arbiter<S, A> {
 
     public Arbiter(S initialState,
                    Simulator<S, A> world,
+                   List<Simulator<S, A>> simulators,
                    List<Agent> agents) {
         if (world.getNAgents() != agents.size())
             throw new IllegalArgumentException("Expects " + world.getNAgents() + 
                                                " agents but " + agents.size() + " provided.");
+        if (agents.size() != simulators.size())
+            throw new IllegalArgumentException("Required one simulator per agent.");
         world_ = world.clone();
         world_.setState(initialState);
         history_ = new History<S, A>(world_.getState());
-        for (Agent agent: agents) {
+        for (Agent agent: agents)
             agents_.add(agent);
-            simulators_.add(world.clone());
-        }
+        for (Simulator<S, A> simulator: simulators)
+            simulators_.add(simulator);
         decisionTimes_ = new long[world.getNAgents()];
     }
     
     public Arbiter(History<S, A> history,
                    Simulator<S, A> world,
+                   List<Simulator<S, A>> simulators,
                    List<Agent> agents) {
         if (world.getNAgents() != agents.size())
             throw new IllegalArgumentException("Expects " + world.getNAgents() + 
                                                " agents but " + agents.size() + " provided.");
+        if (agents.size() != simulators.size())
+            throw new IllegalArgumentException("Required one simulator per agent.");
         history_ = history;
         world_ = world.clone();
         world_.setState(history.getState(history.size() - 1));
-        for (Agent agent: agents) {
+        for (Agent agent: agents)
             agents_.add(agent);
-            simulators_.add(world.clone());
-        }
+        for (Simulator<S, A> simulator: simulators)
+            simulators_.add(simulator);
         decisionTimes_ = new long[world.getNAgents()];
     }
     
