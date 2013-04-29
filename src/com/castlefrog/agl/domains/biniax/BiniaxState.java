@@ -45,6 +45,10 @@ public final class BiniaxState {
         return nTurns_;
     }
 
+    public int getNElementTypes() {
+        return 0;
+    }
+
     public static int getWidth() {
         return WIDTH;
     }

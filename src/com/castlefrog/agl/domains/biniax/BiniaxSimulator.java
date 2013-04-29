@@ -20,9 +20,6 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
     private static final int ELEMENT_LIMIT = BiniaxState.getMaxElements() + 1;
     private static final double IMPASSIBLE_CHANCE = 0;
 
-    /** The number of distinct element types that can be generated */
-    private int nElementTypes_;
-    
     /**
      * Create a Biniax simulator.
      */
@@ -34,14 +31,12 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
         computeLegalActions();
     }
     
-    private BiniaxSimulator(BiniaxSimulator simulator,
-                            int nElementTypes) {
+    private BiniaxSimulator(BiniaxSimulator simulator) {
         super(simulator);
-        nElementTypes_ = nElementTypes;
     }
 
     public BiniaxSimulator clone() {
-        return new BiniaxSimulator(this, nElementTypes_);
+        return new BiniaxSimulator(this);
     }
     
     public static BiniaxSimulator create(List<String> params) {
@@ -64,6 +59,7 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
         int x = elementLocation[0];
         int y = elementLocation[1];
         byte element = state_.getLocation(x, y);
+        int nTurns = state_.getNTurns();
 
         locations[x][y] = 0;
         switch (action) {
@@ -99,7 +95,7 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
                             if (Math.random() < IMPASSIBLE_CHANCE)
                                 locations[j][i] = -1;
                             else
-                                locations[j][i] = (byte) generateRandomElementPair();
+                                locations[j][i] = (byte) generateRandomElementPair(nTurns);
                         } else
                             locations[j][i] = 0;
                     } else
@@ -121,11 +117,7 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
                     locations[x][y + 1] = 0;
             }
         }
-        int nTurns = state_.getNTurns() + 1;
-        if (nTurns % ELEMENT_INCREMENT_INTERVAL == 0
-                && nElementTypes_ < BiniaxState.getMaxElements())
-            nElementTypes_ += 1;
-        state_ = new BiniaxState(locations, freeMoves, nTurns);
+        state_ = new BiniaxState(locations, freeMoves, nTurns + 1);
         computeLegalActions();
     }
 
@@ -135,13 +127,18 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
      * 
      * @return int of random values from 0 to numElements_ - 1
      */
-    private int generateRandomElementPair() {
-        int element1 = ((int) (Math.random() * nElementTypes_)) + 1;
-        int element2 = ((int) (Math.random() * (nElementTypes_ - 1))) + 1;
+    private int generateRandomElementPair(int nTurns) {
+        int nElementTypes = getNElementTypes(nTurns);
+        int element1 = ((int) (Math.random() * nElementTypes)) + 1;
+        int element2 = ((int) (Math.random() * (nElementTypes - 1))) + 1;
         if (element1 <= element2)
             return element1 * ELEMENT_LIMIT + element2 + 1;
         else
             return element2 * ELEMENT_LIMIT + element1;
+    }
+
+    private int getNElementTypes(int nTurns) {
+        return Math.min(INITIAL_ELEMENTS + nTurns / ELEMENT_INCREMENT_INTERVAL, BiniaxState.getMaxElements());
     }
 
     private int[] getElementLocation() {
@@ -226,13 +223,12 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
      * @return an initial state in the biniax domain.
      */
     public BiniaxState getInitialState() {
-        nElementTypes_ = INITIAL_ELEMENTS;
         byte[][] locations = new byte[BiniaxState.getWidth()][BiniaxState.getHeight()];
         for (int i = 0; i < BiniaxState.getHeight(); i++) {
             int emptyLocation = (int) (Math.random() * BiniaxState.getWidth());
             for (int j = 0; j < BiniaxState.getWidth(); j++)
                 if (j != emptyLocation && i < BiniaxState.getHeight() - BUFFER) {
-                    locations[j][i] = (byte) generateRandomElementPair();
+                    locations[j][i] = (byte) generateRandomElementPair(0);
                     if (i == BiniaxState.getHeight() - BUFFER - 1)
                         locations[j][i] = (byte) (locations[j][i]
                                 % ELEMENT_LIMIT + ELEMENT_LIMIT);
