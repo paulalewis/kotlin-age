@@ -90,7 +90,7 @@ public class DomainTest {
                 }
                 List<Simulator<?,?>> simulators = new ArrayList<Simulator<?,?>>();
                 for (int i = 0; i < agents.size(); i += 1)
-                    simulators.add(world.clone());
+                    simulators.add(world.copy());
                 Arbiter<?, ?> arbiter = new Arbiter(world.getInitialState(), world, simulators, agents);
                 for (int i = 0; i < nSimulations; i += 1) {
                     arbiter.reset();

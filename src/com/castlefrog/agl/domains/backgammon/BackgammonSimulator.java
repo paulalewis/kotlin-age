@@ -29,7 +29,7 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
         super(simulator);
     }
 
-    public BackgammonSimulator clone() {
+    public BackgammonSimulator copy() {
         return new BackgammonSimulator(this);
     }
     

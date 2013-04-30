@@ -213,7 +213,7 @@ public final class UctAgent implements Agent {
          */
         public StateNode<S, A> selectChild(Simulator<S, A> simulator) {
             if (sparseSampleSize_ == -1 || visits_ < sparseSampleSize_) {
-                Simulator<S, A> clone = simulator.clone();
+                Simulator<S, A> clone = simulator.copy();
                 clone.stateTransition(actions_);
                 S state = clone.getState();
                 StateNode<S, A> stateNode = children_.get(state.hashCode());
@@ -327,7 +327,7 @@ public final class UctAgent implements Agent {
         for (int i = 0; i < nEnsembles_; i += 1) {
             StateNode<S, A> root = new StateNode<S, A>(simulator.getState(), legalActions);
             for (int j = 0; j < nSimulations_; j += 1)
-                playSimulation(root, simulator.clone());
+                playSimulation(root, simulator.copy());
 
             // Save visits and current agent's rewards at all root action nodes
             List<ActionNode<S, A>> children = root.getChildren();

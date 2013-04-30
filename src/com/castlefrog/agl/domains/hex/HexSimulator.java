@@ -46,7 +46,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         turnType_ = simulator.getTurnType();
     }
 
-    public HexSimulator clone() {
+    public HexSimulator copy() {
         return new HexSimulator(this);
     }
     

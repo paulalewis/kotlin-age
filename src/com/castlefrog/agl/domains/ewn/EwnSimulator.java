@@ -30,7 +30,7 @@ public class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
         super(simulator);
     }
 
-    public EwnSimulator clone() {
+    public EwnSimulator copy() {
         return new EwnSimulator(this);
     }
     

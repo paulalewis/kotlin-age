@@ -58,7 +58,7 @@ public final class Arbiter<S, A> {
                                                " agents but " + agents.size() + " provided.");
         if (agents.size() != simulators.size())
             throw new IllegalArgumentException("Required one simulator per agent.");
-        world_ = world.clone();
+        world_ = world.copy();
         world_.setState(initialState);
         history_ = new History<S, A>(world_.getState());
         for (Agent agent: agents)
@@ -78,7 +78,7 @@ public final class Arbiter<S, A> {
         if (agents.size() != simulators.size())
             throw new IllegalArgumentException("Required one simulator per agent.");
         history_ = history;
-        world_ = world.clone();
+        world_ = world.copy();
         world_.setState(history.getState(history.size() - 1));
         for (Agent agent: agents)
             agents_.add(agent);

@@ -33,7 +33,7 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
         turnType_ = simulator.getTurnType();
     }
 
-	public GoSimulator clone() {
+	public GoSimulator copy() {
         return new GoSimulator(this);
 	}
 	

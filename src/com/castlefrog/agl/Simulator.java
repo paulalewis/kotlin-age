@@ -7,12 +7,12 @@ import java.util.List;
  * A simulator is associated with a domain specific state and action
  * type. It also generates initial states for the given domain.
  */
-public interface Simulator<S, A> extends Cloneable {
+public interface Simulator<S, A> extends Copyable<Simulator<S, A>> {
     /**
      * The simulator can create a deep copy of itself.
      * @return a copy of this simulator
      */
-    Simulator<S, A> clone();
+    Simulator<S, A> copy();
 
     /**
      * Sets simulator to an arbitrary state.

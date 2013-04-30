@@ -26,7 +26,7 @@ public final class DraughtsSimulator
         super(simulator);
     }
 
-	public DraughtsSimulator clone() {
+	public DraughtsSimulator copy() {
         return new DraughtsSimulator(this);
 	}
 	

@@ -33,7 +33,7 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
             height_[i] = height[i];
     }
 
-    public Connect4Simulator clone() {
+    public Connect4Simulator copy() {
         return new Connect4Simulator(this, height_);
     }
     

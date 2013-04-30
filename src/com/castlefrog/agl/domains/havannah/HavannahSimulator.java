@@ -80,7 +80,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         return sides;
     }
 
-    public HavannahSimulator clone() {
+    public HavannahSimulator copy() {
         return new HavannahSimulator(this, corners_, sides_);
     }
     

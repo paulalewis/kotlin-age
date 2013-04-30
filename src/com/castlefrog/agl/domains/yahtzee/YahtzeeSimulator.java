@@ -27,7 +27,7 @@ public class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAct
         nCategoriesLeft_ = nCategoriesLeft;
     }
 
-    public YahtzeeSimulator clone() {
+    public YahtzeeSimulator copy() {
         return new YahtzeeSimulator(this, nCategoriesLeft_);
     }
     

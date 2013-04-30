@@ -11,8 +11,6 @@ public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
     protected S state_;
     protected List<List<A>> legalActions_;
     protected int[] rewards_;
-
-    public abstract Simulator<S, A> clone();
     
     protected AbstractSimulator() {
     	//state_ = getInitialState();

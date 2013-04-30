@@ -35,7 +35,7 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
         super(simulator);
     }
 
-    public BiniaxSimulator clone() {
+    public BiniaxSimulator copy() {
         return new BiniaxSimulator(this);
     }
     
