@@ -2,8 +2,10 @@ package com.castlefrog.agl.agents;
 
 import java.util.concurrent.CountDownLatch;
 
+import com.castlefrog.agl.Action;
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Simulator;
+import com.castlefrog.agl.State;
 
 public class ExternalAgent implements Agent {
     /** selected action to return from selectAction */
@@ -15,7 +17,7 @@ public class ExternalAgent implements Agent {
         actionReady_ = new CountDownLatch(1);
     }
 
-    public <S, A> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
+    public <S extends State, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
         if (simulator.hasLegalActions(agentId)) {
             try {
@@ -32,7 +34,7 @@ public class ExternalAgent implements Agent {
     /**
      * Set the action for this agent.
      */
-    public synchronized <A> void setAction(A action) {
+    public synchronized <A extends Action> void setAction(A action) {
         action_ = action;
         actionReady_.countDown();
     }

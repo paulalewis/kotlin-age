@@ -1,5 +1,7 @@
 package com.castlefrog.agl.domains.biniax;
 
+import com.castlefrog.agl.State;
+
 /**
  * Defines a Biniax state.
  * Location value representation:
@@ -8,7 +10,7 @@ package com.castlefrog.agl.domains.biniax;
  *  x: single element 0 < x <= MAX_ELEMENTS
  *  xy: element pair 0 < x <= MAX_ELEMENTS and 0 < y <= MAX_ELEMENTS and x < y
  */
-public final class BiniaxState {
+public final class BiniaxState implements State {
     private static final int WIDTH = 5;
     private static final int HEIGHT = 7;
     private static final int MAX_ELEMENTS = 9;
@@ -23,6 +25,10 @@ public final class BiniaxState {
         locations_ = locations;
         freeMoves_ = freeMoves;
         nTurns_ = nTurns;
+    }
+
+    public BiniaxState copy() {
+        return this;
     }
 
     public byte[][] getLocations() {

@@ -7,7 +7,7 @@ import java.util.List;
  * AbstractSimulator implements common functionality for
  * many simulators.
  */
-public abstract class AbstractSimulator<S, A> implements Simulator<S, A> {
+public abstract class AbstractSimulator<S extends State, A extends Action> implements Simulator<S, A> {
     protected S state_;
     protected List<List<A>> legalActions_;
     protected int[] rewards_;

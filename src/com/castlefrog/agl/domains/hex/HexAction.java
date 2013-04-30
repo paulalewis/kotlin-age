@@ -2,10 +2,12 @@ package com.castlefrog.agl.domains.hex;
 
 import java.io.Serializable;
 
+import com.castlefrog.agl.Action;
+
 /**
  * Immutable object that represents a hex action.
  */
-public final class HexAction implements Serializable {
+public final class HexAction implements Action, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static HexAction[][] actions_ = generateActions();
@@ -37,6 +39,10 @@ public final class HexAction implements Serializable {
             for (int j = 0; j < size; j += 1)
                 actions[i][j] = new HexAction(i,j);
         return actions;
+    }
+
+    public HexAction copy() {
+        return this;
     }
 
     public int getX() {

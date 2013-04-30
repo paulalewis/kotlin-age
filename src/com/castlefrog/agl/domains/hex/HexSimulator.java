@@ -59,7 +59,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     }
 
     public void setState(HexState state) {
-        state_ = state.clone();
+        state_ = state.copy();
         computeRewards();
         computeLegalActions(null);
     }
@@ -233,7 +233,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         int[][] connection = new int[boardSize_][boardSize_];
         if (rewards_[0] != 0) {
             Simulator<HexState,HexAction> simulator = new HexSimulator(boardSize_, TurnType.SEQUENTIAL);
-            HexState state = state_.clone();
+            HexState state = state_.copy();
             for (int i = 0; i < boardSize_; i += 1) {
                 for (int j = 0; j < boardSize_; j += 1) {
                     int location = state.getLocation(i,j);
@@ -257,7 +257,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     }
 
     public HexState getState() {
-        return state_.clone();
+        return state_.copy();
     }
     
     public int getBoardSize() {

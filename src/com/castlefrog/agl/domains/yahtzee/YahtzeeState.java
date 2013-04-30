@@ -1,6 +1,8 @@
 package com.castlefrog.agl.domains.yahtzee;
 
-public class YahtzeeState {
+import com.castlefrog.agl.State;
+
+public class YahtzeeState implements State {
     public static final int N_DICE = 5;
     public static final int N_VALUES = 6;
     public static final int N_SCORES = YahtzeeScoreCategory.values().length;
@@ -13,6 +15,10 @@ public class YahtzeeState {
         diceValues_ = diceValues;
         rolls_ = (byte) rolls;
         scores_ = scores;
+    }
+
+    public YahtzeeState copy() {
+        return this;
     }
 
     public int getDiceValue(int index) {

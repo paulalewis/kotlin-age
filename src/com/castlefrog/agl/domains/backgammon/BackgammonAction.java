@@ -3,7 +3,9 @@ package com.castlefrog.agl.domains.backgammon;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class BackgammonAction {
+import com.castlefrog.agl.Action;
+
+public final class BackgammonAction implements Action {
     /** List of individual moves form an action. */
     private List<BackgammonMove> moves_;
 
@@ -15,6 +17,10 @@ public final class BackgammonAction {
 
     public BackgammonMove getMove(int index) {
         return moves_.get(index);
+    }
+
+    public BackgammonAction copy() {
+        return this;
     }
 
     public int size() {

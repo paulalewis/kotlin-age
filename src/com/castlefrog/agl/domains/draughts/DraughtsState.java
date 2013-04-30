@@ -1,6 +1,8 @@
 package com.castlefrog.agl.domains.draughts;
 
-public final class DraughtsState {
+import com.castlefrog.agl.State;
+
+public final class DraughtsState implements State {
 	private byte[][] locations_;
 	private byte agentTurn_;
 	
@@ -9,6 +11,10 @@ public final class DraughtsState {
 		locations_ = locations;
 		agentTurn_ = (byte) agentTurn;
 	}
+
+    public DraughtsState copy() {
+        return this;
+    }
 
     public byte[][] getLocations() {
 		byte[][] locations = new byte[locations_.length][locations_.length];

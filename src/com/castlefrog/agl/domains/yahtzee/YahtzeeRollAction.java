@@ -4,7 +4,7 @@ package com.castlefrog.agl.domains.yahtzee;
  * The roll action controls which dice get rolled and which are kept for next
  * state.
  */
-public class YahtzeeRollAction extends YahtzeeAction {
+public class YahtzeeRollAction implements YahtzeeAction {
     /** Indicated quantity of each die number to not roll again. */
     private byte[] selected_;
 
@@ -16,6 +16,10 @@ public class YahtzeeRollAction extends YahtzeeAction {
 
     public static YahtzeeRollAction valueOf(byte[] selected) {
         return new YahtzeeRollAction(selected);
+    }
+
+    public YahtzeeRollAction copy() {
+        return this;
     }
 
     public byte[] getSelected() {

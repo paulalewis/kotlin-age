@@ -1,6 +1,8 @@
 package com.castlefrog.agl.domains.go;
 
-public final class GoAction {
+import com.castlefrog.agl.Action;
+
+public final class GoAction implements Action {
     private static GoAction[][] actions_ = generateActions();
     /** special passing action */
     private static GoAction pass_ = new GoAction(-1, -1);
@@ -26,6 +28,10 @@ public final class GoAction {
             for (int j = 0; j < size; j += 1)
                 actions[i][j] = new GoAction(i,j);
         return actions;
+    }
+
+    public GoAction copy() {
+        return this;
     }
 	
 	public int getX() {

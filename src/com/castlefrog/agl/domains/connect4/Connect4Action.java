@@ -3,10 +3,12 @@ package com.castlefrog.agl.domains.connect4;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.castlefrog.agl.Action;
+
 /**
  * Represents a Connect 4 action.
  */
-public final class Connect4Action {
+public final class Connect4Action implements Action {
     /** Holds list of all possible actions. */
     private static List<Connect4Action> connect4Actions_ = new ArrayList<Connect4Action>();
 
@@ -21,6 +23,10 @@ public final class Connect4Action {
      */
     private Connect4Action(int location) {
         location_ = location;
+    }
+
+    public Connect4Action copy() {
+        return this;
     }
 
     /**

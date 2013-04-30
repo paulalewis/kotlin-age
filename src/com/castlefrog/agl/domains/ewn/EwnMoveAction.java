@@ -3,14 +3,12 @@ package com.castlefrog.agl.domains.ewn;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EwnMoveAction extends EwnAction {
+public class EwnMoveAction implements EwnAction {
     /** List of all possible moves. */
     private static List<List<List<EwnMoveAction>>> moveActions_ = generateMoveActions();
 
     private int xLocation_;
-
     private int yLocation_;
-
     private Direction direction_;
 
     public enum Direction {
@@ -27,6 +25,10 @@ public class EwnMoveAction extends EwnAction {
             Direction direction) {
         return moveActions_.get(xLocation).get(yLocation).get(
                 direction.ordinal());
+    }
+
+    public EwnMoveAction copy() {
+        return this;
     }
 
     /**

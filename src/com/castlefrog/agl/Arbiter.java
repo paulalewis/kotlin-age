@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
  * It allows each agent to run in its own thread for
  * simultaneous domains and records history and other game data.
  */
-public final class Arbiter<S, A> {
+public final class Arbiter<S extends State, A extends Action> {
     /** The actual domain being used */
     private Simulator<S, A> world_;
     /** Simulator to use for each agent */

@@ -1,6 +1,8 @@
 package com.castlefrog.agl.domains.go;
 
-public final class GoState {
+import com.castlefrog.agl.State;
+
+public final class GoState implements State {
 	private byte[][] locations_;
 	private byte agentTurn_;
     private byte passFlag_;
@@ -12,6 +14,10 @@ public final class GoState {
 		agentTurn_ = (byte) agentTurn;
         passFlag_ = (byte) passFlag;
 	}
+
+    public GoState copy() {
+        return this;
+    }
 
     public byte[][] getLocations() {
 		byte[][] locations = new byte[locations_.length][locations_.length];

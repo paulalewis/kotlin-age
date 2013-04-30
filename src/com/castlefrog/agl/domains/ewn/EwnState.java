@@ -1,6 +1,8 @@
 package com.castlefrog.agl.domains.ewn;
 
-public class EwnState {
+import com.castlefrog.agl.State;
+
+public class EwnState implements State{
     private static final int SIZE = 5;
 
     /**
@@ -16,6 +18,10 @@ public class EwnState {
         locations_ = locations;
         dieRoll_ = (byte) dieRoll;
         agentTurn_ = (byte) agentTurn;
+    }
+
+    public EwnState copy() {
+        return this;
     }
 
     public byte getLocation(int x, int y) {

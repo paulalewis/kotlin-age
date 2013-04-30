@@ -1,27 +1,29 @@
 package com.castlefrog.agl.domains.backgammon;
 
+import com.castlefrog.agl.State;
+
 /**
  * Represents a backgammon state as an array of byte locations. Each location is
  * 0 if no pieces are at that location and positive if player 1 has pieces there
  * and negative for the number of pieces player 2 has there.
  */
-public class BackgammonState {
+public class BackgammonState implements State {
     private static final int NUMBER_OF_DICE = 2;
-
     private static final int NUMBER_OF_DIE_FACES = 6;
-
     private static final int NUMBER_OF_LOCATIONS = 26;
 
     private byte[] locations_;
-
     private byte[] dice_;
-
     private int agentTurn_;
 
     public BackgammonState(byte[] locations, byte[] dice, int agentTurn) {
         locations_ = locations;
         dice_ = dice;
         agentTurn_ = agentTurn;
+    }
+
+    public BackgammonState copy() {
+        return this;
     }
 
     public byte[] getLocations() {

@@ -3,7 +3,9 @@ package com.castlefrog.agl.domains.havannah;
 import java.io.Serializable;
 import java.util.Vector;
 
-public final class HavannahAction implements Serializable {
+import com.castlefrog.agl.Action;
+
+public final class HavannahAction implements Action, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** list of all possible Havannah actions */
@@ -24,6 +26,10 @@ public final class HavannahAction implements Serializable {
         if (x >= actions_.size() || y >= actions_.size())
             generateActions(Math.max(x + 1, y + 1));
         return actions_.get(x).get(y);
+    }
+
+    public HavannahAction copy() {
+        return this;
     }
 
     /**

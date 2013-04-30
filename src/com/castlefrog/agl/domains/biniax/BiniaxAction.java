@@ -1,8 +1,14 @@
 package com.castlefrog.agl.domains.biniax;
 
-public enum BiniaxAction {
+import com.castlefrog.agl.Action;
+
+public enum BiniaxAction implements Action {
     NORTH,
     EAST,
     SOUTH,
-    WEST
+    WEST;
+
+    public BiniaxAction copy() {
+        return this;
+    }
 }

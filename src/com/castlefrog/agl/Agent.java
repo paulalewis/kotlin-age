@@ -16,5 +16,5 @@ public interface Agent {
      * @param simulator simulator that determines action outcomes in domain.
      * @return selected action from the current state.
      */
-    <S, A> A selectAction(int agentId, S state, Simulator<S, A> simulator);
+    <S extends State, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator);
 }

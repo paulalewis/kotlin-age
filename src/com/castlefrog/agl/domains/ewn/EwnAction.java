@@ -1,3 +1,5 @@
 package com.castlefrog.agl.domains.ewn;
 
-public class EwnAction {}
+import com.castlefrog.agl.Action;
+
+public interface EwnAction extends Action {}

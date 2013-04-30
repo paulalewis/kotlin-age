@@ -93,7 +93,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     }
 
     public void setState(HavannahState state) {
-        state_ = state.clone();
+        state_ = state.copy();
         computeRewards(null);
         computeLegalActions(null);
     }
@@ -282,7 +282,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         int[][] connection = new int[size_][size_];
         if (rewards_[0] != 0) {
             Simulator<HavannahState,HavannahAction> simulator = new HavannahSimulator(base_, TurnType.SEQUENTIAL);
-            HavannahState state = state_.clone();
+            HavannahState state = state_.copy();
             for (int i = 0; i < size_; i += 1) {
                 for (int j = 0; j < size_; j += 1) {
                     int location = state.getLocation(i,j);
@@ -321,7 +321,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     }
 
     public HavannahState getState() {
-        return state_.clone();
+        return state_.copy();
     }
     
     public int getBase() {

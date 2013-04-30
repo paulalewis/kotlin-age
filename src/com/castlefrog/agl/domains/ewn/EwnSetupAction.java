@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.ewn;
 
-public class EwnSetupAction extends EwnAction {
+public class EwnSetupAction implements EwnAction {
     private static final int NUMBER_OF_PIECES = 6;
 
     private byte[] values_;
@@ -15,6 +15,10 @@ public class EwnSetupAction extends EwnAction {
                         + values);
             used[values[i] - 1] = true;
         }
+    }
+
+    public EwnSetupAction copy() {
+        return this;
     }
 
     public byte getValue(int index) {

@@ -5,13 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import com.castlefrog.agl.Action;
 import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Simulator;
+import com.castlefrog.agl.State;
 
 public final class ConsoleAgent implements Agent {
     public ConsoleAgent() {}
 
-    public <S, A> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
+    public <S extends State, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
         A action = null;
         List<A> legalActions = simulator.getLegalActions(agentId);
@@ -32,7 +34,7 @@ public final class ConsoleAgent implements Agent {
         return action;
     }
 
-    private <A> A matchToAction(String input, List<A> actions) {
+    private <A extends Action> A matchToAction(String input, List<A> actions) {
         for (int i = 0; i < actions.size(); i++) {
             if (actions.get(i).toString().toLowerCase().equals(
                     input.toLowerCase()))

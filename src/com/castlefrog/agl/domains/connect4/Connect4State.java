@@ -1,11 +1,13 @@
 package com.castlefrog.agl.domains.connect4;
 
+import com.castlefrog.agl.State;
+
 /**
  * State represented by a bitBoard described below: . . . . . . . Row above top
  * row 5 12 19 26 33 40 47 4 11 18 25 32 39 46 3 10 17 24 31 38 45 2 9 16 23 30
  * 37 44 1 8 15 22 29 36 43 0 7 14 21 28 35 42
  */
-public class Connect4State {
+public class Connect4State implements State {
     private static final int WIDTH = 7;
     private static final int HEIGHT = 6;
 
@@ -15,6 +17,10 @@ public class Connect4State {
     public Connect4State(long[] bitBoards, int agentTurn) {
         bitBoards_ = bitBoards;
         agentTurn_ = (byte) agentTurn;
+    }
+
+    public Connect4State copy() {
+        return this;
     }
 
     public long[] getBitBoards() {

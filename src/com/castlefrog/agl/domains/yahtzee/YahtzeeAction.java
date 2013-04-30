@@ -1,3 +1,5 @@
 package com.castlefrog.agl.domains.yahtzee;
 
-public class YahtzeeAction {}
+import com.castlefrog.agl.Action;
+
+public interface YahtzeeAction extends Action {}

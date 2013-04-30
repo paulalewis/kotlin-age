@@ -1,6 +1,8 @@
 package com.castlefrog.agl.domains.draughts;
 
-public final class DraughtsAction {
+import com.castlefrog.agl.Action;
+
+public final class DraughtsAction implements Action {
 	private int fx_;
 	private int fy_;
     private int tx_;
@@ -17,6 +19,10 @@ public final class DraughtsAction {
     public static DraughtsAction valueOf(int fx, int fy,
                                          int tx, int ty) {
         return new DraughtsAction(fx, fy, tx, ty);
+    }
+
+    public DraughtsAction copy() {
+        return this;
     }
 
 	public int getFX() {
