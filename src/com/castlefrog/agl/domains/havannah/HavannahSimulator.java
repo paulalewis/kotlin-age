@@ -93,7 +93,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     }
 
     public void setState(HavannahState state) {
-        state_ = state.copy();
+        state_ = state;
         computeRewards(null);
         computeLegalActions(null);
     }
@@ -320,10 +320,6 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         return new HavannahState(new byte[size_][size_], 0);
     }
 
-    public HavannahState getState() {
-        return state_.copy();
-    }
-    
     public int getBase() {
         return base_;
     }

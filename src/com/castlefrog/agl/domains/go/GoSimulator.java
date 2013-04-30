@@ -116,10 +116,6 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
         return state_.getPassFlag() == 2;
     }
 
-    public GoState getState() {
-        return state_;
-    }
-
     public int getSize() {
         return boardSize_;
     }

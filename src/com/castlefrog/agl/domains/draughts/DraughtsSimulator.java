@@ -68,10 +68,6 @@ public final class DraughtsSimulator
         return null;
     }
 	
-    public DraughtsState getState() {
-        return state_;
-    }
-
     public int getNAgents() {
         return N_AGENTS;
     }

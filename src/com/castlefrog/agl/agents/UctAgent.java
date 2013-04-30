@@ -84,15 +84,14 @@ public final class UctAgent implements Agent {
      */
     private class StateNode<S extends State, A extends Action> extends Node {
         private S state_;
-
         private List<ActionNode<S, A>> children_;
 
         /**
          * When a new state node is created it immediately
          * populates its children.
+         * @param state should be immutable or deep copy of original object
          */
         public StateNode(S state, List<List<A>> legalActions) {
-            //state should be immutable or a deep copy of original object
             state_ = state;
 
             List<List<A>> actionGroups = new ArrayList<List<A>>();
@@ -165,15 +164,8 @@ public final class UctAgent implements Agent {
             }
         }
 
-        /**
-         * the returned state should not
-         * be modified
-         */
         public S getState() {
-            //if (state_ instanceof Cloneable)
-            //    return state_.clone();
-            //else
-            return state_;
+            return (S) state_.copy();
         }
 
         public List<ActionNode<S, A>> getChildren() {
@@ -215,12 +207,12 @@ public final class UctAgent implements Agent {
          */
         public StateNode<S, A> selectChild(Simulator<S, A> simulator) {
             if (sparseSampleSize_ == -1 || visits_ < sparseSampleSize_) {
-                Simulator<S, A> clone = simulator.copy();
-                clone.stateTransition(actions_);
-                S state = clone.getState();
+                Simulator<S, A> simulatorCopy = simulator.copy();
+                simulatorCopy.stateTransition(actions_);
+                S state = simulatorCopy.getState();
                 StateNode<S, A> stateNode = children_.get(state.hashCode());
                 if (stateNode == null) {
-                    stateNode = new StateNode<S, A>(state, clone.getLegalActions());
+                    stateNode = new StateNode<S, A>(state, simulatorCopy.getLegalActions());
                     children_.put(state.hashCode(), stateNode);
                 }
                 return stateNode;

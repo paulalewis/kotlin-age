@@ -59,7 +59,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     }
 
     public void setState(HexState state) {
-        state_ = state.copy();
+        state_ = state;
         computeRewards();
         computeLegalActions(null);
     }
@@ -256,10 +256,6 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         return new HexState(new byte[boardSize_][boardSize_], 0);
     }
 
-    public HexState getState() {
-        return state_.copy();
-    }
-    
     public int getBoardSize() {
         return boardSize_;
     }

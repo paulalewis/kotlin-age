@@ -263,10 +263,6 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
         return new BackgammonState(locations, dice, agentTurn);
     }
 
-    public BackgammonState getState() {
-        return state_;
-    }
-    
     public int getNAgents() {
         return N_AGENTS;
     }

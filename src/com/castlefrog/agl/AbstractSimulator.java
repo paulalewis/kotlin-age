@@ -22,10 +22,6 @@ public abstract class AbstractSimulator<S extends State, A extends Action> imple
         rewards_ = simulator.getRewards();
     }
 
-    //public void setState(S state) {
-    //    state_ = state.clone();
-    //}
-    
     /**
      * Rewards for each agent may be indexed by that agent's id.
      * @return array of rewards for each agent.
@@ -62,9 +58,9 @@ public abstract class AbstractSimulator<S extends State, A extends Action> imple
      * Current state of the simulator.
      * @return current state.
      */
-    //public S getState() {
-    //    return state_.clone();
-    //}
+    public S getState() {
+        return (S) state_.copy();
+    }
     
     /**
      * This method returns a list of legal actions

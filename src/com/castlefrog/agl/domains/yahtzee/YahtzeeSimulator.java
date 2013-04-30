@@ -241,10 +241,6 @@ public class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAct
         return new YahtzeeState(diceValues, 1, scores);
     }
 
-    public YahtzeeState getState() {
-        return state_;
-    }
-
     public int getNAgents() {
         return N_AGENTS;
     }

@@ -303,10 +303,6 @@ public class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
         return new EwnState(locations, (byte) (Math.random() * DIE_SIDES + 1), 0);
     }
 
-    public EwnState getState() {
-        return state_;
-    }
-
     public int getNAgents() {
         return N_AGENTS;
     }

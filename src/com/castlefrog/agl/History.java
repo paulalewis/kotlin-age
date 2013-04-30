@@ -9,7 +9,7 @@ import java.util.List;
  * as the decision times for each selected action.
  * A history may be saved or loaded to a file.
  */
-public final class History<S, A> implements Serializable {
+public final class History<S extends State, A extends Action> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private List<Node> nodes_;
@@ -75,7 +75,7 @@ public final class History<S, A> implements Serializable {
     }
 
     public S getState(int index) {
-        return nodes_.get(index).getState();
+        return (S) nodes_.get(index).getState().copy();
     }
 
     public List<A> getActions(int index) {

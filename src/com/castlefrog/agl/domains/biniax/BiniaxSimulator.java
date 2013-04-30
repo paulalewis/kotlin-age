@@ -238,10 +238,6 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
         return new BiniaxState(locations, N_FREE_MOVES, 0);
     }
 
-    public BiniaxState getState() {
-        return state_;
-    }
-
     public int getNAgents() {
         return N_AGENTS;
     }
