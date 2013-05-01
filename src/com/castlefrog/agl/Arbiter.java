@@ -51,21 +51,15 @@ public final class Arbiter<S extends State, A extends Action> {
 
     public Arbiter(S initialState,
                    Simulator<S, A> world,
+                   List<Agent> agents) {
+        this(initialState, world, null, agents);
+    }
+
+    public Arbiter(S initialState,
+                   Simulator<S, A> world,
                    List<Simulator<S, A>> simulators,
                    List<Agent> agents) {
-        if (world.getNAgents() != agents.size())
-            throw new IllegalArgumentException("Expects " + world.getNAgents() + 
-                                               " agents but " + agents.size() + " provided.");
-        if (agents.size() != simulators.size())
-            throw new IllegalArgumentException("Required one simulator per agent.");
-        world_ = world.copy();
-        world_.setState(initialState);
-        history_ = new History<S, A>(world_.getState());
-        for (Agent agent: agents)
-            agents_.add(agent);
-        for (Simulator<S, A> simulator: simulators)
-            simulators_.add(simulator);
-        decisionTimes_ = new long[world.getNAgents()];
+        this(new History<S, A>(initialState), world, simulators, agents);
     }
     
     public Arbiter(History<S, A> history,
@@ -75,8 +69,13 @@ public final class Arbiter<S extends State, A extends Action> {
         if (world.getNAgents() != agents.size())
             throw new IllegalArgumentException("Expects " + world.getNAgents() + 
                                                " agents but " + agents.size() + " provided.");
-        if (agents.size() != simulators.size())
+        if (simulators == null) {
+            simulators_ = new ArrayList<Simulator<S, A>>();
+            for (int i = 0; i < agents.size(); i += 1)
+                simulators_.add(world.copy());
+        } else if (agents.size() != simulators.size()) {
             throw new IllegalArgumentException("Required one simulator per agent.");
+        }
         history_ = history;
         world_ = world.copy();
         world_.setState(history.getState(history.size() - 1));
