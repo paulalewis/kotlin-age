@@ -145,6 +145,10 @@ public final class Arbiter<S extends State, A extends Action> {
     public boolean isTerminalState() {
         return world_.isTerminalState();
     }
+    
+    public Simulator<S, A> getWorld() {
+    	return world_;
+    }
 
     public List<Agent> getAgents() {
         List<Agent> agents = new ArrayList<Agent>();
