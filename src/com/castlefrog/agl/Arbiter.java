@@ -73,16 +73,17 @@ public final class Arbiter<S extends State, A extends Action> {
             simulators_ = new ArrayList<Simulator<S, A>>();
             for (int i = 0; i < agents.size(); i += 1)
                 simulators_.add(world.copy());
-        } else if (agents.size() != simulators.size()) {
-            throw new IllegalArgumentException("Required one simulator per agent.");
+        } else if (agents.size() == simulators.size()) {
+            for (Simulator<S, A> simulator: simulators)
+	            simulators_.add(simulator);
+        } else {
+        	throw new IllegalArgumentException("Required one simulator per agent.");
         }
         history_ = history;
         world_ = world.copy();
         world_.setState(history.getState(history.size() - 1));
         for (Agent agent: agents)
             agents_.add(agent);
-        for (Simulator<S, A> simulator: simulators)
-            simulators_.add(simulator);
         decisionTimes_ = new long[world.getNAgents()];
     }
     
