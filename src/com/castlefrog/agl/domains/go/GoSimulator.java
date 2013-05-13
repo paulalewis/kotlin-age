@@ -8,9 +8,9 @@ import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
 public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
-    public static final int N_AGENTS = 2;
-    public static final int MIN_BOARD_SIZE = 5;
-    public static final int MAX_BOARD_SIZE = 19;
+    private static final int N_AGENTS = 2;
+    private static final int MIN_BOARD_SIZE = 5;
+    private static final int MAX_BOARD_SIZE = 19;
     
     private int boardSize_;
     private TurnType turnType_;

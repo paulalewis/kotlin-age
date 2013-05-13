@@ -10,8 +10,8 @@ import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 public final class HavannahSimulator extends AbstractSimulator<HavannahState, HavannahAction> {
-    public static final int N_AGENTS = 2;
-    public static final int MIN_BASE = 2;
+    private static final int N_AGENTS = 2;
+    private static final int MIN_BASE = 2;
 
     private TurnType turnType_;
     /** length of a side of board */

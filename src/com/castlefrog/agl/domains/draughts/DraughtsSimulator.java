@@ -7,8 +7,7 @@ import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
-public final class DraughtsSimulator
-    extends AbstractSimulator<DraughtsState, DraughtsAction> {
+public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, DraughtsAction> {
 	private static final int N_AGENTS = 2;
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
     //private static final int SIZE = 10;

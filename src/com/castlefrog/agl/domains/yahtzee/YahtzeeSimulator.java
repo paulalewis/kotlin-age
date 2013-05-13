@@ -8,7 +8,7 @@ import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
 public class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAction> {
-    public static final int N_AGENTS = 1;
+    private static final int N_AGENTS = 1;
 
     private int nCategoriesLeft_;
 
