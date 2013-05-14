@@ -19,7 +19,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     /** longest row of hexagons on board (always odd) */
     private int size_;
     /** number of locations on board */
-    //private static int nLocations_;
+    private static int nLocations_;
     private int[][] corners_;
     private int[][][] sides_;
 
@@ -29,7 +29,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
             throw new IllegalArgumentException("Invalid board size: " + base);
         base_ = base;
         size_ = 2 * base_ - 1;
-        //nLocations_ = 3 * base_ * base_ - 3 * base_ + 1;
+        nLocations_ = 3 * base_ * base_ - 3 * base_ + 1;
         turnType_ = turnType;
         corners_ = getCorners();
         sides_ = getSides();
@@ -38,7 +38,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         legalActions_ = new ArrayList<List<HavannahAction>>();
         legalActions_.add(new ArrayList<HavannahAction>());
         legalActions_.add(new ArrayList<HavannahAction>());
-        computeLegalActions(null);
+        computeLegalActions();
     }
 
     private HavannahSimulator(HavannahSimulator simulator,
@@ -47,6 +47,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         super(simulator);
         base_ = simulator.getBase();
         size_ = simulator.getSize();
+        nLocations_ = 3 * base_ * base_ - 3 * base_ + 1;
         corners_ = corners;
         sides_ = sides;
         turnType_ = getTurnType();
@@ -94,8 +95,8 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
 
     public void setState(HavannahState state) {
         state_ = state;
-        computeRewards(null);
-        computeLegalActions(null);
+        computeRewards();
+        computeLegalActions();
     }
 
     public void stateTransition(List<HavannahAction> actions) {
@@ -108,6 +109,10 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         computeLegalActions(action);
     }
 
+    private void computeLegalActions() {
+        computeLegalActions(null);
+    }
+
     private void computeLegalActions(HavannahAction prevAction) {
         if (rewards_[0] == 0) {
             int agentTurn = state_.getAgentTurn();
@@ -115,38 +120,43 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
             legalActions_.set(agentTurn, legalActions_.get(otherTurn));
             legalActions_.set(otherTurn, new ArrayList<HavannahAction>());
             List<HavannahAction> legalActions = legalActions_.get(agentTurn);
-            if (prevAction != null && state_.getNPieces() > 2)
+            if (prevAction != null && nLocations_ - legalActions.size() >= 2) {
                 legalActions.remove(prevAction);
-            else {
+            } else {
                 legalActions.clear();
-                if (state_.getNPieces() == 1 && state_.getAgentTurn() == 1) {
-                    for (int y = 0; y < size_; y += 1) {
-                        int xMin = 0;
-                        int xMax = size_;
-                        if (y >= base_)
-                            xMin = y - base_ + 1;
-                        else
-                            xMax = base_ + y;
-                        for (int x = xMin; x < xMax; x += 1)
+                int count = 0;
+                HavannahAction tempAction = null;
+                for (int y = 0; y < size_; y += 1) {
+                    int xMin = 0;
+                    int xMax = size_;
+                    if (y >= base_)
+                        xMin = y - base_ + 1;
+                    else
+                        xMax = base_ + y;
+                    
+                    for (int x = xMin; x < xMax; x += 1) {
+                        if (state_.getLocation(x,y) == 0) {
                             legalActions.add(HavannahAction.valueOf(x,y));
-                    }
-                } else {
-                    for (int y = 0; y < size_; y += 1) {
-                        int xMin = 0;
-                        int xMax = size_;
-                        if (y >= base_)
-                            xMin = y - base_ + 1;
-                        else
-                            xMax = base_ + y;
-                        for (int x = xMin; x < xMax; x += 1)
-                            if (state_.getLocation(x,y) == 0)
-                                legalActions.add(HavannahAction.valueOf(x,y));
+                        } else if (state_.getAgentTurn() == 1 && count == 0) {
+                            count = 1;
+                            tempAction = HavannahAction.valueOf(x,y);
+                        } else if (state_.getAgentTurn() == 1 && count == 1) {
+                            count = 2;
+                            tempAction = null;
+                        }
                     }
                 }
+                if (tempAction != null)
+                    legalActions.add(tempAction);
             }
-        } else
+        } else {
             for (List<HavannahAction> legalActions: legalActions_)
                 legalActions.clear();
+        }
+    }
+
+    private void computeRewards() {
+        computeRewards(null);
     }
 
     private void computeRewards(HavannahAction prevAction) {
@@ -317,7 +327,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     }
 
     public HavannahState getInitialState() {
-        return new HavannahState(new byte[size_][size_], 0);
+        return new HavannahState(size_);
     }
 
     public int getBase() {
@@ -326,6 +336,10 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     
     public int getSize() {
         return size_;
+    }
+
+    public int getNLocations() {
+        return nLocations_;
     }
 
     public int getNAgents() {

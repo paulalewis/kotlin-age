@@ -18,8 +18,6 @@ public final class HavannahState implements State, Serializable {
     private byte[][] locations_;
     /** id of agent to play next piece */
     private byte agentTurn_;
-    /** number of pieces on board */
-    private int nPieces_;
 
     public enum Location {
         EMPTY,
@@ -27,32 +25,21 @@ public final class HavannahState implements State, Serializable {
         AGENT2
     }
 
-    public HavannahState(byte[][] locations,
-                         int agentTurn) {
-        locations_ = new byte[locations.length][locations[0].length];
-        for (int i = 0; i < locations.length; i += 1) {
-            for (int j = 0; j < locations[0].length; j += 1) {
-                locations_[i][j] = locations[i][j];
-                if (locations_[i][j] != 0)
-                    nPieces_ += 1;
-            }
-        }
-        agentTurn_ = (byte) agentTurn;
+    public HavannahState(int size) {
+        this(new byte[size][size], 0);
     }
     
     private HavannahState(byte[][] locations,
-                          int agentTurn,
-                          int nPieces) {
+                          int agentTurn) {
         locations_ = new byte[locations.length][locations[0].length];
         for (int i = 0; i < locations.length; i += 1)
             for (int j = 0; j < locations[0].length; j += 1)
                 locations_[i][j] = locations[i][j];
         agentTurn_ = (byte) agentTurn;
-        nPieces_ = nPieces;
     }
 
     public HavannahState copy() {
-        return new HavannahState(locations_,agentTurn_,nPieces_);
+        return new HavannahState(locations_, agentTurn_);
     }
 
     public byte[][] getLocations() {
@@ -83,7 +70,12 @@ public final class HavannahState implements State, Serializable {
     }
 
     public int getNPieces() {
-        return nPieces_;
+        int nPieces = 0;
+        for (int i = 0; i < locations_.length; i += 1)
+            for (int j = 0; j < locations_[0].length; j += 1)
+                if (locations_[i][j] != 0)
+                    nPieces += 1;
+        return nPieces;
     }
 
     public int getNLocations() {
@@ -98,20 +90,12 @@ public final class HavannahState implements State, Serializable {
     public void setLocation(int x,
                             int y,
                             int value) {
-        if (locations_[x][y] == 0 && value != 0)
-            nPieces_ += 1;
-        else if (locations_[x][y] != 0 && value == 0)
-            nPieces_ -= 1;
         locations_[x][y] = (byte) value;
     }
     
     public void setLocation(int x,
                             int y,
                             Location value) {
-        if (locations_[x][y] == 0 && value != Location.EMPTY)
-            nPieces_ += 1;
-        else if (locations_[x][y] != 0 && value == Location.EMPTY)
-            nPieces_ -= 1;
         locations_[x][y] = (byte) value.ordinal();
     }
 
