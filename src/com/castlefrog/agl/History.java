@@ -5,37 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Keeps track of state transition history as well
- * as the decision times for each selected action.
- * A history may be saved or loaded to a file.
+ * Keeps track of state transition history.
  */
 public final class History<S extends State, A extends Action> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private List<Node> nodes_;
+	private List<Node> nodes;
 
     private final class Node implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
-		private S state_;
-        private List<A> actions_;
+		public S state;
+        public List<A> actions;
 
         public Node(S state, List<A> actions) {
-            state_ = state;
-            actions_ = new ArrayList<A>();
-            for (A action: actions)
-                actions_.add(action);
-        }
-
-        public S getState() {
-            return state_;
-        }
-
-        public List<A> getActions() {
-            List<A> actions = new ArrayList<A>();
-            for (A action: actions_)
-                actions.add(action);
-            return actions;
+            this.state = state;
+            this.actions = actions;
         }
     }
 
@@ -47,7 +32,7 @@ public final class History<S extends State, A extends Action> implements Seriali
      *      initial state of history
      */
     public History(S initialState) {
-        nodes_ = new ArrayList<Node>();
+        nodes = new ArrayList<Node>();
         add(initialState, new ArrayList<A>());
     }
 
@@ -61,37 +46,38 @@ public final class History<S extends State, A extends Action> implements Seriali
      *      the actions taken by each agent to end up in the current state
      */
     public void add(S state, List<A> actions) {
-        nodes_.add(new Node(state, actions));
+        nodes.add(new Node(state, actions));
+    }
+    
+    public void add(S state, List<A> actions, int index) {
+        while (index < nodes.size() - 1)
+            removeLast();
+        nodes.add(new Node(state, actions));
     }
 
-    /**
-     * removes the last history node
-     * but does not remove initial state
-     * node.
-     */
     public void removeLast() {
-        if (nodes_.size() > 1)
-            nodes_.remove(nodes_.size() - 1);
+        if (nodes.size() > 0)
+            nodes.remove(nodes.size() - 1);
     }
 
     public S getState(int index) {
-        return (S) nodes_.get(index).getState().copy();
+        return nodes.get(index).state;
     }
 
     public List<A> getActions(int index) {
-        return nodes_.get(index).getActions();
+        return nodes.get(index).actions;
     }
 
-    public int size() {
-        return nodes_.size();
+    public int getSize() {
+        return nodes.size();
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        for (Node node: nodes_) {
-            output.append(node.getActions() + "\n\n");
-            output.append(node.getState() + "\n\n");
+        for (Node node: nodes) {
+            output.append(node.actions + "\n\n");
+            output.append(node.state + "\n\n");
         }
         return output.toString();
     }

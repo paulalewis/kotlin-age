@@ -149,6 +149,7 @@ public class DomainTest {
                 } else {
                     System.out.println(output.toString());
                 }
+                arbiter.done();
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             } catch (SAXException e) {
@@ -156,8 +157,9 @@ public class DomainTest {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else
+        } else {
             System.out.println("Illegal arguments\nusage: java -jar DomainTest.jar test_filepath [output_filepath]");
+        }
     }
 
     private String getTagValue(String tagName, Element element) {
