@@ -8,16 +8,17 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Used as an api for providers to include simulators 
+ * Used as an api for providers to include simulators
  * and clients to use those simulators.
  */
-public class Simulators {
-    private Simulators() {}
+public final class Simulators {
+    private static final Map<String, SimulatorProvider> PROVIDERS = new ConcurrentHashMap<String, SimulatorProvider>();
 
-    private static final Map<String, SimulatorProvider> providers = new ConcurrentHashMap<String, SimulatorProvider>();
+    private Simulators() {
+    }
 
     // provider api
-    
+
     /**
      * Providers use this method in AgentProvider class to add new simulators.
      * @param name string to associate with provider
@@ -25,7 +26,7 @@ public class Simulators {
      * @see AgentProvider
      */
     public static void registerProvider(String name, SimulatorProvider simulatorProvider) {
-        providers.put(name, simulatorProvider);
+        PROVIDERS.put(name, simulatorProvider);
     }
 
     // client api
@@ -36,9 +37,10 @@ public class Simulators {
      * @param params array of arguments for simulator constructor
      */
     public static Simulator<?, ?> getSimulator(String name, List<String> params) {
-        SimulatorProvider simulatorProvider = providers.get(name);
-        if (simulatorProvider == null)
+        SimulatorProvider simulatorProvider = PROVIDERS.get(name);
+        if (simulatorProvider == null) {
             throw new IllegalArgumentException("No simulator registered with name: " + name);
+        }
         return simulatorProvider.newSimulator(params);
     }
 
@@ -48,7 +50,7 @@ public class Simulators {
      */
     public static List<String> getProviderList() {
         List<String> names = new ArrayList<String>();
-        Set<String> keySet = providers.keySet();
+        Set<String> keySet = PROVIDERS.keySet();
         for (Iterator<String> it = keySet.iterator(); it.hasNext();) {
             names.add(it.next());
         }

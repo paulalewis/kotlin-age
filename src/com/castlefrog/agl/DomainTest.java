@@ -23,14 +23,14 @@ import org.xml.sax.SAXException;
 /**
  * This class is used to run tests between agents on simulators.
  */
-public class DomainTest {
+public final class DomainTest {
     public static final String TEST_ROOT_NAME = "domainTest";
     /**
      * @param args
      *      test_filepath - path to the xml test file
      *      output_filepath - optional path to output file
      */
-    public DomainTest(String[] args) {
+    private DomainTest(String[] args) {
         if (args.length == 1 || args.length == 2) {
             registerSimulators();
             registerAgents();
@@ -42,16 +42,17 @@ public class DomainTest {
                 Document doc = dBuilder.parse(xmlFile);
                 doc.getDocumentElement().normalize();
 
-                if (!doc.getDocumentElement().getNodeName().equals(TEST_ROOT_NAME))
+                if (!doc.getDocumentElement().getNodeName().equals(TEST_ROOT_NAME)) {
                     throw new IllegalArgumentException("Root tag should be '" + TEST_ROOT_NAME + "'");
-                int nSimulations = Integer.parseInt(getTagValue("nSimulations",doc.getDocumentElement()));
+                }
+                int nSimulations = Integer.parseInt(getTagValue("nSimulations", doc.getDocumentElement()));
                 NodeList nList = doc.getElementsByTagName("world");
                 Element element = (Element) nList.item(0);
                 String simulatorName = getTagValue("name", element);
                 NodeList paramList = element.getElementsByTagName("params");
                 List<String> simulatorParams = new ArrayList<String>();
                 if (paramList.getLength() != 0) {
-                    NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
+                    NodeList paramNodes = ((Element) paramList.item(0)).getElementsByTagName("param");
                     for (int j = 0; j < paramNodes.getLength(); j += 1) {
                         Node paramNode = paramNodes.item(j);
                         if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -62,15 +63,15 @@ public class DomainTest {
                 Simulator<?, ?> world = Simulators.getSimulator(simulatorName, simulatorParams);
 
                 NodeList agentList = doc.getElementsByTagName("agents");
-                NodeList agentNodes = ((Element)agentList.item(0)).getElementsByTagName("agent");
+                NodeList agentNodes = ((Element) agentList.item(0)).getElementsByTagName("agent");
                 for (int i = 0; i < agentNodes.getLength(); i += 1) {
-                    Element agentNode = (Element)agentNodes.item(i);
+                    Element agentNode = (Element) agentNodes.item(i);
                     if (agentNode.getNodeType() == Node.ELEMENT_NODE) {
                         String name = getTagValue("name", (Element) agentNode);
                         paramList = agentNode.getElementsByTagName("params");
                         List<String> params = new ArrayList<String>();
                         if (paramList.getLength() != 0) {
-                            NodeList paramNodes = ((Element)paramList.item(0)).getElementsByTagName("param");
+                            NodeList paramNodes = ((Element) paramList.item(0)).getElementsByTagName("param");
                             for (int j = 0; j < paramNodes.getLength(); j += 1) {
                                 Node paramNode = paramNodes.item(j);
                                 if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -88,9 +89,10 @@ public class DomainTest {
                     rewardsData.add(new double[nSimulations]);
                     avgMoveTimeData.add(new double[nSimulations]);
                 }
-                List<Simulator<?,?>> simulators = new ArrayList<Simulator<?,?>>();
-                for (int i = 0; i < agents.size(); i += 1)
+                List<Simulator<?, ?>> simulators = new ArrayList<Simulator<?, ?>>();
+                for (int i = 0; i < agents.size(); i += 1) {
                     simulators.add(world.copy());
+                }
                 Arbiter<?, ?> arbiter = new Arbiter(world.getInitialState(), world, simulators, agents);
                 for (int i = 0; i < nSimulations; i += 1) {
                     arbiter.reset();
@@ -107,12 +109,14 @@ public class DomainTest {
                         for (int j = 0; count != 0 && j < agents.size(); j += 1) {
                             avgMoveTimeData.get(j)[i] /= count;
                         }
-                    } catch (InterruptedException e) {}
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 // output
                 StringBuilder output = new StringBuilder();
-                
+
                 if (nSimulations == 1) {
                     output.append(arbiter.getHistory());
                 }
@@ -143,7 +147,7 @@ public class DomainTest {
                     output.append(df.format(sd.evaluate(avgMoveTimes)));
                     output.append("\n");
                 }
-                
+
                 if (args.length == 2) {
                     recordResults(args[1], output.toString());
                 } else {

@@ -5,12 +5,13 @@ import java.util.List;
 import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;
 
-public class BackgammonSimulatorProvider implements SimulatorProvider {
+public final class BackgammonSimulatorProvider implements SimulatorProvider {
     static {
         Simulators.registerProvider("backgammon", BackgammonSimulatorProvider.getInstance());
     }
 
-    private BackgammonSimulatorProvider() {}
+    private BackgammonSimulatorProvider() {
+    }
 
     public static BackgammonSimulatorProvider getInstance() {
         return new BackgammonSimulatorProvider();

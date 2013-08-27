@@ -3,7 +3,7 @@ package com.castlefrog.agl.domains.yahtzee;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YahtzeeSelectAction implements YahtzeeAction {
+public final class YahtzeeSelectAction implements YahtzeeAction {
     /** Holds list of all possible select actions. */
     private static List<YahtzeeSelectAction> selectActions_ = generateSelectActions();
 
@@ -28,8 +28,9 @@ public class YahtzeeSelectAction implements YahtzeeAction {
 
     private static List<YahtzeeSelectAction> generateSelectActions() {
         List<YahtzeeSelectAction> selectActions = new ArrayList<YahtzeeSelectAction>();
-        for (YahtzeeScoreCategory scoreCategory : YahtzeeScoreCategory.values())
+        for (YahtzeeScoreCategory scoreCategory : YahtzeeScoreCategory.values()) {
             selectActions.add(new YahtzeeSelectAction(scoreCategory));
+        }
         return selectActions;
     }
 
@@ -44,8 +45,9 @@ public class YahtzeeSelectAction implements YahtzeeAction {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof YahtzeeSelectAction))
+        if (!(object instanceof YahtzeeSelectAction)) {
             return false;
+        }
         YahtzeeSelectAction action = (YahtzeeSelectAction) object;
         return scoreCategory_ == action.getScoreCategory();
     }

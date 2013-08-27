@@ -13,10 +13,10 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     private static final int N_AGENTS = 2;
     private static final int MIN_BOARD_SIZE = 1;
     static final int MAX_BOARD_SIZE = 26;
-    
+
     private int boardSize_;
     private TurnType turnType_;
-    
+
     /**
      * Create a hex simulator.
      * Defaults to an initial board state.
@@ -27,9 +27,10 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
      */
     public HexSimulator(int boardSize,
                         TurnType turnType) {
-        if (boardSize < MIN_BOARD_SIZE || boardSize > MAX_BOARD_SIZE)
+        if (boardSize < MIN_BOARD_SIZE || boardSize > MAX_BOARD_SIZE) {
             throw new IllegalArgumentException("Invalid board size: (" + boardSize + ") " +
                     MIN_BOARD_SIZE + " <= boardSize <= " + MAX_BOARD_SIZE);
+        }
         boardSize_ = boardSize;
         turnType_ = turnType;
         state_ = getInitialState();
@@ -39,7 +40,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         legalActions_.add(new ArrayList<HexAction>());
         computeLegalActions(null);
     }
-    
+
     private HexSimulator(HexSimulator simulator) {
         super(simulator);
         boardSize_ = simulator.getBoardSize();
@@ -49,10 +50,10 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     public HexSimulator copy() {
         return new HexSimulator(this);
     }
-    
+
     public static HexSimulator create(List<String> params) {
         try {
-    		return new HexSimulator(Integer.valueOf(params.get(0)), TurnType.valueOf(TurnType.class, params.get(1)));
+            return new HexSimulator(Integer.valueOf(params.get(0)), TurnType.valueOf(TurnType.class, params.get(1)));
         } catch (Exception e) {
             throw new IllegalArgumentException(e.toString());
         }
@@ -66,15 +67,16 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
 
     public void stateTransition(List<HexAction> actions) {
         HexAction action = actions.get(state_.getAgentTurn());
-        if (!legalActions_.get(state_.getAgentTurn()).contains(action))
-            throw new IllegalActionException(action,state_);
+        if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
+            throw new IllegalActionException(action, state_);
+        }
         int x = action.getX();
         int y = action.getY();
-        if (state_.getLocation(x,y) == 0)
-            state_.setLocation(x,y,state_.getAgentTurn() + 1);
-        else {
-            state_.setLocation(x,y,0);
-            state_.setLocation(y,x,state_.getAgentTurn() + 1);
+        if (state_.getLocation(x, y) == 0) {
+            state_.setLocation(x, y, state_.getAgentTurn() + 1);
+        } else {
+            state_.setLocation(x, y, 0);
+            state_.setLocation(y, x, state_.getAgentTurn() + 1);
         }
         state_.switchAgentTurn();
         computeRewards(action);
@@ -93,19 +95,25 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
             } else {
                 legalActions.clear();
                 if (state_.getNPieces() == 1 && state_.getAgentTurn() == 1) {
-                    for (int i = 0; i < boardSize_; i += 1)
-                        for (int j = 0; j < boardSize_; j += 1)
-                            legalActions.add(HexAction.valueOf(i,j));
+                    for (int i = 0; i < boardSize_; i += 1) {
+                        for (int j = 0; j < boardSize_; j += 1) {
+                            legalActions.add(HexAction.valueOf(i, j));
+                        }
+                    }
                 } else {
-                    for (int i = 0; i < boardSize_; i += 1)
-                        for (int j = 0; j < boardSize_; j += 1)
-                            if (state_.getLocation(i,j) == 0)
-                                legalActions.add(HexAction.valueOf(i,j));
+                    for (int i = 0; i < boardSize_; i += 1) {
+                        for (int j = 0; j < boardSize_; j += 1) {
+                            if (state_.getLocation(i, j) == 0) {
+                                legalActions.add(HexAction.valueOf(i, j));
+                            }
+                        }
+                    }
                 }
             }
         } else {
-            for (List<HexAction> legalActions: legalActions_)
+            for (List<HexAction> legalActions: legalActions_) {
                 legalActions.clear();
+            }
         }
     }
 
@@ -114,14 +122,14 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
             byte[][] locations = state_.getLocations();
             boolean[][] visited = new boolean[boardSize_][boardSize_];
             for (int i = 0; i < boardSize_; i += 1) {
-                if (locations[0][i] == 1 && visited[0][i] == false) {
+                if (locations[0][i] == 1 && !visited[0][i]) {
                     if ((dfsSides(0, i, locations, visited) & 3) == 3) {
                         rewards_[0] = 1;
                         rewards_[1] = -1;
                         return;
                     }
                 }
-                if (locations[i][0] == 2 && visited[i][0] == false) {
+                if (locations[i][0] == 2 && !visited[i][0]) {
                     if ((dfsSides(i, 0, locations, visited) & 12) == 12) {
                         rewards_[0] = -1;
                         rewards_[1] = 1;
@@ -130,23 +138,26 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
                 }
             }
         }
-        rewards_[0] = rewards_[1] = 0;
+        rewards_[0] = 0;
+        rewards_[1] = 0;
     }
-    
+
     private void computeRewards(HexAction action) {
         byte[][] locations = state_.getLocations();
         boolean[][] visited = new boolean[boardSize_][boardSize_];
         int x = action.getX();
         int y = action.getY();
-        int value = dfsSides(x,y,locations,visited);
+        int value = dfsSides(x, y, locations, visited);
         if (locations[x][y] == 1 && (value & 3) == 3) {
             rewards_[0] = 1;
             rewards_[1] = -1;
         } else if (locations[x][y] == 2 && (value & 12) == 12) {
             rewards_[0] = -1;
             rewards_[1] = 1;
-        } else
-            rewards_[0] = rewards_[1] = 0;
+        } else {
+            rewards_[0] = 0;
+            rewards_[1] = 0;
+        }
     }
 
     private int dfsSides(int x0,
@@ -155,13 +166,13 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
                          boolean[][] visited) {
         int value = 0;
         Stack<HexAction> stack = new Stack<HexAction>();
-        stack.push(HexAction.valueOf(x0,y0));
+        stack.push(HexAction.valueOf(x0, y0));
         visited[x0][y0] = true;
         while (!stack.empty()) {
             HexAction v = stack.pop();
             int x = v.getX();
             int y = v.getY();
-            value |= getLocationMask(x,y);
+            value |= getLocationMask(x, y);
             for (int i = -1; i <= 1; i += 1) {
                 for (int j = -1; j <= 1; j += 1) {
                     int xi = x + i;
@@ -218,32 +229,34 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
 
     private int getLocationMask(int x, int y) {
         int side = 0;
-        if (x == 0)
+        if (x == 0) {
             side |= 1;
-        else if (x == boardSize_ - 1)
+        } else if (x == boardSize_ - 1) {
             side |= 2;
-        if (y == 0)
+        }
+        if (y == 0) {
             side |= 4;
-        else if (y == boardSize_ - 1)
+        } else if (y == boardSize_ - 1) {
             side |= 8;
+        }
         return side;
     }
-    
+
     public int[][] getWinningConnection() {
         int[][] connection = new int[boardSize_][boardSize_];
         if (rewards_[0] != 0) {
-            Simulator<HexState,HexAction> simulator = new HexSimulator(boardSize_, TurnType.SEQUENTIAL);
+            Simulator<HexState, HexAction> simulator = new HexSimulator(boardSize_, TurnType.SEQUENTIAL);
             HexState state = state_.copy();
             for (int i = 0; i < boardSize_; i += 1) {
                 for (int j = 0; j < boardSize_; j += 1) {
-                    int location = state.getLocation(i,j);
-                    if (!state.isLocationEmpty(i,j) &&
+                    int location = state.getLocation(i, j);
+                    if (!state.isLocationEmpty(i, j) &&
                             location != state.getAgentTurn() + 1) {
-                        state.setLocation(i,j,HexState.Location.EMPTY);
+                        state.setLocation(i, j, HexState.Location.EMPTY);
                         simulator.setState(state);
                         if (!simulator.isTerminalState()) {
                             connection[i][j] = 1;
-                            state.setLocation(i,j,location);
+                            state.setLocation(i, j, location);
                         }
                     }
                 }

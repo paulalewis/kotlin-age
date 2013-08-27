@@ -2,7 +2,7 @@ package com.castlefrog.agl.domains.ewn;
 
 import com.castlefrog.agl.State;
 
-public class EwnState implements State{
+public final class EwnState implements State {
     private static final int SIZE = 5;
 
     /**
@@ -30,9 +30,11 @@ public class EwnState implements State{
 
     public byte[][] getLocations() {
         byte[][] locations = new byte[SIZE][SIZE];
-        for (int i = 0; i < SIZE; i++)
-            for (int j = 0; j < SIZE; j++)
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 locations[i][j] = locations_[i][j];
+            }
+        }
         return locations;
     }
 
@@ -51,21 +53,27 @@ public class EwnState implements State{
     @Override
     public int hashCode() {
         int code = 7 + dieRoll_;
-        for (byte[] locations : locations_)
-            for (byte location : locations)
+        for (byte[] locations : locations_) {
+            for (byte location : locations) {
                 code = 11 * code + location;
+            }
+        }
         return code;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof EwnState))
+        if (!(object instanceof EwnState)) {
             return false;
+        }
         EwnState state = (EwnState) object;
-        for (int i = 0; i < SIZE; i++)
-            for (int j = 0; j < SIZE; j++)
-                if (locations_[i][j] == state.getLocation(i, j))
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (locations_[i][j] == state.getLocation(i, j)) {
                     return false;
+                }
+            }
+        }
         return dieRoll_ == state.getDieRoll();
     }
 
@@ -73,26 +81,30 @@ public class EwnState implements State{
     public String toString() {
         StringBuilder output = new StringBuilder();
         output.append("(" + dieRoll_ + ")\n");
-        for (int i = 0; i < 3 * SIZE + 1; i++)
+        for (int i = 0; i < 3 * SIZE + 1; i++) {
             output.append("-");
+        }
         output.append("\n");
         for (int i = SIZE - 1; i >= 0; i--) {
             output.append(":");
             for (int j = 0; j < SIZE; j++) {
-                if (j != 0)
+                if (j != 0) {
                     output.append("|");
+                }
                 int value = locations_[j][i];
-                if (value > 0)
+                if (value > 0) {
                     output.append("X" + value);
-                else if (value < 0)
+                } else if (value < 0) {
                     output.append("O" + -1 * value);
-                else
+                } else {
                     output.append("  ");
+                }
             }
             output.append(":\n");
         }
-        for (int i = 0; i < 3 * SIZE + 1; i++)
+        for (int i = 0; i < 3 * SIZE + 1; i++) {
             output.append("-");
+        }
         return output.toString();
     }
 }

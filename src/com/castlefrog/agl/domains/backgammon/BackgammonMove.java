@@ -7,7 +7,7 @@ import java.util.List;
  * Represents moving a single piece from one location to another. It is a
  * partial action as an action may be made up of multiple moves.
  */
-public class BackgammonMove implements Comparable<BackgammonMove> {
+public final class BackgammonMove implements Comparable<BackgammonMove> {
     /** List of all legal moves. */
     private static List<List<BackgammonMove>> moves_ = generateMoves();
 
@@ -28,8 +28,9 @@ public class BackgammonMove implements Comparable<BackgammonMove> {
         List<List<BackgammonMove>> moves = new ArrayList<List<BackgammonMove>>();
         for (int i = 0; i < BackgammonState.getNumberOfLocations(); i++) {
             moves.add(new ArrayList<BackgammonMove>());
-            for (int j = 0; j < BackgammonState.getNumberOfDieFaces(); j++)
+            for (int j = 0; j < BackgammonState.getNumberOfDieFaces(); j++) {
                 moves.get(i).add(new BackgammonMove(i, j + 1));
+            }
         }
         return moves;
     }
@@ -43,16 +44,17 @@ public class BackgammonMove implements Comparable<BackgammonMove> {
     }
 
     public int compareTo(BackgammonMove move) {
-        if (from_ < move.getFrom())
+        if (from_ < move.getFrom()) {
             return -1;
-        else if (from_ > move.getFrom())
+        } else if (from_ > move.getFrom()) {
             return 1;
-        else if (distance_ < move.getDistance())
+        } else if (distance_ < move.getDistance()) {
             return -1;
-        else if (distance_ > move.getDistance())
+        } else if (distance_ > move.getDistance()) {
             return 1;
-        else
+        } else {
             return 0;
+        }
     }
 
     @Override
@@ -62,8 +64,9 @@ public class BackgammonMove implements Comparable<BackgammonMove> {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof BackgammonMove))
+        if (!(object instanceof BackgammonMove)) {
             return false;
+        }
         BackgammonMove move = (BackgammonMove) object;
         return from_ == move.getFrom() && distance_ == move.getDistance();
     }

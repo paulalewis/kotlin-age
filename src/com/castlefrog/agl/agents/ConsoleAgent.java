@@ -11,8 +11,6 @@ import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.State;
 
 public final class ConsoleAgent implements Agent {
-    public ConsoleAgent() {}
-
     public <S extends State, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
         A action = null;
@@ -21,10 +19,11 @@ public final class ConsoleAgent implements Agent {
             System.out.println(state);
             System.out.print("Input Move (" + legalActions.size() + ") (");
             for (int i = 0; i < legalActions.size(); i++) {
-                if (i == legalActions.size() - 1)
+                if (i == legalActions.size() - 1) {
                     System.out.print(legalActions.get(i).toString() + ")\n");
-                else
+                } else {
                     System.out.print(legalActions.get(i).toString() + ",");
+                }
             }
             do {
                 String input = getInput();
@@ -36,22 +35,20 @@ public final class ConsoleAgent implements Agent {
 
     private <A extends Action> A matchToAction(String input, List<A> actions) {
         for (int i = 0; i < actions.size(); i++) {
-            if (actions.get(i).toString().toLowerCase().equals(
-                    input.toLowerCase()))
+            if (actions.get(i).toString().toLowerCase().equals(input.toLowerCase())) {
                 return actions.get(i);
+            }
         }
         return null;
     }
 
     private String getInput() {
-        String input = "";
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    System.in));
-            input = in.readLine();
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            return in.readLine();
         } catch (IOException e) {
+            return "";
         }
-        return input;
     }
 
     public String getName() {

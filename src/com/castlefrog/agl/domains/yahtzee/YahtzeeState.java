@@ -2,7 +2,7 @@ package com.castlefrog.agl.domains.yahtzee;
 
 import com.castlefrog.agl.State;
 
-public class YahtzeeState implements State {
+public final class YahtzeeState implements State {
     public static final int N_DICE = 5;
     public static final int N_VALUES = 6;
     public static final int N_SCORES = YahtzeeScoreCategory.values().length;
@@ -27,8 +27,9 @@ public class YahtzeeState implements State {
 
     public byte[] getDiceValues() {
         byte[] diceValues = new byte[N_VALUES];
-        for (int i = 0; i < N_VALUES; i++)
+        for (int i = 0; i < N_VALUES; i++) {
             diceValues[i] = diceValues_[i];
+        }
         return diceValues;
     }
 
@@ -38,8 +39,9 @@ public class YahtzeeState implements State {
 
     public int[] getScores() {
         int[] scores = new int[N_SCORES];
-        for (int i = 0; i < N_SCORES; i++)
+        for (int i = 0; i < N_SCORES; i++) {
             scores[i] = scores_[i];
+        }
         return scores;
     }
 
@@ -54,26 +56,34 @@ public class YahtzeeState implements State {
     @Override
     public int hashCode() {
         int code = 7 + rolls_;
-        for (int i = 0; i < N_VALUES; i++)
+        for (int i = 0; i < N_VALUES; i++) {
             code = 11 * code + diceValues_[i];
-        for (int i = 0; i < N_SCORES; i++)
+        }
+        for (int i = 0; i < N_SCORES; i++) {
             code = 11 * code + scores_[i];
+        }
         return code;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof YahtzeeState))
+        if (!(object instanceof YahtzeeState)) {
             return false;
+        }
         YahtzeeState state = (YahtzeeState) object;
-        for (int i = 0; i < N_VALUES; i++)
-            if (diceValues_[i] != state.getDiceValue(i))
+        for (int i = 0; i < N_VALUES; i++) {
+            if (diceValues_[i] != state.getDiceValue(i)) {
                 return false;
-        if (rolls_ != state.getRolls())
+            }
+        }
+        if (rolls_ != state.getRolls()) {
             return false;
-        for (int i = 0; i < N_SCORES; i++)
-            if (scores_[i] != state.getScore(i))
+        }
+        for (int i = 0; i < N_SCORES; i++) {
+            if (scores_[i] != state.getScore(i)) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -81,18 +91,22 @@ public class YahtzeeState implements State {
     public String toString() {
         StringBuilder output = new StringBuilder();
         YahtzeeScoreCategory[] scoreCategories = YahtzeeScoreCategory.values();
-        for (int i = 0; i < N_SCORES; i++)
-            if (scores_[i] != -1)
-                output.append(scoreCategories[i].name() + ": " + scores_[i]
-                        + "\n");
+        for (int i = 0; i < N_SCORES; i++) {
+            if (scores_[i] != -1) {
+                output.append(scoreCategories[i].name() + ": " + scores_[i] + "\n");
+            }
+        }
         output.append("Rolls: " + rolls_ + "\n");
         output.append("Dice: [ ");
-        for (int i = 0; i < diceValues_.length; i++)
+        for (int i = 0; i < diceValues_.length; i++) {
             output.append(diceValues_[i] + " ");
+        }
         output.append("]\n");
-        for (int i = 0; i < N_SCORES; i++)
-            if (scores_[i] == -1)
+        for (int i = 0; i < N_SCORES; i++) {
+            if (scores_[i] == -1) {
                 output.append(scoreCategories[i].name() + " ");
+            }
+        }
         return output.toString();
     }
 }

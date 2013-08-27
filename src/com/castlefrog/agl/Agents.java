@@ -11,13 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * Used as an api for providers to include agents
  * and clients to use those agents.
  */
-public class Agents {
-    private Agents() {}
+public final class Agents {
+    private static final Map<String, AgentProvider> PROVIDERS = new ConcurrentHashMap<String, AgentProvider>();
 
-    private static final Map<String, AgentProvider> providers = new ConcurrentHashMap<String, AgentProvider>();
+    private Agents() {
+    }
 
     // provider api
-    
+
     /**
      * Providers use this method in AgentProvider class to add new agents.
      * @param name string to associate with provider
@@ -25,7 +26,7 @@ public class Agents {
      * @see AgentProvider
      */
     public static void registerProvider(String name, AgentProvider agentProvider) {
-        providers.put(name, agentProvider);
+        PROVIDERS.put(name, agentProvider);
     }
 
     // client api
@@ -36,9 +37,10 @@ public class Agents {
      * @param params list of arguments for agent constructor
      */
     public static Agent getAgent(String name, List<String> params) {
-        AgentProvider agentProvider = providers.get(name);
-        if (agentProvider == null)
+        AgentProvider agentProvider = PROVIDERS.get(name);
+        if (agentProvider == null) {
             throw new IllegalArgumentException("No agent registered with name: " + name);
+        }
         return agentProvider.newAgent(params);
     }
 
@@ -48,7 +50,7 @@ public class Agents {
      */
     public static List<String> getProviderList() {
         List<String> names = new ArrayList<String>();
-        Set<String> keySet = providers.keySet();
+        Set<String> keySet = PROVIDERS.keySet();
         for (Iterator<String> it = keySet.iterator(); it.hasNext();) {
             names.add(it.next());
         }

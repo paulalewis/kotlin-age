@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.ewn;
 
-public class EwnSetupAction implements EwnAction {
+public final class EwnSetupAction implements EwnAction {
     private static final int NUMBER_OF_PIECES = 6;
 
     private byte[] values_;
@@ -10,9 +10,9 @@ public class EwnSetupAction implements EwnAction {
         values_ = new byte[NUMBER_OF_PIECES];
         for (int i = 0; i < values_.length; i++) {
             values_[i] = values[i];
-            if (used[values[i] - 1])
-                throw new IllegalArgumentException("Illegal Setup Action: "
-                        + values);
+            if (used[values[i] - 1]) {
+                throw new IllegalArgumentException("Illegal Setup Action: " + values);
+            }
             used[values[i] - 1] = true;
         }
     }
@@ -28,19 +28,23 @@ public class EwnSetupAction implements EwnAction {
     @Override
     public int hashCode() {
         int code = 7;
-        for (int value : values_)
+        for (int value : values_) {
             code = 11 * code + value;
+        }
         return code;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof EwnSetupAction))
+        if (!(object instanceof EwnSetupAction)) {
             return false;
+        }
         EwnSetupAction action = (EwnSetupAction) object;
-        for (int i = 0; i < NUMBER_OF_PIECES; i++)
-            if (values_[i] != action.getValue(i))
+        for (int i = 0; i < NUMBER_OF_PIECES; i++) {
+            if (values_[i] != action.getValue(i)) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -48,8 +52,9 @@ public class EwnSetupAction implements EwnAction {
     public String toString() {
         StringBuilder output = new StringBuilder();
         output.append("[ ");
-        for (int i = 0; i < NUMBER_OF_PIECES; i++)
+        for (int i = 0; i < NUMBER_OF_PIECES; i++) {
             output.append(values_[i] + " ");
+        }
         output.append("]");
         return output.toString();
     }

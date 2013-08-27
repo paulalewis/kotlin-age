@@ -7,25 +7,27 @@ import com.castlefrog.agl.Agent;
 import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.State;
 
-public class ExternalAgent implements Agent {
+public final class ExternalAgent implements Agent {
     /** selected action to return from selectAction */
-    private Object action_;
+    private Object action;
     /** indicates when external program has updated action_ */
-    private CountDownLatch actionReady_;
+    private CountDownLatch actionReady;
 
     public ExternalAgent() {
-        actionReady_ = new CountDownLatch(1);
+        actionReady = new CountDownLatch(1);
     }
 
     public <S extends State, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
         if (simulator.hasLegalActions(agentId)) {
             try {
-                actionReady_.await();
-            } catch (InterruptedException e) {}
+                actionReady.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             @SuppressWarnings("unchecked")
-            A action = (A) action_;
-            actionReady_ = new CountDownLatch(1);
+            A action = (A) this.action;
+            actionReady = new CountDownLatch(1);
             return action;
         }
         return null;
@@ -35,14 +37,15 @@ public class ExternalAgent implements Agent {
      * Set the action for this agent.
      */
     public synchronized <A extends Action> void setAction(A action) {
-        action_ = action;
-        actionReady_.countDown();
+        this.action = action;
+        actionReady.countDown();
     }
 
     public String getName() {
         return "external";
     }
 
+    @Override
     public String toString() {
         return getName() + " agent";
     }

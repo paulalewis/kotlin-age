@@ -31,7 +31,7 @@ public final class UctAgent implements Agent {
 
     /** method for quickly simulating entire game */
     private SimulationMethod simulationMethod_;
-    
+
     public enum SimulationMethod {
         RANDOM
     }
@@ -54,10 +54,12 @@ public final class UctAgent implements Agent {
          * @param rewards for each agent
          */
         public void update(int[] rewards) {
-            if (rewards_ == null)
+            if (rewards_ == null) {
                 rewards_ = new int[rewards.length];
-            for (int i = 0; i < rewards.length; i++)
+            }
+            for (int i = 0; i < rewards.length; i++) {
                 rewards_[i] += rewards[i];
+            }
             visits_ += 1;
         }
 
@@ -67,7 +69,6 @@ public final class UctAgent implements Agent {
 
         /**
          * Get the reward for the agent.
-         * 
          * @param agentId
          *      agent identifier
          * @return
@@ -95,18 +96,20 @@ public final class UctAgent implements Agent {
             state_ = state;
 
             List<List<A>> actionGroups = new ArrayList<List<A>>();
-            for (int i = 0; i < legalActions.size(); i++)
+            for (int i = 0; i < legalActions.size(); i++) {
                 actionGroups = combineActions(actionGroups, legalActions.get(i));
-            
+            }
             children_ = new ArrayList<ActionNode<S, A>>(actionGroups.size());
-            for (List<A> actions: actionGroups)
+            for (List<A> actions: actionGroups) {
                 children_.add(new ActionNode<S, A>(actions));
+            }
         }
 
         public List<List<A>> combineActions(List<List<A>> actionGroups,
                                             List<A> actions) {
-            if (actions.size() == 0)
+            if (actions.size() == 0) {
                 actions.add(null);
+            }
             List<List<A>> newActionGroups = new ArrayList<List<A>>();
             if (actionGroups.size() == 0) {
                 for (A action: actions) {
@@ -118,8 +121,9 @@ public final class UctAgent implements Agent {
                 for (A action: actions) {
                     for (List<A> actionGroup: actionGroups) {
                         List<A> temp = new ArrayList<A>();
-                        for (A tempAction: actionGroup)
+                        for (A tempAction: actionGroup) {
                             temp.add(tempAction);
+                        }
                         temp.add(action);
                         newActionGroups.add(temp);
                     }
@@ -131,16 +135,17 @@ public final class UctAgent implements Agent {
         /**
          * Select child node with best UCT value. Always play a random
          * unexplored action first.
-         * 
          * @return an action child node.
          */
         public ActionNode<S, A> uctSelect() {
             assert children_.size() > 0;
             if (visits_ <= children_.size()) {
                 List<ActionNode<S, A>> unvisited = new ArrayList<ActionNode<S, A>>();
-                for (ActionNode<S, A> child: children_)
-                    if (child.getVisits() == 0)
+                for (ActionNode<S, A> child: children_) {
+                    if (child.getVisits() == 0) {
                         unvisited.add(child);
+                    }
+                }
                 return unvisited.get((int) (Math.random() * unvisited.size()));
             } else {
                 ActionNode<S, A> result = null;
@@ -150,9 +155,9 @@ public final class UctAgent implements Agent {
                     for (int i = 0; i < rewards_.length; i += 1) {
                         //All agents with non null actions are trying to maximize their reward
                         if (child.getActions().get(i) != null) {
-                            uctValue += ((double) child.getReward(i)) / child.getVisits()
-                                     + uctConstant_ * Math.sqrt(Math.log(getVisits()) / child.getVisits())
-                                     + getRandomEpsilon();
+                            uctValue += ((double) child.getReward(i)) / child.getVisits() +
+                                        uctConstant_ * Math.sqrt(Math.log(getVisits()) / child.getVisits()) +
+                                        getRandomEpsilon();
                         }
                     }
                     if (result == null || uctValue > bestUct) {
@@ -190,10 +195,11 @@ public final class UctAgent implements Agent {
         public ActionNode(List<A> actions) {
             actions_ = actions;
             frequencyTable_ = null;
-            if (sparseSampleSize_ != -1)
+            if (sparseSampleSize_ != -1) {
                 children_ = new Hashtable<Integer, StateNode<S, A>>(sparseSampleSize_);
-            else
+            } else {
                 children_ = new Hashtable<Integer, StateNode<S, A>>();
+            }
         }
 
         /**
@@ -201,7 +207,6 @@ public final class UctAgent implements Agent {
          * state node at the next state and return that state node. If sparse
          * sampling limit has been reached then a random node is returned from the
          * current list of children.
-         * 
          * @param simulator used to simulate actions.
          * @return selected child state node.
          */
@@ -219,9 +224,11 @@ public final class UctAgent implements Agent {
             } else {
                 if (frequencyTable_ == null) {
                     frequencyTable_ = new ArrayList<StateNode<S, A>>();
-                    for (StateNode<S, A> stateNode : children_.values())
-                        for (int i = 0; i < stateNode.visits_; i++)
+                    for (StateNode<S, A> stateNode : children_.values()) {
+                        for (int i = 0; i < stateNode.visits_; i++) {
                             frequencyTable_.add(stateNode);
+                        }
+                    }
                     children_ = null; // Release hash table from memory
                 }
                 return frequencyTable_.get((int) (Math.random() * frequencyTable_.size()));
@@ -235,7 +242,6 @@ public final class UctAgent implements Agent {
 
     /**
      * Create a traditional UCT agent.
-     * 
      * @param nSimulations
      *            the number of complete games to simulate.
      * @param uctConstant
@@ -248,7 +254,6 @@ public final class UctAgent implements Agent {
 
     /**
      * UCT algorithm with sparse sampling of large stochastic state spaces.
-     * 
      * @param nSimulations
      *            the number of complete games played.
      * @param uctConstant
@@ -265,7 +270,6 @@ public final class UctAgent implements Agent {
 
     /**
      * UCT algorithm with sparse sampling and ensemble methods.
-     * 
      * @param nSimulations
      *            the number of complete games played.
      * @param uctConstant
@@ -274,21 +278,25 @@ public final class UctAgent implements Agent {
      * @param sparseSampleSize
      *            max number of sample states from any action node or infinite
      *            if equal to -1.
-     * @param nEnsembles 
+     * @param nEnsembles
      *            number of trees built.
      */
     public UctAgent(int nSimulations,
                     double uctConstant,
                     int sparseSampleSize,
                     int nEnsembles) {
-        if (nSimulations < 1)
+        if (nSimulations < 1) {
             throw new IllegalArgumentException("Number of Simulations < 1");
-        if (uctConstant < 0)
+        }
+        if (uctConstant < 0) {
             throw new IllegalArgumentException("UCT Constant > 0");
-        if (sparseSampleSize < 1 && sparseSampleSize != -1)
+        }
+        if (sparseSampleSize < 1 && sparseSampleSize != -1) {
             throw new IllegalArgumentException("Sparse Sample Size > 0 or = -1");
-        if (nEnsembles < 1)
+        }
+        if (nEnsembles < 1) {
             throw new IllegalArgumentException("Ensemble trials must be > 0");
+        }
         nSimulations_ = nSimulations;
         uctConstant_ = uctConstant;
         sparseSampleSize_ = sparseSampleSize;
@@ -309,8 +317,9 @@ public final class UctAgent implements Agent {
         simulator.setState(state);
         List<List<A>> legalActions = simulator.getLegalActions();
         //if only one of action is possible, skip action selection algorithms
-        if (legalActions.get(agentId).size() == 1)
+        if (legalActions.get(agentId).size() == 1) {
             return legalActions.get(agentId).get(0);
+        }
 
         StateNode<S, A> temp = new StateNode<S, A>(simulator.getState(), legalActions);
         double[] rootActionRewards = new double[temp.getChildren().size()];
@@ -319,8 +328,9 @@ public final class UctAgent implements Agent {
         // Generate UCT trees equal to the number of ensembles
         for (int i = 0; i < nEnsembles_; i += 1) {
             StateNode<S, A> root = new StateNode<S, A>(simulator.getState(), legalActions);
-            for (int j = 0; j < nSimulations_; j += 1)
+            for (int j = 0; j < nSimulations_; j += 1) {
                 playSimulation(root, simulator.copy());
+            }
 
             // Save visits and current agent's rewards at all root action nodes
             List<ActionNode<S, A>> children = root.getChildren();
@@ -334,9 +344,11 @@ public final class UctAgent implements Agent {
         A selectedAction = null;
         double bestValue = 0;
         double[] values = new double[rootActionRewards.length];
-        for (int i = 0; i < values.length; i += 1)
-            if (rootActionVisits[i] > 0)
+        for (int i = 0; i < values.length; i += 1) {
+            if (rootActionVisits[i] > 0) {
                 values[i] = rootActionRewards[i] / rootActionVisits[i] + getRandomEpsilon();
+            }
+        }
         for (int i = 0; i < values.length; i += 1) {
             if (rootActionVisits[i] > 0 &&
                     (selectedAction == null || values[i] > bestValue)) {
@@ -373,15 +385,14 @@ public final class UctAgent implements Agent {
     }*/
 
     private double getRandomEpsilon() {
-        final double EPSILON = 0.0000000005;
-        return EPSILON * (Math.random() - 0.5);
+        final double epsilon = 0.0000000005;
+        return epsilon * (Math.random() - 0.5);
     }
-    
+
     /**
      * This method walks down the tree making decisions of the best nodes as it
      * goes. When it reaches an unexplored leaf node it plays a random game to
      * initialize that nodes value.
-     * 
      * @param node
      *            current state node being traversed in tree.
      * @param simulator
@@ -390,10 +401,11 @@ public final class UctAgent implements Agent {
      */
     private <S extends State, A extends Action> int[] playSimulation(StateNode<S, A> node, Simulator<S, A> simulator) {
         int[] rewards;
-        if (simulator.isTerminalState() || node.getVisits() == 0)
+        if (simulator.isTerminalState() || node.getVisits() == 0) {
             rewards = simulateGame(simulator);
-        else
+        } else {
             rewards = playSimulation(node.uctSelect(), simulator);
+        }
         node.update(rewards);
         return rewards;
     }
@@ -402,7 +414,6 @@ public final class UctAgent implements Agent {
      * This method walks down the tree making decisions of the best nodes as it
      * goes. When it reaches an unexplored leaf node it plays a random game to
      * initialize that nodes value.
-     * 
      * @param node
      *            current action node being traversed in tree.
      * @param simulator
@@ -423,7 +434,6 @@ public final class UctAgent implements Agent {
     /**
      * Quickly simulate a game from the current state and return accumulated
      * reward.
-     * 
      * @param simulator
      *            a copy of the simulator you want to use to simulate game.
      * @return accumulated reward vector from the game.
@@ -433,19 +443,22 @@ public final class UctAgent implements Agent {
         int[] totalRewards = simulator.getRewards();
         while (!simulator.isTerminalState()) {
             switch (simulationMethod_) {
+            default:
             case RANDOM:
                 List<A> selectedActions = new ArrayList<A>();
                 for (List<A> actions: legalActions) {
-                    if (actions.size() != 0)
+                    if (actions.size() != 0) {
                         selectedActions.add(actions.get((int) (Math.random() * actions.size())));
-                    else
+                    } else {
                         selectedActions.add(null);
+                    }
                 }
                 simulator.stateTransition(selectedActions);
                 break;
             }
-            for (int i = 0; i < totalRewards.length; i++)
+            for (int i = 0; i < totalRewards.length; i++) {
                 totalRewards[i] += simulator.getRewards()[i];
+            }
             legalActions = simulator.getLegalActions();
         }
         return totalRewards;
@@ -461,8 +474,9 @@ public final class UctAgent implements Agent {
         output.append(getName() + " agent");
         output.append("\n  number of simulations:     " + nSimulations_);
         output.append("\n  UCT constant:              " + uctConstant_);
-        if (sparseSampleSize_ > 0)
+        if (sparseSampleSize_ > 0) {
             output.append("\n  sparse sample size:        " + sparseSampleSize_);
+        }
         if (nEnsembles_ > 1) {
             output.append("\n  number of ensembles:       " + nEnsembles_);
         }

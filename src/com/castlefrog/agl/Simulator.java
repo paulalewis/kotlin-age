@@ -19,7 +19,7 @@ public interface Simulator<S extends State, A extends Action> extends Copyable<S
      * @param state any legal state.
      */
     void setState(S state);
-    
+
     /**
      * A simulator takes a list of actions to transition from
      * one state to another. If an agent cannot perform an action
@@ -59,7 +59,7 @@ public interface Simulator<S extends State, A extends Action> extends Copyable<S
      * @return current state.
      */
     S getState();
-    
+
     /**
      * This method returns a list of legal actions for each agent.
      * If an agent has no legal actions then an empty list is added
@@ -67,7 +67,7 @@ public interface Simulator<S extends State, A extends Action> extends Copyable<S
      * @return a list of legal actions for each agent from the current state.
      */
     List<List<A>> getLegalActions();
-    
+
     /**
      * This method returns a list of legal actions for the given agent.
      * @param agentId agent ID associated with list of legal actions.

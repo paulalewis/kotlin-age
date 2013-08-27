@@ -17,7 +17,6 @@ public final class Connect4Action implements Action {
 
     /**
      * Create a Connect 4 action by specifying a move location.
-     * 
      * @param location
      *            value assumes range from 0 to Connect4State.WIDTH - 1.
      */
@@ -31,15 +30,16 @@ public final class Connect4Action implements Action {
 
     /**
      * Returns the Connect 4 action representation of the int location.
-     * 
      * @param location
      *            slot location to place piece.
      * @return a Connect 4 action.
      */
     public static Connect4Action valueOf(int location) {
-        if (connect4Actions_.size() <= location)
-            for (int i = connect4Actions_.size(); i <= location; i++)
+        if (connect4Actions_.size() <= location) {
+            for (int i = connect4Actions_.size(); i <= location; i++) {
                 connect4Actions_.add(new Connect4Action(i));
+            }
+        }
         return connect4Actions_.get(location);
     }
 
@@ -54,8 +54,9 @@ public final class Connect4Action implements Action {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof Connect4Action))
+        if (!(object instanceof Connect4Action)) {
             return false;
+        }
         Connect4Action connect4Action = (Connect4Action) object;
         return location_ == connect4Action.getLocation();
     }

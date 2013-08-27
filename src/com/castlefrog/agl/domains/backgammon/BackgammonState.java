@@ -7,7 +7,7 @@ import com.castlefrog.agl.State;
  * 0 if no pieces are at that location and positive if player 1 has pieces there
  * and negative for the number of pieces player 2 has there.
  */
-public class BackgammonState implements State {
+public final class BackgammonState implements State {
     private static final int NUMBER_OF_DICE = 2;
     private static final int NUMBER_OF_DIE_FACES = 6;
     private static final int NUMBER_OF_LOCATIONS = 26;
@@ -28,8 +28,9 @@ public class BackgammonState implements State {
 
     public byte[] getLocations() {
         byte[] locations = new byte[NUMBER_OF_LOCATIONS];
-        for (int i = 0; i < NUMBER_OF_LOCATIONS; i += 1)
+        for (int i = 0; i < NUMBER_OF_LOCATIONS; i += 1) {
             locations[i] = locations_[i];
+        }
         return locations;
     }
 
@@ -39,8 +40,9 @@ public class BackgammonState implements State {
 
     public byte[] getDice() {
         byte[] dice = new byte[NUMBER_OF_DICE];
-        for (int i = 0; i < NUMBER_OF_DICE; i += 1)
+        for (int i = 0; i < NUMBER_OF_DICE; i += 1) {
             dice[i] = dice_[i];
+        }
         return dice;
     }
 
@@ -67,19 +69,23 @@ public class BackgammonState implements State {
     @Override
     public int hashCode() {
         int code = 11 * (7 + dice_[0]) + dice_[1];
-        for (int i = 0; i < NUMBER_OF_LOCATIONS; i += 1)
+        for (int i = 0; i < NUMBER_OF_LOCATIONS; i += 1) {
             code = 11 * code + locations_[i];
+        }
         return code;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof BackgammonState))
+        if (!(object instanceof BackgammonState)) {
             return false;
+        }
         BackgammonState state = (BackgammonState) object;
-        for (int i = 0; i < NUMBER_OF_LOCATIONS; i += 1)
-            if (locations_[i] != state.getLocation(i))
+        for (int i = 0; i < NUMBER_OF_LOCATIONS; i += 1) {
+            if (locations_[i] != state.getLocation(i)) {
                 return false;
+            }
+        }
         return dice_[0] == state.getDie(0) && dice_[1] == state.getDie(1);
     }
 
@@ -88,27 +94,31 @@ public class BackgammonState implements State {
         StringBuilder output = new StringBuilder();
         output.append("[" + dice_[0] + "][" + dice_[1] + "]\n");
         for (int i = 12; i > 6; i--) {
-            if (locations_[i] >= 0)
+            if (locations_[i] >= 0) {
                 output.append(" ");
+            }
             output.append(locations_[i]);
         }
         output.append("|");
         for (int i = 6; i > 0; i--) {
-            if (locations_[i] >= 0)
+            if (locations_[i] >= 0) {
                 output.append(" ");
+            }
             output.append(locations_[i]);
         }
         output.append(" [" + locations_[0] + "]\n");
         output.append("------------|------------\n");
         for (int i = 13; i < 19; i++) {
-            if (locations_[i] >= 0)
+            if (locations_[i] >= 0) {
                 output.append(" ");
+            }
             output.append(locations_[i]);
         }
         output.append("|");
         for (int i = 19; i < 25; i += 1) {
-            if (locations_[i] >= 0)
+            if (locations_[i] >= 0) {
                 output.append(" ");
+            }
             output.append(locations_[i]);
         }
         output.append(" [" + locations_[25] + "]");

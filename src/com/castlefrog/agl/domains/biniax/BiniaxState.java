@@ -33,9 +33,11 @@ public final class BiniaxState implements State {
 
     public byte[][] getLocations() {
         byte[][] locations = new byte[WIDTH][HEIGHT];
-        for (int i = 0; i < WIDTH; i++)
-            for (int j = 0; j < HEIGHT; j++)
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
                 locations[i][j] = locations_[i][j];
+            }
+        }
         return locations;
     }
 
@@ -74,24 +76,31 @@ public final class BiniaxState implements State {
     @Override
     public int hashCode() {
         int code = 7 + freeMoves_;
-        for (byte[] locations : locations_)
-            for (byte location : locations)
+        for (byte[] locations : locations_) {
+            for (byte location : locations) {
                 code = 11 * code + location;
+            }
+        }
         code = 11 * code + nTurns_;
         return code;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof BiniaxState))
+        if (!(object instanceof BiniaxState)) {
             return false;
+        }
         BiniaxState state = (BiniaxState) object;
-        if (freeMoves_ != state.getFreeMoves())
+        if (freeMoves_ != state.getFreeMoves()) {
             return false;
-        for (int i = 0; i < WIDTH; i += 1)
-            for (int j = 0; j < HEIGHT; j += 1)
-                if (locations_[i][j] != state.getLocation(i, j))
+        }
+        for (int i = 0; i < WIDTH; i += 1) {
+            for (int j = 0; j < HEIGHT; j += 1) {
+                if (locations_[i][j] != state.getLocation(i, j)) {
                     return false;
+                }
+            }
+        }
         return nTurns_ == state.getNTurns();
     }
 
@@ -101,36 +110,36 @@ public final class BiniaxState implements State {
         StringBuilder output = new StringBuilder();
         output.append("(Turns: " + nTurns_ + ")\n");
         output.append("(Free Moves:" + freeMoves_ + ")\n");
-        for (int i = 0; i < WIDTH; i += 1)
+        for (int i = 0; i < WIDTH; i += 1) {
             output.append("----");
+        }
         output.append("-\n");
         for (int j = 0; j < HEIGHT; j += 1) {
             output.append(":");
             for (int i = 0; i < WIDTH; i += 1) {
-                if (i != 0)
+                if (i != 0) {
                     output.append(" ");
-                if (locations_[i][j] == 0)
+                }
+                if (locations_[i][j] == 0) {
                     output.append("   ");
-                else if (locations_[i][j] == -1)
+                } else if (locations_[i][j] == -1) {
                     output.append("<X>");
-                else if (locations_[i][j] > 0
-                        && locations_[i][j] < (MAX_ELEMENTS + 1)) {
+                } else if (locations_[i][j] > 0 && locations_[i][j] < (MAX_ELEMENTS + 1)) {
                     output.append("[");
                     output.append(ELEMENTS.charAt(locations_[i][j]));
                     output.append("]");
                 } else {
-                    output.append(ELEMENTS.charAt(locations_[i][j]
-                            / (MAX_ELEMENTS + 1)));
+                    output.append(ELEMENTS.charAt(locations_[i][j] / (MAX_ELEMENTS + 1)));
                     output.append("-");
-                    output.append(ELEMENTS.charAt(locations_[i][j]
-                            % (MAX_ELEMENTS + 1)));
+                    output.append(ELEMENTS.charAt(locations_[i][j] % (MAX_ELEMENTS + 1)));
                 }
             }
             output.append(":\n");
         }
         output.append("-");
-        for (int i = 0; i < WIDTH; i++)
+        for (int i = 0; i < WIDTH; i++) {
             output.append("----");
+        }
         return output.toString();
     }
 }

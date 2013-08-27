@@ -8,9 +8,9 @@ import com.castlefrog.agl.Action;
  * Immutable object that represents a hex action.
  */
 public final class HexAction implements Action, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static HexAction[][] actions_ = generateActions();
+    private static HexAction[][] actions_ = generateActions();
 
     private final byte x_;
     private final byte y_;
@@ -31,13 +31,15 @@ public final class HexAction implements Action, Serializable {
     public static HexAction valueOf(int x, int y) {
         return actions_[x][y];
     }
-    
+
     private static HexAction[][] generateActions() {
         int size = HexSimulator.MAX_BOARD_SIZE;
         HexAction[][] actions = new HexAction[size][size];
-        for (int i = 0; i < size; i += 1)
-            for (int j = 0; j < size; j += 1)
-                actions[i][j] = new HexAction(i,j);
+        for (int i = 0; i < size; i += 1) {
+            for (int j = 0; j < size; j += 1) {
+                actions[i][j] = new HexAction(i, j);
+            }
+        }
         return actions;
     }
 
@@ -60,14 +62,15 @@ public final class HexAction implements Action, Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof HexAction))
+        if (!(object instanceof HexAction)) {
             return false;
+        }
         HexAction action = (HexAction) object;
         return x_ == action.getX() && y_ == action.getY();
     }
 
     @Override
     public String toString() {
-        return "(" + ((char)(0x41 + x_)) + y_ + ")";
+        return "(" + ((char) (0x41 + x_)) + y_ + ")";
     }
 }

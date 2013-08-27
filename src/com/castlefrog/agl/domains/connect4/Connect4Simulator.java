@@ -7,7 +7,7 @@ import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
-public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4Action> {
+public final class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4Action> {
     private static final int N_AGENTS = 2;
     private static final long ALL_LOCATIONS = (1L << ((Connect4State.getHeight() + 1) * Connect4State.getWidth())) - 1;
     private static final long FIRST_COLUMN = (1L << Connect4State.getHeight() + 1) - 1;
@@ -29,16 +29,17 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
                               int[] height) {
         super(simulator);
         height_ = new int[height.length];
-        for (int i = 0; i < height.length; i += 1)
+        for (int i = 0; i < height.length; i += 1) {
             height_[i] = height[i];
+        }
     }
 
     public Connect4Simulator copy() {
         return new Connect4Simulator(this, height_);
     }
-    
+
     public static Connect4Simulator create(List<String> params) {
-    	return new Connect4Simulator();
+        return new Connect4Simulator();
     }
 
     public void setState(Connect4State state) {
@@ -50,10 +51,11 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
     public void setState(Connect4State state, List<List<Connect4Action>> legalActions) {
         state_ = state;
         legalActions_ = legalActions;
-        if (legalActions_.size() == 0)
+        if (legalActions_.size() == 0) {
             computeRewards();
-        else
+        } else {
             rewards_ = new int[N_AGENTS];
+        }
         computeHeight();
     }
 
@@ -63,15 +65,17 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
         long bitBoard = bitBoards[0] | bitBoards[1];
         for (int i = 0; i < Connect4State.getWidth(); i++) {
             height_[i] = (Connect4State.getHeight() + 1) * i;
-            while ((bitBoard & (1L << height_[i])) != 0)
+            while ((bitBoard & (1L << height_[i])) != 0) {
                 height_[i]++;
+            }
         }
     }
 
     public void stateTransition(List<Connect4Action> actions) {
-    	Connect4Action action = actions.get(state_.getAgentTurn());
-        if (!legalActions_.get(state_.getAgentTurn()).contains(action))
-            throw new IllegalActionException(action,state_);
+        Connect4Action action = actions.get(state_.getAgentTurn());
+        if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
+            throw new IllegalActionException(action, state_);
+        }
         long[] bitBoards = state_.getBitBoards();
         bitBoards[state_.getAgentTurn()] ^= (1L << (height_[action.getLocation()]++));
         state_ = new Connect4State(bitBoards, state_.getNextAgentTurn());
@@ -85,9 +89,11 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
         computeHeight();
         if (rewards_[0] == 0) {
             long bitBoard = state_.getBitBoards()[state_.getAgentTurn()];
-            for (int i = 0; i < Connect4State.getWidth(); i += 1)
-                if (((bitBoard | (1L << height_[i])) & ABOVE_TOP_ROW) == 0)
+            for (int i = 0; i < Connect4State.getWidth(); i += 1) {
+                if (((bitBoard | (1L << height_[i])) & ABOVE_TOP_ROW) == 0) {
                     legalActions_.get(state_.getAgentTurn()).add(Connect4Action.valueOf(i));
+                }
+            }
         }
     }
 
@@ -102,21 +108,21 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
             long diagonal2 = bitBoard & (bitBoard >> (height + 2));
             long vertical = bitBoard & (bitBoard >> 1);
             if (((diagonal1 & (diagonal1 >> 2 * height)) |
-            		(horizontal & (horizontal >> 2 * (height + 1))) |
-            		(diagonal2 & (diagonal2 >> 2 * (height + 2))) |
-            		(vertical & (vertical >> 2))) != 0) {
+                    (horizontal & (horizontal >> 2 * (height + 1))) |
+                    (diagonal2 & (diagonal2 >> 2 * (height + 2))) |
+                    (vertical & (vertical >> 2))) != 0) {
                 if (i == 0) {
-                    rewards_ = new int[] { 1, -1 };
+                    rewards_ = new int[] {1, -1};
                     return;
                 } else {
-                    rewards_ = new int[] { -1, 1 };
+                    rewards_ = new int[] {-1, 1};
                     return;
                 }
             }
         }
         rewards_ = new int[N_AGENTS];
     }
-    
+
     public Connect4State getInitialState() {
         return new Connect4State(new long[2], 0);
     }
@@ -124,7 +130,7 @@ public class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4
     public int getNAgents() {
         return N_AGENTS;
     }
-    
+
     public TurnType getTurnType() {
         return TurnType.SEQUENTIAL;
     }

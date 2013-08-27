@@ -16,14 +16,14 @@ public final class Arbiter<S extends State, A extends Action> {
     /** The actual domain being used */
     private Simulator<S, A> world;
     /** Simulator to use for each agent */
-    private List<Simulator<S,A>> simulators = new ArrayList<Simulator<S,A>>();
+    private List<Simulator<S, A>> simulators = new ArrayList<Simulator<S, A>>();
     private History<S, A> history;
     private int historyIndex;
     private List<Agent> agents = new ArrayList<Agent>();
     private long[] decisionTimes;
     private ExecutorService executor;
     private CountDownLatch actionsReady;
-    
+
     private class AgentAction implements Runnable {
         private int agentId;
         private Vector<A> actions;
@@ -61,34 +61,38 @@ public final class Arbiter<S extends State, A extends Action> {
                    List<Agent> agents) {
         this(new History<S, A>(initialState), world, simulators, agents);
     }
-    
+
     public Arbiter(History<S, A> history,
                    Simulator<S, A> world,
                    List<Simulator<S, A>> simulators,
                    List<Agent> agents) {
-        if (world.getNAgents() != agents.size())
-            throw new IllegalArgumentException("Expects " + world.getNAgents() + 
+        if (world.getNAgents() != agents.size()) {
+            throw new IllegalArgumentException("Expects " + world.getNAgents() +
                                                " agents but " + agents.size() + " provided.");
+        }
         if (simulators == null) {
             this.simulators = new ArrayList<Simulator<S, A>>();
-            for (int i = 0; i < agents.size(); i += 1)
+            for (int i = 0; i < agents.size(); i += 1) {
                 this.simulators.add(world.copy());
+            }
         } else if (agents.size() == simulators.size()) {
-            for (Simulator<S, A> simulator: simulators)
-	            this.simulators.add(simulator);
+            for (Simulator<S, A> simulator: simulators) {
+                this.simulators.add(simulator);
+            }
         } else {
-        	throw new IllegalArgumentException("Required one simulator per agent.");
+            throw new IllegalArgumentException("Required one simulator per agent.");
         }
         this.history = history;
         historyIndex = history.getSize() - 1;
         this.world = world.copy();
         this.world.setState(history.getState(historyIndex));
-        for (Agent agent: agents)
+        for (Agent agent: agents) {
             this.agents.add(agent);
+        }
         decisionTimes = new long[world.getNAgents()];
         executor = Executors.newFixedThreadPool(world.getNAgents());
     }
-    
+
     /**
      * Reset the arbiter to a new initial
      * state so that another game may be played.
@@ -121,8 +125,9 @@ public final class Arbiter<S extends State, A extends Action> {
             actions.setSize(world.getNAgents());
             actionsReady = new CountDownLatch(world.getNAgents());
             try {
-                for (int i = 0; i < world.getNAgents(); i += 1)
+                for (int i = 0; i < world.getNAgents(); i += 1) {
                     executor.execute(new AgentAction(i, actions, decisionTimes));
+                }
                 actionsReady.await();
             } catch (InterruptedException e) {
                 executor.shutdown();
@@ -161,9 +166,9 @@ public final class Arbiter<S extends State, A extends Action> {
     public boolean isTerminalState() {
         return world.isTerminalState();
     }
-    
+
     public Simulator<S, A> getWorld() {
-    	return world;
+        return world;
     }
 
     public List<Agent> getAgents() {
@@ -173,7 +178,7 @@ public final class Arbiter<S extends State, A extends Action> {
     public History<S, A> getHistory() {
         return history;
     }
-    
+
     public long getDecisionTime(int agentId) {
         return decisionTimes[agentId];
     }

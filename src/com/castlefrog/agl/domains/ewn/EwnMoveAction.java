@@ -3,7 +3,7 @@ package com.castlefrog.agl.domains.ewn;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EwnMoveAction implements EwnAction {
+public final class EwnMoveAction implements EwnAction {
     /** List of all possible moves. */
     private static List<List<List<EwnMoveAction>>> moveActions_ = generateMoveActions();
 
@@ -35,7 +35,6 @@ public class EwnMoveAction implements EwnAction {
      * Generates a list of all possible moves. It also adds a few impossible
      * moves but not too many worth worrying about. Total moves in list is 150
      * while total possible moves is 126.
-     * 
      * @return list of all possible moves.
      */
     private static List<List<List<EwnMoveAction>>> generateMoveActions() {
@@ -44,9 +43,10 @@ public class EwnMoveAction implements EwnAction {
             moveActions.add(new ArrayList<List<EwnMoveAction>>());
             for (int j = 0; j < EwnState.getSize(); j++) {
                 moveActions.get(i).add(new ArrayList<EwnMoveAction>());
-                for (int k = 0; k < Direction.values().length; k++)
+                for (int k = 0; k < Direction.values().length; k++) {
                     moveActions.get(i).get(j).add(
                             new EwnMoveAction(i, j, Direction.values()[k]));
+                }
             }
         }
         return moveActions;
@@ -74,17 +74,17 @@ public class EwnMoveAction implements EwnAction {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof EwnMoveAction))
+        if (!(object instanceof EwnMoveAction)) {
             return false;
+        }
         EwnMoveAction action = (EwnMoveAction) object;
-        return direction_ == action.getDirection()
-                && xLocation_ == action.getXLocation()
-                && yLocation_ == action.getYLocation();
+        return direction_ == action.getDirection() &&
+               xLocation_ == action.getXLocation() &&
+               yLocation_ == action.getYLocation();
     }
 
     @Override
     public String toString() {
-        return "(" + xLocation_ + "," + yLocation_ + ") "
-                + direction_.toString();
+        return "(" + xLocation_ + "," + yLocation_ + ") " + direction_.toString();
     }
 }

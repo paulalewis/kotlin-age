@@ -8,7 +8,7 @@ import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
 public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, DraughtsAction> {
-	private static final int N_AGENTS = 2;
+    private static final int N_AGENTS = 2;
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
     //private static final int SIZE = 10;
 
@@ -25,38 +25,37 @@ public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, Dr
         super(simulator);
     }
 
-	public DraughtsSimulator copy() {
+    public DraughtsSimulator copy() {
         return new DraughtsSimulator(this);
-	}
-	
-	public static DraughtsSimulator create(List<String> params) {
-		return new DraughtsSimulator();
-	}
-	
+    }
+
+    public static DraughtsSimulator create(List<String> params) {
+        return new DraughtsSimulator();
+    }
+
     public void setState(DraughtsState state) {
         state_ = state;
         rewards_ = computeRewards();
         legalActions_ = computeLegalActions();
     }
-    
-	public void stateTransition(List<DraughtsAction> actions) {
+
+    public void stateTransition(List<DraughtsAction> actions) {
         DraughtsAction action = actions.get(state_.getAgentTurn());
-		if (!legalActions_.contains(action))
-			throw new IllegalActionException(action, state_);
+        if (!legalActions_.contains(action)) {
+            throw new IllegalActionException(action, state_);
+        }
         byte[][] locations = state_.getLocations();
         //TODO - code here
         state_ = new DraughtsState(locations, (state_.getAgentTurn() + 1) % 2);
         rewards_ = computeRewards();
         legalActions_ = computeLegalActions();
-	}
+    }
 
-    /**
-     */
-	private List<List<DraughtsAction>> computeLegalActions() {
+    private List<List<DraughtsAction>> computeLegalActions() {
         List<List<DraughtsAction>> legalActions = new ArrayList<List<DraughtsAction>>();
         //TODO - code here
         return legalActions;
-	}
+    }
 
     public int[] computeRewards() {
         //TODO - scan for no pieces left on one side or the other
@@ -66,7 +65,7 @@ public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, Dr
     public DraughtsState getInitialState() {
         return null;
     }
-	
+
     public int getNAgents() {
         return N_AGENTS;
     }

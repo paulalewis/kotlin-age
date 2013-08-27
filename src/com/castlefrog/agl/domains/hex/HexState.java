@@ -10,8 +10,8 @@ import com.castlefrog.agl.State;
  * one of two players.
  */
 public final class HexState implements State, Serializable {
-	private static final long serialVersionUID = 1L;
-	/** Representation of hex board. */
+    private static final long serialVersionUID = 1L;
+    /** Representation of hex board. */
     private byte[][] locations_;
     /** agent next to move */
     private byte agentTurn_;
@@ -34,20 +34,23 @@ public final class HexState implements State, Serializable {
         for (int i = 0; i < locations.length; i += 1) {
             for (int j = 0; j < locations[0].length; j += 1) {
                 locations_[i][j] = locations[i][j];
-                if (locations_[i][j] != 0)
+                if (locations_[i][j] != 0) {
                     nPieces_ += 1;
+                }
             }
         }
         agentTurn_ = (byte) agentTurn;
     }
-    
+
     public HexState(byte[][] locations,
                     int agentTurn,
                     int nPieces) {
         locations_ = new byte[locations.length][locations[0].length];
-        for (int i = 0; i < locations.length; i += 1)
-            for (int j = 0; j < locations[0].length; j += 1)
+        for (int i = 0; i < locations.length; i += 1) {
+            for (int j = 0; j < locations[0].length; j += 1) {
                 locations_[i][j] = locations[i][j];
+            }
+        }
         agentTurn_ = (byte) agentTurn;
         nPieces_ = nPieces;
     }
@@ -68,7 +71,7 @@ public final class HexState implements State, Serializable {
     public byte getLocation(int x, int y) {
         return locations_[x][y];
     }
-    
+
     public int getSize() {
         return locations_.length;
     }
@@ -86,18 +89,20 @@ public final class HexState implements State, Serializable {
     }
 
     public void setLocation(int x, int y, int value) {
-        if (locations_[x][y] == 0 && value != 0)
+        if (locations_[x][y] == 0 && value != 0) {
             nPieces_ += 1;
-        else if (locations_[x][y] != 0 && value == 0)
+        } else if (locations_[x][y] != 0 && value == 0) {
             nPieces_ -= 1;
+        }
         locations_[x][y] = (byte) value;
     }
-    
+
     public void setLocation(int x, int y, Location value) {
-        if (locations_[x][y] == 0 && value != Location.EMPTY)
+        if (locations_[x][y] == 0 && value != Location.EMPTY) {
             nPieces_ += 1;
-        else if (locations_[x][y] != 0 && value == Location.EMPTY)
+        } else if (locations_[x][y] != 0 && value == Location.EMPTY) {
             nPieces_ -= 1;
+        }
         locations_[x][y] = (byte) value.ordinal();
     }
 
@@ -108,21 +113,27 @@ public final class HexState implements State, Serializable {
     @Override
     public int hashCode() {
         int code = 7;
-        for (byte[] row : locations_)
-            for (byte location : row)
+        for (byte[] row : locations_) {
+            for (byte location : row) {
                 code = 11 * code + location;
+            }
+        }
         return code;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof HexState))
+        if (!(object instanceof HexState)) {
             return false;
+        }
         HexState state = (HexState) object;
-        for (int i = 0; i < locations_.length; i += 1)
-            for (int j = 0; j < locations_.length; j += 1)
-                if (locations_[i][j] != state.getLocation(i,j))
+        for (int i = 0; i < locations_.length; i += 1) {
+            for (int j = 0; j < locations_.length; j += 1) {
+                if (locations_[i][j] != state.getLocation(i, j)) {
                     return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -130,15 +141,17 @@ public final class HexState implements State, Serializable {
     public String toString() {
         StringBuilder output = new StringBuilder();
         for (int i = locations_.length - 1; i >= 0; i -= 1) {
-            for (int j = i; j < locations_.length - 1; j += 1)
+            for (int j = i; j < locations_.length - 1; j += 1) {
                 output.append(" ");
+            }
             for (int j = 0; j < locations_.length; j += 1) {
-                if (locations_[j][i] == 1)
+                if (locations_[j][i] == 1) {
                     output.append("X ");
-                else if (locations_[j][i] == 2)
+                } else if (locations_[j][i] == 2) {
                     output.append("O ");
-                else
+                } else {
                     output.append("- ");
+                }
             }
             output.append("\n");
         }

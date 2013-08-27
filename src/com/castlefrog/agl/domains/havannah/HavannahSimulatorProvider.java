@@ -5,12 +5,13 @@ import java.util.List;
 import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;
 
-public class HavannahSimulatorProvider implements SimulatorProvider {
+public final class HavannahSimulatorProvider implements SimulatorProvider {
     static {
         Simulators.registerProvider("havannah", HavannahSimulatorProvider.getInstance());
     }
 
-    private HavannahSimulatorProvider() {}
+    private HavannahSimulatorProvider() {
+    }
 
     public static HavannahSimulatorProvider getInstance() {
         return new HavannahSimulatorProvider();

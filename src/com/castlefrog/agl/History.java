@@ -8,26 +8,33 @@ import java.util.List;
  * Keeps track of state transition history.
  */
 public final class History<S extends State, A extends Action> implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
-	private List<Node> nodes;
+    private static final long serialVersionUID = 1L;
+
+    private List<Node> nodes;
 
     private final class Node implements Serializable {
-		private static final long serialVersionUID = 1L;
-		
-		public S state;
-        public List<A> actions;
+        private static final long serialVersionUID = 1L;
+
+        private S state;
+        private List<A> actions;
 
         public Node(S state, List<A> actions) {
             this.state = state;
             this.actions = actions;
+        }
+
+        public S getState() {
+            return state;
+        }
+
+        public List<A> getActions() {
+            return actions;
         }
     }
 
     /**
      * Construct a History object starting from
      * the given state.
-     * 
      * @param state
      *      initial state of history
      */
@@ -39,7 +46,6 @@ public final class History<S extends State, A extends Action> implements Seriali
     /**
      * Add the next state and the actions taken by each agent
      * to arrive at that state.
-     * 
      * @param state
      *      the current state
      * @param actions
@@ -48,24 +54,26 @@ public final class History<S extends State, A extends Action> implements Seriali
     public void add(S state, List<A> actions) {
         nodes.add(new Node(state, actions));
     }
-    
+
     public void add(S state, List<A> actions, int index) {
-        while (index < nodes.size() - 1)
+        while (index < nodes.size() - 1) {
             removeLast();
+        }
         nodes.add(new Node(state, actions));
     }
 
     public void removeLast() {
-        if (nodes.size() > 0)
+        if (nodes.size() > 0) {
             nodes.remove(nodes.size() - 1);
+        }
     }
 
     public S getState(int index) {
-        return nodes.get(index).state;
+        return nodes.get(index).getState();
     }
 
     public List<A> getActions(int index) {
-        return nodes.get(index).actions;
+        return nodes.get(index).getActions();
     }
 
     public int getSize() {

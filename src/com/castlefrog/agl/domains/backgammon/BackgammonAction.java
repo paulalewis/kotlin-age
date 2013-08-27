@@ -11,8 +11,9 @@ public final class BackgammonAction implements Action {
 
     public BackgammonAction(List<BackgammonMove> moves) {
         moves_ = new ArrayList<BackgammonMove>();
-        for (BackgammonMove move : moves)
+        for (BackgammonMove move : moves) {
             moves_.add(move);
+        }
     }
 
     public BackgammonMove getMove(int index) {
@@ -30,8 +31,9 @@ public final class BackgammonAction implements Action {
     @Override
     public int hashCode() {
         int code = 7;
-        for (BackgammonMove move : moves_)
+        for (BackgammonMove move : moves_) {
             code = 11 * code + move.hashCode();
+        }
         return code;
     }
 
@@ -41,19 +43,25 @@ public final class BackgammonAction implements Action {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof BackgammonAction))
+        if (!(object instanceof BackgammonAction)) {
             return false;
+        }
         BackgammonAction action = (BackgammonAction) object;
-        if (size() != action.size())
+        if (size() != action.size()) {
             return false;
+        }
         boolean[] used = new boolean[size()];
         for (int i = 0; i < size(); i++) {
             boolean found = false;
-            for (int j = 0; j < size() && !found; j++)
-                if (!used[j] && getMove(i).equals(action.getMove(j)))
-                    used[j] = found = true;
-            if (found == false)
+            for (int j = 0; j < size() && !found; j++) {
+                if (!used[j] && getMove(i).equals(action.getMove(j))) {
+                    used[j] = true;
+                    found = true;
+                }
+            }
+            if (!found) {
                 return false;
+            }
         }
         return true;
     }
@@ -62,8 +70,9 @@ public final class BackgammonAction implements Action {
     public String toString() {
         StringBuilder output = new StringBuilder();
         output.append("[ ");
-        for (int i = 0; i < size(); i++)
+        for (int i = 0; i < size(); i++) {
             output.append(getMove(i) + " ");
+        }
         output.append("]");
         return output.toString();
     }
