@@ -7,7 +7,7 @@ import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Agents;
 
 public final class ConsoleAgentProvider implements AgentProvider {
-    private static ConsoleAgent instance = null;
+    private static ConsoleAgent instance_ = null;
 
     static {
         Agents.registerProvider("console", ConsoleAgentProvider.getInstance());
@@ -21,9 +21,9 @@ public final class ConsoleAgentProvider implements AgentProvider {
     }
 
     public Agent newAgent(List<String> params) {
-        if (instance == null) {
-            instance = new ConsoleAgent();
+        if (instance_ == null) {
+            instance_ = new ConsoleAgent();
         }
-        return instance;
+        return instance_;
     }
 }

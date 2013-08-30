@@ -2,7 +2,7 @@ package com.castlefrog.agl.domains.ewn;
 
 import com.castlefrog.agl.State;
 
-public final class EwnState implements State {
+public final class EwnState implements State<EwnState> {
     private static final int SIZE = 5;
 
     /**

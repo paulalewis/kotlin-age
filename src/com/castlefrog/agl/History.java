@@ -7,28 +7,28 @@ import java.util.List;
 /**
  * Keeps track of state transition history.
  */
-public final class History<S extends State, A extends Action> implements Serializable {
+public final class History<S extends State<S>, A extends Action> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private List<Node> nodes;
+    private List<Node> nodes_;
 
     private final class Node implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        private S state;
-        private List<A> actions;
+        private S state_;
+        private List<A> actions_;
 
         public Node(S state, List<A> actions) {
-            this.state = state;
-            this.actions = actions;
+            state_ = state;
+            actions_ = actions;
         }
 
         public S getState() {
-            return state;
+            return state_;
         }
 
         public List<A> getActions() {
-            return actions;
+            return actions_;
         }
     }
 
@@ -39,7 +39,7 @@ public final class History<S extends State, A extends Action> implements Seriali
      *      initial state of history
      */
     public History(S initialState) {
-        nodes = new ArrayList<Node>();
+        nodes_ = new ArrayList<Node>();
         add(initialState, new ArrayList<A>());
     }
 
@@ -52,40 +52,40 @@ public final class History<S extends State, A extends Action> implements Seriali
      *      the actions taken by each agent to end up in the current state
      */
     public void add(S state, List<A> actions) {
-        nodes.add(new Node(state, actions));
+        nodes_.add(new Node(state, actions));
     }
 
     public void add(S state, List<A> actions, int index) {
-        while (index < nodes.size() - 1) {
+        while (index < nodes_.size() - 1) {
             removeLast();
         }
-        nodes.add(new Node(state, actions));
+        nodes_.add(new Node(state, actions));
     }
 
     public void removeLast() {
-        if (nodes.size() > 0) {
-            nodes.remove(nodes.size() - 1);
+        if (nodes_.size() > 0) {
+            nodes_.remove(nodes_.size() - 1);
         }
     }
 
     public S getState(int index) {
-        return nodes.get(index).getState();
+        return nodes_.get(index).getState();
     }
 
     public List<A> getActions(int index) {
-        return nodes.get(index).getActions();
+        return nodes_.get(index).getActions();
     }
 
     public int getSize() {
-        return nodes.size();
+        return nodes_.size();
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        for (Node node: nodes) {
-            output.append(node.actions + "\n\n");
-            output.append(node.state + "\n\n");
+        for (Node node: nodes_) {
+            output.append(node.getActions() + "\n\n");
+            output.append(node.getState() + "\n\n");
         }
         return output.toString();
     }

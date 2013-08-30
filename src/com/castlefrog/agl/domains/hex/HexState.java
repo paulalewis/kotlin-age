@@ -9,7 +9,7 @@ import com.castlefrog.agl.State;
  * that are either empty or have a piece controlled by
  * one of two players.
  */
-public final class HexState implements State, Serializable {
+public final class HexState implements State<HexState>, Serializable {
     private static final long serialVersionUID = 1L;
     /** Representation of hex board. */
     private byte[][] locations_;

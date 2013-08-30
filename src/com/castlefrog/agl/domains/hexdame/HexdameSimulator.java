@@ -6,7 +6,6 @@ import java.util.Stack;
 
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.TurnType;
 
 public final class HexdameSimulator extends AbstractSimulator<HexdameState, HexdameAction> {
@@ -15,7 +14,7 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
     private static final int SIZE = 2 * BASE - 1;
     //private static final int N_LOCATIONS = 3 * BASE * BASE - 3 * BASE + 1;
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
-    
+
     private static int[][] corners_;
     private static int[][][] sides_;
 
@@ -65,7 +64,7 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
     public HexdameSimulator copy() {
         return new HexdameSimulator(this);
     }
-    
+
     public void setState(HexdameState state) {
         state_ = state;
         computeRewards(null);
@@ -74,9 +73,10 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
 
     public void stateTransition(List<HexdameAction> actions) {
         HexdameAction action = actions.get(state_.getAgentTurn());
-        if (!legalActions_.get(state_.getAgentTurn()).contains(action))
-            throw new IllegalActionException(action,state_);
-        state_.setLocation(action.getX(),action.getY(),state_.getAgentTurn() + 1);
+        if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
+            throw new IllegalActionException(action, state_);
+        }
+        state_.setLocation(action.getX(), action.getY(), state_.getAgentTurn() + 1);
         state_.switchAgentTurn();
         computeRewards(action);
         computeLegalActions(action);
@@ -89,38 +89,45 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
             legalActions_.set(agentTurn, legalActions_.get(otherTurn));
             legalActions_.set(otherTurn, new ArrayList<HexdameAction>());
             List<HexdameAction> legalActions = legalActions_.get(agentTurn);
-            if (prevAction != null && state_.getNPieces() > 2)
+            if (prevAction != null && state_.getNPieces() > 2) {
                 legalActions.remove(prevAction);
-            else {
+            } else {
                 legalActions.clear();
                 if (state_.getNPieces() == 1 && state_.getAgentTurn() == 1) {
                     for (int y = 0; y < SIZE; y += 1) {
                         int xMin = 0;
                         int xMax = SIZE;
-                        if (y >= BASE)
+                        if (y >= BASE) {
                             xMin = y - BASE + 1;
-                        else
+                        } else {
                             xMax = BASE + y;
-                        for (int x = xMin; x < xMax; x += 1)
-                            legalActions.add(HexdameAction.valueOf(x,y));
+                        }
+                        for (int x = xMin; x < xMax; x += 1) {
+                            legalActions.add(HexdameAction.valueOf(x, y));
+                        }
                     }
                 } else {
                     for (int y = 0; y < SIZE; y += 1) {
                         int xMin = 0;
                         int xMax = SIZE;
-                        if (y >= BASE)
+                        if (y >= BASE) {
                             xMin = y - BASE + 1;
-                        else
+                        } else {
                             xMax = BASE + y;
-                        for (int x = xMin; x < xMax; x += 1)
-                            if (state_.getLocation(x,y) == 0)
-                                legalActions.add(HexdameAction.valueOf(x,y));
+                        }
+                        for (int x = xMin; x < xMax; x += 1) {
+                            if (state_.getLocation(x, y) == 0) {
+                                legalActions.add(HexdameAction.valueOf(x, y));
+                            }
+                        }
                     }
                 }
             }
-        } else
-            for (List<HexdameAction> legalActions: legalActions_)
+        } else {
+            for (List<HexdameAction> legalActions: legalActions_) {
                 legalActions.clear();
+            }
+        }
     }
 
     private void computeRewards(HexdameAction prevAction) {
@@ -139,20 +146,22 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
         for (int y = yMin; y < yMax; y += 1) {
             for (int x = xMin; x < xMax; x += 1) {
                 // Checks: non empty location - hasn't been visited
-                if (locations[x][y] != 0 && visited[x][y] == false) {
+                if (locations[x][y] != 0 && !visited[x][y]) {
                     int result = dfsCornersSides(x, y, locations, visited);
                     // count corners
                     int corners = 0;
                     for (int k = 0; k < 6; k += 1) {
-                        if (result % 2 == 1)
+                        if (result % 2 == 1) {
                             corners += 1;
+                        }
                         result >>= 1;
                     }
                     // count sides
                     int sides = 0;
                     for (int k = 0; k < 6; k += 1) {
-                        if (result % 2 == 1)
+                        if (result % 2 == 1) {
                             sides += 1;
+                        }
                         result >>= 1;
                     }
                     if (corners >= 2 || sides >= 3) {
@@ -175,16 +184,17 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
         for (int y = 0; y < locations.length; y += 1) {
             xMin = 0;
             xMax = SIZE;
-            if (y >= BASE)
+            if (y >= BASE) {
                 xMin = y - BASE + 1;
-            else
+            } else {
                 xMax = BASE + y;
+            }
             for (int x = xMin; x < xMax; x += 1) {
-                if (locations[x][y] == 0
-                        || locations[x][y] == state_.getAgentTurn() + 1)
+                if (locations[x][y] == 0 || locations[x][y] == state_.getAgentTurn() + 1) {
                     locations[x][y] = 1;
-                else
+                } else {
                     locations[x][y] = 0;
+                }
             }
         }
 
@@ -201,7 +211,7 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
 
         for (int y = yMin; y < yMax; y += 1) {
             for (int x = xMin; x < xMax; x += 1) {
-                if (locations[x][y] != 0 && visited[x][y] == false) {
+                if (locations[x][y] != 0 && !visited[x][y]) {
                     if (dfsCornersSides(x, y, locations, visited) == 0) {
                         if (state_.getAgentTurn() == 0) {
                             rewards_[0] = -1;
@@ -216,7 +226,8 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
                 }
             }
         }
-        rewards_[0] = rewards_[1] = 0;
+        rewards_[0] = 0;
+        rewards_[1] = 0;
     }
 
     private int dfsCornersSides(int x0,
@@ -225,13 +236,13 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
                                 boolean[][] visited) {
         int value = 0;
         Stack<HexdameAction> stack = new Stack<HexdameAction>();
-        stack.push(HexdameAction.valueOf(x0,y0));
+        stack.push(HexdameAction.valueOf(x0, y0));
         visited[x0][y0] = true;
         while (!stack.empty()) {
             HexdameAction v = stack.pop();
             int x = v.getX();
             int y = v.getY();
-            value |= getCornerMask(x,y) | getSideMask(x,y);
+            value |= getCornerMask(x, y) | getSideMask(x, y);
             for (int i = -1; i <= 1; i += 1) {
                 for (int j = -1; j <= 1; j += 1) {
                     int xi = x + i;
@@ -242,7 +253,7 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
                                 yi >= BASE && xi > yi - BASE)) {
                         if (!visited[xi][yi] &&
                                 locations[xi][yi] == locations[x][y]) {
-                            stack.push(HexdameAction.valueOf(xi,yi));
+                            stack.push(HexdameAction.valueOf(xi, yi));
                             visited[xi][yi] = true;
                         }
                     }
@@ -253,17 +264,22 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
     }
 
     private int getCornerMask(int x, int y) {
-        for (int i = 0; i < corners_.length; i += 1)
-            if (corners_[i][0] == x && corners_[i][1] == y)
+        for (int i = 0; i < corners_.length; i += 1) {
+            if (corners_[i][0] == x && corners_[i][1] == y) {
                 return 1 << i;
+            }
+        }
         return 0;
     }
 
     private int getSideMask(int x, int y) {
-        for (int i = 0; i < sides_.length; i += 1)
-            for (int j = 0; j < sides_[i].length; j += 1)
-                if (sides_[i][j][0] == x && sides_[i][j][1] == y)
+        for (int i = 0; i < sides_.length; i += 1) {
+            for (int j = 0; j < sides_[i].length; j += 1) {
+                if (sides_[i][j][0] == x && sides_[i][j][1] == y) {
                     return 1 << (i + 6);
+                }
+            }
+        }
         return 0;
     }
 

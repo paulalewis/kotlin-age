@@ -1,13 +1,14 @@
 package com.castlefrog.agl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * AbstractSimulator implements common functionality for
  * many simulators.
  */
-public abstract class AbstractSimulator<S extends State, A extends Action> implements Simulator<S, A> {
+public abstract class AbstractSimulator<S extends State<S>, A extends Action> implements Simulator<S, A> {
     protected S state_;
     protected List<List<A>> legalActions_;
     protected int[] rewards_;
@@ -27,11 +28,7 @@ public abstract class AbstractSimulator<S extends State, A extends Action> imple
      * @return array of rewards for each agent.
      */
     public final int[] getRewards() {
-        int[] rewards = new int[rewards_.length];
-        for (int i = 0; i < rewards_.length; i += 1) {
-            rewards[i] = rewards_[i];
-        }
-        return rewards;
+        return Arrays.copyOf(rewards_, rewards_.length);
     }
 
     /**
@@ -61,8 +58,8 @@ public abstract class AbstractSimulator<S extends State, A extends Action> imple
      * Current state of the simulator.
      * @return current state.
      */
-    public S getState() {
-        return (S) state_.copy();
+    public final S getState() {
+        return state_.copy();
     }
 
     /**

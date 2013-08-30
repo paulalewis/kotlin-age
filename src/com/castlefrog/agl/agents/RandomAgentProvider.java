@@ -7,7 +7,7 @@ import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Agents;
 
 public final class RandomAgentProvider implements AgentProvider {
-    private static RandomAgent instance = null;
+    private static RandomAgent instance_ = null;
 
     static {
         Agents.registerProvider("random", RandomAgentProvider.getInstance());
@@ -21,9 +21,9 @@ public final class RandomAgentProvider implements AgentProvider {
     }
 
     public Agent newAgent(List<String> params) {
-        if (instance == null) {
-            instance = new RandomAgent();
+        if (instance_ == null) {
+            instance_ = new RandomAgent();
         }
-        return instance;
+        return instance_;
     }
 }

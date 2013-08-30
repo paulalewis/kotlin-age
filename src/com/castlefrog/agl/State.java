@@ -1,4 +1,4 @@
 package com.castlefrog.agl;
 
-public interface State extends Copyable<State> {
+public interface State<S extends State<S>> extends Copyable<S> {
 }

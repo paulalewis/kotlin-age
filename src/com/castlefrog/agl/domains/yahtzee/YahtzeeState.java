@@ -2,7 +2,7 @@ package com.castlefrog.agl.domains.yahtzee;
 
 import com.castlefrog.agl.State;
 
-public final class YahtzeeState implements State {
+public final class YahtzeeState implements State<YahtzeeState> {
     public static final int N_DICE = 5;
     public static final int N_VALUES = 6;
     public static final int N_SCORES = YahtzeeScoreCategory.values().length;

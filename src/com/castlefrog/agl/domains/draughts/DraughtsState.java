@@ -2,7 +2,7 @@ package com.castlefrog.agl.domains.draughts;
 
 import com.castlefrog.agl.State;
 
-public final class DraughtsState implements State {
+public final class DraughtsState implements State<DraughtsState> {
     private byte[][] locations_;
     private byte agentTurn_;
 
@@ -67,15 +67,15 @@ public final class DraughtsState implements State {
 
     @Override
     public String toString() {
-        final String PIECES = " XO";
+        final String pieces = " XO";
         StringBuffer output = new StringBuffer();
         for (int i = 0; i < locations_.length; i++) {
             for (int j = 0; j < locations_.length; j++) {
                 if (i % 2 == 0) {
                     output.append("-");
-                    output.append(PIECES.charAt(locations_[i][j]));
+                    output.append(pieces.charAt(locations_[i][j]));
                 } else {
-                    output.append(PIECES.charAt(locations_[i][j]));
+                    output.append(pieces.charAt(locations_[i][j]));
                     output.append("-");
                 }
             }

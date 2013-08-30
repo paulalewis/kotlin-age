@@ -11,7 +11,7 @@ import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.State;
 
 public final class ConsoleAgent implements Agent {
-    public <S extends State, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
+    public <S extends State<S>, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
         A action = null;
         List<A> legalActions = simulator.getLegalActions(agentId);

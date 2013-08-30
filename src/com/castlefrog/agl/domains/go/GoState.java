@@ -2,7 +2,7 @@ package com.castlefrog.agl.domains.go;
 
 import com.castlefrog.agl.State;
 
-public final class GoState implements State {
+public final class GoState implements State<GoState> {
     private byte[][] locations_;
     private byte agentTurn_;
     private byte passFlag_;
@@ -74,7 +74,7 @@ public final class GoState implements State {
 
     @Override
     public String toString() {
-        final String PIECES = " XO";
+        final String pieces = " XO";
         StringBuffer output = new StringBuffer();
         for (int i = 0; i < locations_.length + 2; i++) {
             output.append("-");
@@ -82,7 +82,7 @@ public final class GoState implements State {
         for (int i = 0; i < locations_.length; i++) {
             output.append("|");
             for (int j = 0; j < locations_.length; j++) {
-                output.append(PIECES.charAt(locations_[i][j]));
+                output.append(pieces.charAt(locations_[i][j]));
             }
             output.append("|\n");
         }

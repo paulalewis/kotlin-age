@@ -7,7 +7,7 @@ import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Agents;
 
 public final class ExternalAgentProvider implements AgentProvider {
-    private static ExternalAgent instance = null;
+    private static ExternalAgent instance_ = null;
 
     static {
         Agents.registerProvider("external", ExternalAgentProvider.getInstance());
@@ -21,9 +21,9 @@ public final class ExternalAgentProvider implements AgentProvider {
     }
 
     public Agent newAgent(List<String> params) {
-        if (instance == null) {
-            instance = new ExternalAgent();
+        if (instance_ == null) {
+            instance_ = new ExternalAgent();
         }
-        return instance;
+        return instance_;
     }
 }

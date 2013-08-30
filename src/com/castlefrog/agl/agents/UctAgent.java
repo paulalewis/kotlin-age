@@ -83,7 +83,7 @@ public final class UctAgent implements Agent {
      * Holds a state and a list of pointers to action nodes. The action nodes
      * represent all legal moves from the contained state.
      */
-    private class StateNode<S extends State, A extends Action> extends Node {
+    private class StateNode<S extends State<S>, A extends Action> extends Node {
         private S state_;
         private List<ActionNode<S, A>> children_;
 
@@ -170,7 +170,7 @@ public final class UctAgent implements Agent {
         }
 
         public S getState() {
-            return (S) state_.copy();
+            return state_.copy();
         }
 
         public List<ActionNode<S, A>> getChildren() {
@@ -185,7 +185,7 @@ public final class UctAgent implements Agent {
         }*/
     }
 
-    private class ActionNode<S extends State, A extends Action> extends Node {
+    private class ActionNode<S extends State<S>, A extends Action> extends Node {
         private List<A> actions_;
 
         private List<StateNode<S, A>> frequencyTable_;
@@ -313,7 +313,7 @@ public final class UctAgent implements Agent {
      * explored.
      *
      */
-    public <S extends State, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
+    public <S extends State<S>, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
         List<List<A>> legalActions = simulator.getLegalActions();
         //if only one of action is possible, skip action selection algorithms
@@ -399,7 +399,7 @@ public final class UctAgent implements Agent {
      *            contains current state of game being played.
      * @return rewards of simulated game are passed up the tree.
      */
-    private <S extends State, A extends Action> int[] playSimulation(StateNode<S, A> node, Simulator<S, A> simulator) {
+    private <S extends State<S>, A extends Action> int[] playSimulation(StateNode<S, A> node, Simulator<S, A> simulator) {
         int[] rewards;
         if (simulator.isTerminalState() || node.getVisits() == 0) {
             rewards = simulateGame(simulator);
@@ -420,7 +420,7 @@ public final class UctAgent implements Agent {
      *            contains current state of game being played.
      * @return rewards of simulated game are passed up the tree.
      */
-    private <S extends State, A extends Action> int[] playSimulation(ActionNode<S, A> node, Simulator<S, A> simulator) {
+    private <S extends State<S>, A extends Action> int[] playSimulation(ActionNode<S, A> node, Simulator<S, A> simulator) {
         StateNode<S, A> child = node.selectChild(simulator);
         //TODO - decide if needed or can separate setState and setActions
         //This only improves performance - is there another way?
@@ -438,7 +438,7 @@ public final class UctAgent implements Agent {
      *            a copy of the simulator you want to use to simulate game.
      * @return accumulated reward vector from the game.
      */
-    private <S extends State, A extends Action> int[] simulateGame(Simulator<S, A> simulator) {
+    private <S extends State<S>, A extends Action> int[] simulateGame(Simulator<S, A> simulator) {
         List<List<A>> legalActions = simulator.getLegalActions();
         int[] totalRewards = simulator.getRewards();
         while (!simulator.isTerminalState()) {

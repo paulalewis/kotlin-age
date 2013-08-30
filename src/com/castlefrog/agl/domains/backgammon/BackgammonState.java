@@ -7,7 +7,7 @@ import com.castlefrog.agl.State;
  * 0 if no pieces are at that location and positive if player 1 has pieces there
  * and negative for the number of pieces player 2 has there.
  */
-public final class BackgammonState implements State {
+public final class BackgammonState implements State<BackgammonState> {
     private static final int NUMBER_OF_DICE = 2;
     private static final int NUMBER_OF_DIE_FACES = 6;
     private static final int NUMBER_OF_LOCATIONS = 26;

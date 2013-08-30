@@ -15,7 +15,7 @@ public final class RandomAgent implements Agent {
     public RandomAgent() {
     }
 
-    public <S extends State, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
+    public <S extends State<S>, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
         List<A> actions = simulator.getLegalActions(agentId);
         return actions.get((int) (Math.random() * actions.size()));

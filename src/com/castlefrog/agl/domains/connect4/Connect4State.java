@@ -7,7 +7,7 @@ import com.castlefrog.agl.State;
  * row 5 12 19 26 33 40 47 4 11 18 25 32 39 46 3 10 17 24 31 38 45 2 9 16 23 30
  * 37 44 1 8 15 22 29 36 43 0 7 14 21 28 35 42
  */
-public final class Connect4State implements State {
+public final class Connect4State implements State<Connect4State> {
     private static final int WIDTH = 7;
     private static final int HEIGHT = 6;
 

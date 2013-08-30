@@ -3,50 +3,48 @@ package com.castlefrog.agl.domains.draughts;
 import com.castlefrog.agl.Action;
 
 public final class DraughtsAction implements Action {
-    private int fx;
-    private int fy;
-    private int tx;
-    private int ty;
+    private int xi_;
+    private int yi_;
+    private int xf_;
+    private int yf_;
 
-    private DraughtsAction(int fx, int fy,
-                           int tx, int ty) {
-        this.fx = fx;
-        this.fy = fy;
-        this.tx = tx;
-        this.ty = ty;
+    private DraughtsAction(int xi, int yi, int xf, int yf) {
+        xi_ = xi;
+        yi_ = yi;
+        xf_ = xf;
+        yf_ = yf;
     }
 
-    public static DraughtsAction valueOf(int fx, int fy,
-                                         int tx, int ty) {
-        return new DraughtsAction(fx, fy, tx, ty);
+    public static DraughtsAction valueOf(int xi, int yi, int xf, int yf) {
+        return new DraughtsAction(xi, yi, xf, yf);
     }
 
     public DraughtsAction copy() {
         return this;
     }
 
-    public int getFX() {
-        return fx;
+    public int getXi() {
+        return xi_;
     }
 
-    public int getFY() {
-        return fy;
+    public int getYi() {
+        return yi_;
     }
 
-    public int getTX() {
-        return tx;
+    public int getXf() {
+        return xf_;
     }
 
-    public int getTY() {
-        return ty;
+    public int getYf() {
+        return yf_;
     }
 
     @Override
     public int hashCode() {
-        int code = 7 + fx;
-        code = 11 * code + fy;
-        code = 11 * code + tx;
-        code = 11 * code + ty;
+        int code = 7 + xi_;
+        code = 11 * code + yi_;
+        code = 11 * code + xf_;
+        code = 11 * code + yf_;
         return code;
     }
 
@@ -56,12 +54,12 @@ public final class DraughtsAction implements Action {
             return false;
         }
         DraughtsAction action = (DraughtsAction) object;
-        return fx == action.getFX() && fy == action.getFY() &&
-               tx == action.getTX() && ty == action.getTY();
+        return xi_ == action.getXi() && yi_ == action.getYi() &&
+               xf_ == action.getXf() && yf_ == action.getYf();
     }
 
     @Override
     public String toString() {
-        return "(" + fx + "," + fy + "-" + tx + "," + ty + ")";
+        return "(" + xi_ + "," + yi_ + "-" + xf_ + "," + yf_ + ")";
     }
 }

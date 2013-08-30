@@ -61,7 +61,8 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
                             for (byte l = 0; l <= diceValues[3]; l++) {
                                 for (byte m = 0; m <= diceValues[4]; m++) {
                                     for (byte n = 0; n <= diceValues[5]; n++) {
-                                        legalActions_.get(agentTurn).add(YahtzeeRollAction.valueOf(new byte[] {i, j, k, l, m, n}));
+                                        legalActions_.get(agentTurn).add(
+                                                YahtzeeRollAction.valueOf(new byte[] {i, j, k, l, m, n}));
                                     }
                                 }
                             }
@@ -127,7 +128,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
         YahtzeeAction action = actions.get(state_.getAgentTurn());
         if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
             System.out.println("nCategories = " + nCategoriesLeft_);
-            throw new IllegalActionException(action,state_);
+            throw new IllegalActionException(action, state_);
         }
 
         byte[] diceValues = state_.getDiceValues();

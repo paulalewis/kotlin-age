@@ -12,40 +12,40 @@ import java.util.concurrent.Executors;
  * It allows each agent to run in its own thread for
  * simultaneous domains and records history and other game data.
  */
-public final class Arbiter<S extends State, A extends Action> {
+public final class Arbiter<S extends State<S>, A extends Action> {
     /** The actual domain being used */
-    private Simulator<S, A> world;
+    private Simulator<S, A> world_;
     /** Simulator to use for each agent */
-    private List<Simulator<S, A>> simulators = new ArrayList<Simulator<S, A>>();
-    private History<S, A> history;
-    private int historyIndex;
-    private List<Agent> agents = new ArrayList<Agent>();
-    private long[] decisionTimes;
-    private ExecutorService executor;
-    private CountDownLatch actionsReady;
+    private List<Simulator<S, A>> simulators_ = new ArrayList<Simulator<S, A>>();
+    private History<S, A> history_;
+    private int historyIndex_;
+    private List<Agent> agents_ = new ArrayList<Agent>();
+    private long[] decisionTimes_;
+    private ExecutorService executor_;
+    private CountDownLatch actionsReady_;
 
     private class AgentAction implements Runnable {
-        private int agentId;
-        private Vector<A> actions;
-        private long[] decisionTimes;
+        private int agentId_;
+        private Vector<A> actions_;
+        private long[] decisionTimes_;
 
         public AgentAction(int agentId,
                            Vector<A> actions,
                            long[] decisionTimes) {
-            this.agentId = agentId;
-            this.actions = actions;
-            this.decisionTimes = decisionTimes;
+            agentId_ = agentId;
+            actions_ = actions;
+            decisionTimes_ = decisionTimes;
         }
 
         public void run() {
-            if (world.hasLegalActions(agentId)) {
+            if (world_.hasLegalActions(agentId_)) {
                 long startTime = System.currentTimeMillis();
-                S state = world.getState();
-                A action = agents.get(agentId).selectAction(agentId, state, simulators.get(agentId));
-                actions.set(agentId, action);
-                decisionTimes[agentId] = System.currentTimeMillis() - startTime;
+                S state = world_.getState();
+                A action = agents_.get(agentId_).selectAction(agentId_, state, simulators_.get(agentId_));
+                actions_.set(agentId_, action);
+                decisionTimes_[agentId_] = System.currentTimeMillis() - startTime;
             }
-            actionsReady.countDown();
+            actionsReady_.countDown();
         }
     }
 
@@ -71,26 +71,26 @@ public final class Arbiter<S extends State, A extends Action> {
                                                " agents but " + agents.size() + " provided.");
         }
         if (simulators == null) {
-            this.simulators = new ArrayList<Simulator<S, A>>();
+            simulators_ = new ArrayList<Simulator<S, A>>();
             for (int i = 0; i < agents.size(); i += 1) {
-                this.simulators.add(world.copy());
+                simulators_.add(world.copy());
             }
         } else if (agents.size() == simulators.size()) {
             for (Simulator<S, A> simulator: simulators) {
-                this.simulators.add(simulator);
+                simulators_.add(simulator);
             }
         } else {
             throw new IllegalArgumentException("Required one simulator per agent.");
         }
-        this.history = history;
-        historyIndex = history.getSize() - 1;
-        this.world = world.copy();
-        this.world.setState(history.getState(historyIndex));
+        history_ = history;
+        historyIndex_ = history.getSize() - 1;
+        world_ = world.copy();
+        world_.setState(history.getState(historyIndex_));
         for (Agent agent: agents) {
-            this.agents.add(agent);
+            agents_.add(agent);
         }
-        decisionTimes = new long[world.getNAgents()];
-        executor = Executors.newFixedThreadPool(world.getNAgents());
+        decisionTimes_ = new long[world.getNAgents()];
+        executor_ = Executors.newFixedThreadPool(world.getNAgents());
     }
 
     /**
@@ -98,7 +98,7 @@ public final class Arbiter<S extends State, A extends Action> {
      * state so that another game may be played.
      */
     public void reset() {
-        reset(world.getInitialState());
+        reset(world_.getInitialState());
     }
 
     /**
@@ -106,9 +106,9 @@ public final class Arbiter<S extends State, A extends Action> {
      * state so that another game may be played.
      */
     public synchronized void reset(S state) {
-        world.setState(state);
-        history = new History<S, A>(world.getState());
-        historyIndex = 0;
+        world_.setState(state);
+        history_ = new History<S, A>(world_.getState());
+        historyIndex_ = 0;
     }
 
     /**
@@ -120,36 +120,36 @@ public final class Arbiter<S extends State, A extends Action> {
      * only action available is null.
      */
     public synchronized void step() throws InterruptedException {
-        if (!world.isTerminalState()) {
+        if (!world_.isTerminalState()) {
             Vector<A> actions = new Vector<A>();
-            actions.setSize(world.getNAgents());
-            actionsReady = new CountDownLatch(world.getNAgents());
+            actions.setSize(world_.getNAgents());
+            actionsReady_ = new CountDownLatch(world_.getNAgents());
             try {
-                for (int i = 0; i < world.getNAgents(); i += 1) {
-                    executor.execute(new AgentAction(i, actions, decisionTimes));
+                for (int i = 0; i < world_.getNAgents(); i += 1) {
+                    executor_.execute(new AgentAction(i, actions, decisionTimes_));
                 }
-                actionsReady.await();
+                actionsReady_.await();
             } catch (InterruptedException e) {
-                executor.shutdown();
+                executor_.shutdown();
                 throw new InterruptedException();
             }
-            world.stateTransition(actions);
-            history.add(world.getState(), actions, historyIndex);
-            historyIndex += 1;
+            world_.stateTransition(actions);
+            history_.add(world_.getState(), actions, historyIndex_);
+            historyIndex_ += 1;
         }
     }
 
     public void done() {
-        executor.shutdown();
+        executor_.shutdown();
     }
 
     /**
      * Move back one state in history.
      */
     public synchronized void prevHistory() {
-        if (historyIndex > 0) {
-            historyIndex -= 1;
-            world.setState(history.getState(historyIndex));
+        if (historyIndex_ > 0) {
+            historyIndex_ -= 1;
+            world_.setState(history_.getState(historyIndex_));
         }
     }
 
@@ -157,33 +157,33 @@ public final class Arbiter<S extends State, A extends Action> {
      * Move forward one state in history.
      */
     public synchronized void nextHistory() {
-        if (historyIndex < history.getSize() - 1) {
-            historyIndex += 1;
-            world.setState(history.getState(historyIndex));
+        if (historyIndex_ < history_.getSize() - 1) {
+            historyIndex_ += 1;
+            world_.setState(history_.getState(historyIndex_));
         }
     }
 
     public boolean isTerminalState() {
-        return world.isTerminalState();
+        return world_.isTerminalState();
     }
 
     public Simulator<S, A> getWorld() {
-        return world;
+        return world_;
     }
 
     public List<Agent> getAgents() {
-        return agents;
+        return agents_;
     }
 
     public History<S, A> getHistory() {
-        return history;
+        return history_;
     }
 
     public long getDecisionTime(int agentId) {
-        return decisionTimes[agentId];
+        return decisionTimes_[agentId];
     }
 
     public long getReward(int agentId) {
-        return world.getReward(agentId);
+        return world_.getReward(agentId);
     }
 }

@@ -10,7 +10,7 @@ import com.castlefrog.agl.State;
  *  x: single element 0 < x <= MAX_ELEMENTS
  *  xy: element pair 0 < x <= MAX_ELEMENTS and 0 < y <= MAX_ELEMENTS and x < y
  */
-public final class BiniaxState implements State {
+public final class BiniaxState implements State<BiniaxState> {
     private static final int WIDTH = 5;
     private static final int HEIGHT = 7;
     private static final int MAX_ELEMENTS = 9;
@@ -106,7 +106,7 @@ public final class BiniaxState implements State {
 
     @Override
     public String toString() {
-        final String ELEMENTS = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String elements = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         StringBuilder output = new StringBuilder();
         output.append("(Turns: " + nTurns_ + ")\n");
         output.append("(Free Moves:" + freeMoves_ + ")\n");
@@ -126,12 +126,12 @@ public final class BiniaxState implements State {
                     output.append("<X>");
                 } else if (locations_[i][j] > 0 && locations_[i][j] < (MAX_ELEMENTS + 1)) {
                     output.append("[");
-                    output.append(ELEMENTS.charAt(locations_[i][j]));
+                    output.append(elements.charAt(locations_[i][j]));
                     output.append("]");
                 } else {
-                    output.append(ELEMENTS.charAt(locations_[i][j] / (MAX_ELEMENTS + 1)));
+                    output.append(elements.charAt(locations_[i][j] / (MAX_ELEMENTS + 1)));
                     output.append("-");
-                    output.append(ELEMENTS.charAt(locations_[i][j] % (MAX_ELEMENTS + 1)));
+                    output.append(elements.charAt(locations_[i][j] % (MAX_ELEMENTS + 1)));
                 }
             }
             output.append(":\n");
