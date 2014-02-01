@@ -1,6 +1,8 @@
 package com.castlefrog.agl.domains.hex;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.castlefrog.agl.Action;
 
@@ -10,7 +12,7 @@ import com.castlefrog.agl.Action;
 public final class HexAction implements Action, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static HexAction[][] actions_ = generateActions();
+    private static List<List<HexAction>> actions_ = new ArrayList<List<HexAction>>();
 
     private final byte x_;
     private final byte y_;
@@ -29,18 +31,21 @@ public final class HexAction implements Action, Serializable {
      *      action corrisponding to x and y coord
      */
     public static HexAction valueOf(int x, int y) {
-        return actions_[x][y];
+        if (x >= actions_.size() || y >= actions_.get(0).size()) {
+            generateActions(Math.max(x, y) + 1);
+        }
+        return actions_.get(x).get(y);
     }
 
-    private static HexAction[][] generateActions() {
-        int size = HexSimulator.MAX_BOARD_SIZE;
-        HexAction[][] actions = new HexAction[size][size];
+    private static void generateActions(int size) {
         for (int i = 0; i < size; i += 1) {
-            for (int j = 0; j < size; j += 1) {
-                actions[i][j] = new HexAction(i, j);
+            if (i >= actions_.size()) {
+                actions_.add(new ArrayList<HexAction>());
+            }
+            for (int j = actions_.get(i).size(); j < size; j += 1) {
+                actions_.get(i).add(new HexAction(i, j));
             }
         }
-        return actions;
     }
 
     public HexAction copy() {
@@ -57,7 +62,7 @@ public final class HexAction implements Action, Serializable {
 
     @Override
     public int hashCode() {
-        return x_ + HexSimulator.MAX_BOARD_SIZE * y_;
+        return x_ + 31 * y_;
     }
 
     @Override
