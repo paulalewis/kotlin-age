@@ -265,7 +265,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     }
 
     public HexState getInitialState() {
-        return new HexState(new byte[boardSize_][boardSize_], 0);
+        return new HexState(boardSize_);
     }
 
     public int getBoardSize() {

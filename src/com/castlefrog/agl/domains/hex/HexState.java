@@ -25,7 +25,7 @@ public final class HexState implements State<HexState>, Serializable {
     }
 
     public HexState(int size) {
-        locations_ = new byte[size][size];
+        this(new byte[size][size], 0);
     }
 
     public HexState(byte[][] locations,
