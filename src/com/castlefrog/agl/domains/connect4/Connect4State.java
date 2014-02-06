@@ -3,9 +3,14 @@ package com.castlefrog.agl.domains.connect4;
 import com.castlefrog.agl.State;
 
 /**
- * State represented by a bitBoard described below: . . . . . . . Row above top
- * row 5 12 19 26 33 40 47 4 11 18 25 32 39 46 3 10 17 24 31 38 45 2 9 16 23 30
- * 37 44 1 8 15 22 29 36 43 0 7 14 21 28 35 42
+ * State represented by a bitBoard described below:
+ *  .  .  .  .  .  .  . Row above top row
+ *  5 12 19 26 33 40 47
+ *  4 11 18 25 32 39 46
+ *  3 10 17 24 31 38 45
+ *  2  9 16 23 30 37 44
+ *  1  8 15 22 29 36 43
+ *  0  7 14 21 28 35 42
  */
 public final class Connect4State implements State<Connect4State> {
     private static final int WIDTH = 7;
@@ -49,7 +54,12 @@ public final class Connect4State implements State<Connect4State> {
 
     @Override
     public int hashCode() {
-        return (int) (11 * bitBoards_[0] + bitBoards_[1]);
+        int hashCode = 1;
+        hashCode = hashCode * 17 + (int) bitBoards_[0];
+        hashCode = hashCode * 31 + (int) (bitBoards_[0] >> Integer.SIZE);
+        hashCode = hashCode * 13 + (int) bitBoards_[1];
+        hashCode = hashCode * 29 + (int) (bitBoards_[1] >> Integer.SIZE);
+        return hashCode;
     }
 
     @Override

@@ -19,7 +19,7 @@ public final class Connect4Simulator extends AbstractSimulator<Connect4State, Co
     public Connect4Simulator() {
         state_ = getInitialState();
         rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<List<Connect4Action>>();
+        legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<Connect4Action>());
         legalActions_.add(new ArrayList<Connect4Action>());
         computeLegalActions();
