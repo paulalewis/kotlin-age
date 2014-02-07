@@ -16,10 +16,10 @@ public final class Arbiter<S extends State<S>, A extends Action> {
     /** The actual domain being used */
     private Simulator<S, A> world_;
     /** Simulator to use for each agent */
-    private List<Simulator<S, A>> simulators_ = new ArrayList<Simulator<S, A>>();
+    private List<Simulator<S, A>> simulators_ = new ArrayList<>();
     private History<S, A> history_;
     private int historyIndex_;
-    private List<Agent> agents_ = new ArrayList<Agent>();
+    private List<Agent> agents_ = new ArrayList<>();
     private long[] decisionTimes_;
     private ExecutorService executor_;
     private CountDownLatch actionsReady_;
@@ -51,12 +51,6 @@ public final class Arbiter<S extends State<S>, A extends Action> {
 
     public Arbiter(S initialState,
                    Simulator<S, A> world,
-                   List<Agent> agents) {
-        this(initialState, world, null, agents);
-    }
-
-    public Arbiter(S initialState,
-                   Simulator<S, A> world,
                    List<Simulator<S, A>> simulators,
                    List<Agent> agents) {
         this(new History<S, A>(initialState), world, simulators, agents);
@@ -71,7 +65,7 @@ public final class Arbiter<S extends State<S>, A extends Action> {
                                                " agents but " + agents.size() + " provided.");
         }
         if (simulators == null) {
-            simulators_ = new ArrayList<Simulator<S, A>>();
+            simulators_ = new ArrayList<>();
             for (int i = 0; i < agents.size(); i += 1) {
                 simulators_.add(world.copy());
             }
@@ -94,11 +88,11 @@ public final class Arbiter<S extends State<S>, A extends Action> {
     }
 
     /**
-     * Reset the arbiter to a new initial
+     * Reset the arbiter the initial
      * state so that another game may be played.
      */
     public void reset() {
-        reset(world_.getInitialState());
+        reset(history_.getState(0));
     }
 
     /**
@@ -107,7 +101,7 @@ public final class Arbiter<S extends State<S>, A extends Action> {
      */
     public synchronized void reset(S state) {
         world_.setState(state);
-        history_ = new History<S, A>(world_.getState());
+        history_ = new History<>(world_.getState());
         historyIndex_ = 0;
     }
 
