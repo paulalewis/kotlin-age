@@ -4,18 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * AbstractSimulator implements common functionality for
- * many simulators.
- */
 public abstract class AbstractSimulator<S extends State<S>, A extends Action> implements Simulator<S, A> {
     protected S state_;
     protected List<List<A>> legalActions_;
     protected int[] rewards_;
 
-    protected AbstractSimulator() {
-        //state_ = getInitialState();
-    }
+    protected AbstractSimulator() {}
 
     protected AbstractSimulator(AbstractSimulator<S, A> simulator) {
         state_ = simulator.getState();
@@ -71,7 +65,7 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      *      from the current state.
      */
     public final List<List<A>> getLegalActions() {
-        List<List<A>> allLegalActions = new ArrayList<List<A>>();
+        List<List<A>> allLegalActions = new ArrayList<>();
         for (int i = 0; i < getNAgents(); i += 1) {
             allLegalActions.add(getLegalActions(i));
         }
@@ -88,7 +82,7 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      *      a list of legal actions from current state.
      */
     public final List<A> getLegalActions(int agentId) {
-        List<A> legalActions = new ArrayList<A>();
+        List<A> legalActions = new ArrayList<>();
         for (A action: legalActions_.get(agentId)) {
             legalActions.add(action);
         }
@@ -107,5 +101,11 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      */
     public final boolean hasLegalActions(int agentId) {
         return legalActions_.get(agentId).size() != 0;
+    }
+
+    protected final void clearLegalActions() {
+        for (List<A> legalActions: legalActions_) {
+            legalActions.clear();
+        }
     }
 }
