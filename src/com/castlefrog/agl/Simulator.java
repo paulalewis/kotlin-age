@@ -29,12 +29,6 @@ public interface Simulator<S extends State<S>, A extends Action> extends Copyabl
     void stateTransition(List<A> actions);
 
     /**
-     * Generates and returns a legal initial state.
-     * @return an initial state for the domain.
-     */
-    S getInitialState();
-
-    /**
      * Rewards for each agent may be indexed by that agent's id.
      * @return array of rewards for each agent.
      */
@@ -93,7 +87,4 @@ public interface Simulator<S extends State<S>, A extends Action> extends Copyabl
      * Get the turn type of this domain.
      */
     TurnType getTurnType();
-
-    //This should be a separate interface
-    //public abstract double[] getFeatureVector(A action);
 }
