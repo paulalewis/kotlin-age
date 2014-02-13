@@ -27,15 +27,15 @@ public final class DomainTest {
     public static final String TEST_ROOT_NAME = "domainTest";
     /**
      * @param args
-     *      test_filepath - path to the xml test file
-     *      output_filepath - optional path to output file
+     *      test_filename - path to the xml test file
+     *      output_filename - optional path to output file
      */
     private DomainTest(String[] args) {
         if (args.length == 1 || args.length == 2) {
             registerSimulators();
             registerAgents();
             try {
-                List<Agent> agents = new ArrayList<Agent>();
+                List<Agent> agents = new ArrayList<>();
                 File xmlFile = new File(args[0]);
                 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -50,7 +50,7 @@ public final class DomainTest {
                 Element element = (Element) nList.item(0);
                 String simulatorName = getTagValue("name", element);
                 NodeList paramList = element.getElementsByTagName("params");
-                List<String> simulatorParams = new ArrayList<String>();
+                List<String> simulatorParams = new ArrayList<>();
                 if (paramList.getLength() != 0) {
                     NodeList paramNodes = ((Element) paramList.item(0)).getElementsByTagName("param");
                     for (int j = 0; j < paramNodes.getLength(); j += 1) {
@@ -67,9 +67,9 @@ public final class DomainTest {
                 for (int i = 0; i < agentNodes.getLength(); i += 1) {
                     Element agentNode = (Element) agentNodes.item(i);
                     if (agentNode.getNodeType() == Node.ELEMENT_NODE) {
-                        String name = getTagValue("name", (Element) agentNode);
+                        String name = getTagValue("name", agentNode);
                         paramList = agentNode.getElementsByTagName("params");
-                        List<String> params = new ArrayList<String>();
+                        List<String> params = new ArrayList<>();
                         if (paramList.getLength() != 0) {
                             NodeList paramNodes = ((Element) paramList.item(0)).getElementsByTagName("param");
                             for (int j = 0; j < paramNodes.getLength(); j += 1) {
@@ -83,17 +83,17 @@ public final class DomainTest {
                     }
                 }
 
-                List<double[]> rewardsData = new ArrayList<double[]>();
-                List<double[]> avgMoveTimeData = new ArrayList<double[]>();
+                List<double[]> rewardsData = new ArrayList<>();
+                List<double[]> avgMoveTimeData = new ArrayList<>();
                 for (int i = 0; i < agents.size(); i += 1) {
                     rewardsData.add(new double[nSimulations]);
                     avgMoveTimeData.add(new double[nSimulations]);
                 }
-                List<Simulator<?, ?>> simulators = new ArrayList<Simulator<?, ?>>();
+                List<Simulator<?, ?>> simulators = new ArrayList<>();
                 for (int i = 0; i < agents.size(); i += 1) {
                     simulators.add(world.copy());
                 }
-                Arbiter<?, ?> arbiter = new Arbiter(world.getInitialState(), world, simulators, agents);
+                Arbiter<?, ?> arbiter = new Arbiter(world.getState(), world, simulators, agents);
                 for (int i = 0; i < nSimulations; i += 1) {
                     arbiter.reset();
                     try {
@@ -154,30 +154,25 @@ public final class DomainTest {
                     System.out.println(output.toString());
                 }
                 arbiter.done();
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (ParserConfigurationException | SAXException | IOException e) {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Illegal arguments\nusage: java -jar DomainTest.jar test_filepath [output_filepath]");
+            System.out.println("Illegal arguments\nusage: java -jar DomainTest.jar test_filename [output_filename]");
         }
     }
 
     private String getTagValue(String tagName, Element element) {
-        NodeList nList = element.getElementsByTagName(tagName).item(0).getChildNodes();
-        return ((Node) nList.item(0)).getNodeValue();
+        return element.getElementsByTagName(tagName).item(0).getChildNodes().item(0).getNodeValue();
     }
 
-    private void recordResults(String filepath, String results) {
+    private void recordResults(String filename, String results) {
         try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(filepath, true));
+            BufferedWriter output = new BufferedWriter(new FileWriter(filename, true));
             output.write(results);
             output.close();
         } catch (IOException exception) {
-            throw new IllegalArgumentException("Could not write to " + filepath);
+            throw new IllegalArgumentException("Could not write to " + filename);
         }
     }
 
