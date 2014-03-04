@@ -1,7 +1,7 @@
 Abstract Game Library
 =====================
 
-This sofware is available under the MIT license. See LICENSE.md.
+This software is available under the MIT license. See LICENSE.md.
 
 About
 -----
@@ -26,7 +26,7 @@ Setup
 -----
 
 1. Install ant 1.8.2
-2. Install java sdk 1.6
+2. Install java sdk 1.7
 
 Build
 -----
