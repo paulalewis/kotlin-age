@@ -1,7 +1,6 @@
 package com.castlefrog.agl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,10 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * and clients to use those agents.
  */
 public final class Agents {
-    private static final Map<String, AgentProvider> PROVIDERS = new ConcurrentHashMap<String, AgentProvider>();
+    private static final Map<String, AgentProvider> PROVIDERS = new ConcurrentHashMap<>();
 
-    private Agents() {
-    }
+    private Agents() {}
 
     // provider api
 
@@ -49,10 +47,10 @@ public final class Agents {
      * providers to choose from.
      */
     public static List<String> getProviderList() {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         Set<String> keySet = PROVIDERS.keySet();
-        for (Iterator<String> it = keySet.iterator(); it.hasNext();) {
-            names.add(it.next());
+        for (String name : keySet) {
+            names.add(name);
         }
         return names;
     }
