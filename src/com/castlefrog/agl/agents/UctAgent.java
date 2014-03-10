@@ -14,6 +14,8 @@ import com.castlefrog.agl.State;
  * based on input parameters.
  */
 public final class UctAgent implements Agent {
+    private static final String NAME = "uct";
+
     /** number of simulations to run */
     private int nSimulations_;
 
@@ -84,8 +86,8 @@ public final class UctAgent implements Agent {
      * represent all legal moves from the contained state.
      */
     private class StateNode<S extends State<S>, A extends Action> extends Node {
-        private S state_;
-        private List<ActionNode<S, A>> children_;
+        private final S state_;
+        private final List<ActionNode<S, A>> children_;
 
         /**
          * When a new state node is created it immediately
@@ -95,11 +97,11 @@ public final class UctAgent implements Agent {
         public StateNode(S state, List<List<A>> legalActions) {
             state_ = state;
 
-            List<List<A>> actionGroups = new ArrayList<List<A>>();
-            for (int i = 0; i < legalActions.size(); i++) {
-                actionGroups = combineActions(actionGroups, legalActions.get(i));
+            List<List<A>> actionGroups = new ArrayList<>();
+            for (List<A> actions : legalActions) {
+                actionGroups = combineActions(actionGroups, actions);
             }
-            children_ = new ArrayList<ActionNode<S, A>>(actionGroups.size());
+            children_ = new ArrayList<>(actionGroups.size());
             for (List<A> actions: actionGroups) {
                 children_.add(new ActionNode<S, A>(actions));
             }
@@ -110,17 +112,17 @@ public final class UctAgent implements Agent {
             if (actions.size() == 0) {
                 actions.add(null);
             }
-            List<List<A>> newActionGroups = new ArrayList<List<A>>();
+            List<List<A>> newActionGroups = new ArrayList<>();
             if (actionGroups.size() == 0) {
                 for (A action: actions) {
-                    List<A> temp = new ArrayList<A>();
+                    List<A> temp = new ArrayList<>();
                     temp.add(action);
                     newActionGroups.add(temp);
                 }
             } else {
                 for (A action: actions) {
                     for (List<A> actionGroup: actionGroups) {
-                        List<A> temp = new ArrayList<A>();
+                        List<A> temp = new ArrayList<>();
                         for (A tempAction: actionGroup) {
                             temp.add(tempAction);
                         }
@@ -140,7 +142,7 @@ public final class UctAgent implements Agent {
         public ActionNode<S, A> uctSelect() {
             assert children_.size() > 0;
             if (visits_ <= children_.size()) {
-                List<ActionNode<S, A>> unvisited = new ArrayList<ActionNode<S, A>>();
+                List<ActionNode<S, A>> unvisited = new ArrayList<>();
                 for (ActionNode<S, A> child: children_) {
                     if (child.getVisits() == 0) {
                         unvisited.add(child);
@@ -186,7 +188,7 @@ public final class UctAgent implements Agent {
     }
 
     private class ActionNode<S extends State<S>, A extends Action> extends Node {
-        private List<A> actions_;
+        private final List<A> actions_;
 
         private List<StateNode<S, A>> frequencyTable_;
 
@@ -196,9 +198,9 @@ public final class UctAgent implements Agent {
             actions_ = actions;
             frequencyTable_ = null;
             if (sparseSampleSize_ != -1) {
-                children_ = new Hashtable<Integer, StateNode<S, A>>(sparseSampleSize_);
+                children_ = new Hashtable<>(sparseSampleSize_);
             } else {
-                children_ = new Hashtable<Integer, StateNode<S, A>>();
+                children_ = new Hashtable<>();
             }
         }
 
@@ -217,13 +219,13 @@ public final class UctAgent implements Agent {
                 S state = simulatorCopy.getState();
                 StateNode<S, A> stateNode = children_.get(state.hashCode());
                 if (stateNode == null) {
-                    stateNode = new StateNode<S, A>(state, simulatorCopy.getLegalActions());
+                    stateNode = new StateNode<>(state, simulatorCopy.getLegalActions());
                     children_.put(state.hashCode(), stateNode);
                 }
                 return stateNode;
             } else {
                 if (frequencyTable_ == null) {
-                    frequencyTable_ = new ArrayList<StateNode<S, A>>();
+                    frequencyTable_ = new ArrayList<>();
                     for (StateNode<S, A> stateNode : children_.values()) {
                         for (int i = 0; i < stateNode.visits_; i++) {
                             frequencyTable_.add(stateNode);
@@ -321,13 +323,13 @@ public final class UctAgent implements Agent {
             return legalActions.get(agentId).get(0);
         }
 
-        StateNode<S, A> temp = new StateNode<S, A>(simulator.getState(), legalActions);
+        StateNode<S, A> temp = new StateNode<>(simulator.getState(), legalActions);
         double[] rootActionRewards = new double[temp.getChildren().size()];
         int[] rootActionVisits = new int[temp.getChildren().size()];
         temp = null;
         // Generate UCT trees equal to the number of ensembles
         for (int i = 0; i < nEnsembles_; i += 1) {
-            StateNode<S, A> root = new StateNode<S, A>(simulator.getState(), legalActions);
+            StateNode<S, A> root = new StateNode<>(simulator.getState(), legalActions);
             for (int j = 0; j < nSimulations_; j += 1) {
                 playSimulation(root, simulator.copy());
             }
@@ -445,7 +447,7 @@ public final class UctAgent implements Agent {
             switch (simulationMethod_) {
             default:
             case RANDOM:
-                List<A> selectedActions = new ArrayList<A>();
+                List<A> selectedActions = new ArrayList<>();
                 for (List<A> actions: legalActions) {
                     if (actions.size() != 0) {
                         selectedActions.add(actions.get((int) (Math.random() * actions.size())));
@@ -465,20 +467,20 @@ public final class UctAgent implements Agent {
     }
 
     public String getName() {
-        return "UCT";
+        return NAME;
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append(getName() + " agent");
-        output.append("\n  number of simulations:     " + nSimulations_);
-        output.append("\n  UCT constant:              " + uctConstant_);
+        output.append(getName()).append(" agent");
+        output.append("\n  number of simulations:     ").append(nSimulations_);
+        output.append("\n  UCT constant:              ").append(uctConstant_);
         if (sparseSampleSize_ > 0) {
-            output.append("\n  sparse sample size:        " + sparseSampleSize_);
+            output.append("\n  sparse sample size:        ").append(sparseSampleSize_);
         }
         if (nEnsembles_ > 1) {
-            output.append("\n  number of ensembles:       " + nEnsembles_);
+            output.append("\n  number of ensembles:       ").append(nEnsembles_);
         }
         return output.toString();
     }

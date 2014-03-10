@@ -12,8 +12,9 @@ import com.castlefrog.agl.State;
  * of possible actions from a given state.
  */
 public final class RandomAgent implements Agent {
-    public RandomAgent() {
-    }
+    private static final String NAME = "random";
+
+    public RandomAgent() {}
 
     public <S extends State<S>, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
@@ -22,7 +23,7 @@ public final class RandomAgent implements Agent {
     }
 
     public String getName() {
-        return "random";
+        return NAME;
     }
 
     @Override

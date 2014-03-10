@@ -7,15 +7,19 @@ import com.castlefrog.agl.AgentProvider;
 import com.castlefrog.agl.Agents;
 
 public final class UctAgentProvider implements AgentProvider {
+    private static UctAgentProvider instance_;
+
     static {
         Agents.registerProvider("uct", UctAgentProvider.getInstance());
     }
 
-    private UctAgentProvider() {
-    }
+    private UctAgentProvider() {}
 
     public static UctAgentProvider getInstance() {
-        return new UctAgentProvider();
+        if (instance_ == null) {
+            instance_ = new UctAgentProvider();
+        }
+        return instance_;
     }
 
     public Agent newAgent(List<String> params) {
