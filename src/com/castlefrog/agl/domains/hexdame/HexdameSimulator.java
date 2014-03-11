@@ -7,6 +7,7 @@ import java.util.Stack;
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
+import com.castlefrog.agl.domains.hex.HexSimulator;
 
 public final class HexdameSimulator extends AbstractSimulator<HexdameState, HexdameAction> {
     private static final int N_AGENTS = 2;
@@ -18,19 +19,16 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
     private static int[][] corners_;
     private static int[][][] sides_;
 
-    public HexdameSimulator() {
-        corners_ = getCorners();
-        sides_ = getSides();
-        state_ = getInitialState();
-        rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<List<HexdameAction>>();
-        legalActions_.add(new ArrayList<HexdameAction>());
-        legalActions_.add(new ArrayList<HexdameAction>());
-        computeLegalActions(null);
+    private HexdameSimulator(HexdameState state) {
+        setState(state);
     }
 
     private HexdameSimulator(HexdameSimulator simulator) {
         super(simulator);
+    }
+
+    public static HexdameSimulator create(HexdameState state) {
+        return new HexdameSimulator(state);
     }
 
     private int[][] getCorners() {
@@ -281,10 +279,6 @@ public final class HexdameSimulator extends AbstractSimulator<HexdameState, Hexd
             }
         }
         return 0;
-    }
-
-    public HexdameState getInitialState() {
-        return new HexdameState(new byte[SIZE][SIZE], 0);
     }
 
     public int getNAgents() {

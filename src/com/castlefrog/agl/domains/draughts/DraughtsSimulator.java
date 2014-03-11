@@ -12,13 +12,8 @@ public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, Dr
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
     //private static final int SIZE = 10;
 
-    public DraughtsSimulator() {
-        state_ = getInitialState();
-        rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<List<DraughtsAction>>();
-        legalActions_.add(new ArrayList<DraughtsAction>());
-        legalActions_.add(new ArrayList<DraughtsAction>());
-        computeLegalActions();
+    private DraughtsSimulator(DraughtsState state) {
+        setState(state);
     }
 
     private DraughtsSimulator(DraughtsSimulator simulator) {
@@ -29,8 +24,8 @@ public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, Dr
         return new DraughtsSimulator(this);
     }
 
-    public static DraughtsSimulator create(List<String> params) {
-        return new DraughtsSimulator();
+    public static DraughtsSimulator create(DraughtsState state) {
+        return new DraughtsSimulator(state);
     }
 
     public void setState(DraughtsState state) {
@@ -60,10 +55,6 @@ public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, Dr
     public int[] computeRewards() {
         //TODO - scan for no pieces left on one side or the other
         return new int[N_AGENTS];
-    }
-
-    public DraughtsState getInitialState() {
-        return null;
     }
 
     public int getNAgents() {

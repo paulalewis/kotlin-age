@@ -18,6 +18,6 @@ public final class HexdameSimulatorProvider implements SimulatorProvider {
     }
 
     public HexdameSimulator newSimulator(List<String> params) {
-        return new HexdameSimulator();
+        return HexdameSimulator.create(new HexdameState());
     }
 }

@@ -25,6 +25,9 @@ public final class HexdameState implements State<HexdameState>, Serializable {
         AGENT2_KING
     }
 
+    public HexdameState() {
+    }
+
     public HexdameState(byte[][] locations,
                          int agentTurn) {
         locations_ = new byte[locations.length][locations[0].length];

@@ -7,6 +7,10 @@ public final class GoState implements State<GoState> {
     private byte agentTurn_;
     private byte passFlag_;
 
+    public GoState(int boardSize) {
+        this(new byte[boardSize][boardSize], 0, 0);
+    }
+
     public GoState(byte[][] locations,
                    int agentTurn,
                    int passFlag) {

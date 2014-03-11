@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.go;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
@@ -15,16 +14,8 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
     private int boardSize_;
     private TurnType turnType_;
 
-    public GoSimulator(int boardSize,
-                       TurnType turnType) {
-        boardSize_ = boardSize;
-        turnType_ = turnType;
-        state_ = getInitialState();
-        rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<List<GoAction>>();
-        legalActions_.add(new ArrayList<GoAction>());
-        legalActions_.add(new ArrayList<GoAction>());
-        computeLegalActions();
+    private GoSimulator(GoState state) {
+        setState(state);
     }
 
     private GoSimulator(GoSimulator simulator) {
@@ -37,12 +28,8 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
         return new GoSimulator(this);
     }
 
-    public static GoSimulator create(List<String> params) {
-        try {
-            return new GoSimulator(Integer.parseInt(params.get(0)), TurnType.valueOf(TurnType.class, params.get(1)));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.toString());
-        }
+    public static GoSimulator create(GoState state) {
+        return new GoSimulator(state);
     }
 
     public void setState(GoState state) {
@@ -93,10 +80,6 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
             //TODO - compute points
         //}
         return new int[N_AGENTS];
-    }
-
-    public GoState getInitialState() {
-        return new GoState(new byte[boardSize_][boardSize_], 0, 0);
     }
 
     public int getSize() {
