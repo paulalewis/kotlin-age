@@ -21,7 +21,7 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      * Rewards for each agent may be indexed by that agent's id.
      * @return array of rewards for each agent.
      */
-    public final int[] getRewards() {
+    public int[] getRewards() {
         return Arrays.copyOf(rewards_, rewards_.length);
     }
 
@@ -30,7 +30,7 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      * @param agentId the agent to get reward value.
      * @return the reward in current state of single agent.
      */
-    public final int getReward(int agentId) {
+    public int getReward(int agentId) {
         return rewards_[agentId];
     }
 
@@ -39,7 +39,7 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      * legal actions from the current state.
      * @return true if current state is terminal.
      */
-    public final boolean isTerminalState() {
+    public boolean isTerminalState() {
         for (int i = 0; i < getNAgents(); i += 1) {
             if (hasLegalActions(i)) {
                 return false;
@@ -52,7 +52,7 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      * Current state of the simulator.
      * @return current state.
      */
-    public final S getState() {
+    public S getState() {
         return state_.copy();
     }
 
@@ -64,7 +64,7 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      *      a list of legal actions for each agent
      *      from the current state.
      */
-    public final List<List<A>> getLegalActions() {
+    public List<List<A>> getLegalActions() {
         List<List<A>> allLegalActions = new ArrayList<>();
         for (int i = 0; i < getNAgents(); i += 1) {
             allLegalActions.add(getLegalActions(i));
@@ -81,7 +81,7 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      * @return
      *      a list of legal actions from current state.
      */
-    public final List<A> getLegalActions(int agentId) {
+    public List<A> getLegalActions(int agentId) {
         List<A> legalActions = new ArrayList<>();
         for (A action: legalActions_.get(agentId)) {
             legalActions.add(action);
@@ -99,11 +99,11 @@ public abstract class AbstractSimulator<S extends State<S>, A extends Action> im
      *      true if agent has 1 or more legal actions
      *      from current state, otherwise false.
      */
-    public final boolean hasLegalActions(int agentId) {
+    public boolean hasLegalActions(int agentId) {
         return legalActions_.get(agentId).size() != 0;
     }
 
-    protected final void clearLegalActions() {
+    protected void clearLegalActions() {
         for (List<A> legalActions: legalActions_) {
             legalActions.clear();
         }
