@@ -14,12 +14,37 @@ public final class BiniaxState implements State<BiniaxState> {
     private static final int WIDTH = 5;
     private static final int HEIGHT = 7;
     private static final int MAX_ELEMENTS = 9;
+    private static final int BUFFER = 3;
+    public static final int ELEMENT_LIMIT = MAX_ELEMENTS + 1;
+    public static final int MAX_FREE_MOVES = 2;
 
-    private byte[][] locations_;
+    private final byte[][] locations_;
 
-    private byte freeMoves_;
+    private final byte freeMoves_;
     /** Total number of actions taken. */
-    private int nTurns_;
+    private final int nTurns_;
+
+    /**
+     * The initial state for biniax starts with the player at the bottom of
+     * the grid and some random elements above the player.
+     */
+    public BiniaxState() {
+        locations_ = new byte[BiniaxState.getWidth()][BiniaxState.getHeight()];
+        for (int i = 0; i < BiniaxState.getHeight(); i++) {
+            int emptyLocation = (int) (Math.random() * BiniaxState.getWidth());
+            for (int j = 0; j < BiniaxState.getWidth(); j++) {
+                if (j != emptyLocation && i < BiniaxState.getHeight() - BUFFER) {
+                    locations_[j][i] = (byte) BiniaxSimulator.generateRandomElementPair(0);
+                    if (i == BiniaxState.getHeight() - BUFFER - 1) {
+                        locations_[j][i] = (byte) (locations_[j][i] % ELEMENT_LIMIT + ELEMENT_LIMIT);
+                    }
+                }
+            }
+        }
+        locations_[BiniaxState.getWidth() / 2][BiniaxState.getHeight() - 1] = 1;
+        freeMoves_ = MAX_FREE_MOVES;
+        nTurns_ = 0;
+    }
 
     public BiniaxState(byte[][] locations, byte freeMoves, int nTurns) {
         locations_ = locations;
@@ -34,9 +59,7 @@ public final class BiniaxState implements State<BiniaxState> {
     public byte[][] getLocations() {
         byte[][] locations = new byte[WIDTH][HEIGHT];
         for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                locations[i][j] = locations_[i][j];
-            }
+            System.arraycopy(locations_[i], 0, locations[i], 0, HEIGHT);
         }
         return locations;
     }
@@ -53,9 +76,9 @@ public final class BiniaxState implements State<BiniaxState> {
         return nTurns_;
     }
 
-    public int getNElementTypes() {
-        return 0;
-    }
+    //public int getNElementTypes() {
+    //    return 0;
+    //}
 
     public static int getWidth() {
         return WIDTH;
@@ -67,10 +90,6 @@ public final class BiniaxState implements State<BiniaxState> {
 
     public static int getMaxElements() {
         return MAX_ELEMENTS;
-    }
-
-    public int getAgentTurn() {
-        return 0;
     }
 
     @Override
@@ -108,8 +127,8 @@ public final class BiniaxState implements State<BiniaxState> {
     public String toString() {
         final String elements = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         StringBuilder output = new StringBuilder();
-        output.append("(Turns: " + nTurns_ + ")\n");
-        output.append("(Free Moves:" + freeMoves_ + ")\n");
+        output.append("(Turns: ").append(nTurns_).append(")\n");
+        output.append("(Free Moves:").append(freeMoves_).append(")\n");
         for (int i = 0; i < WIDTH; i += 1) {
             output.append("----");
         }

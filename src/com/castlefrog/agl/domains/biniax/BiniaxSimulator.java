@@ -13,22 +13,15 @@ import com.castlefrog.agl.TurnType;
 public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, BiniaxAction> {
     private static final int N_AGENTS = 1;
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
-    private static final int BUFFER = 3;
-    private static final byte N_FREE_MOVES = 2;
     private static final int INITIAL_ELEMENTS = 4;
     private static final int ELEMENT_INCREMENT_INTERVAL = 32;
-    private static final int ELEMENT_LIMIT = BiniaxState.getMaxElements() + 1;
     private static final double IMPASSIBLE_CHANCE = 0;
 
-    /**
-     * Create a Biniax simulator.
-     */
-    public BiniaxSimulator() {
-        state_ = getInitialState();
-        legalActions_ = new ArrayList<List<BiniaxAction>>();
+    private BiniaxSimulator(BiniaxState state) {
+        legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<BiniaxAction>());
+        setState(state);
         rewards_ = new int[] {1};
-        computeLegalActions();
     }
 
     private BiniaxSimulator(BiniaxSimulator simulator) {
@@ -39,8 +32,8 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
         return new BiniaxSimulator(this);
     }
 
-    public static BiniaxSimulator create(List<String> params) {
-        return new BiniaxSimulator();
+    public static BiniaxSimulator create(BiniaxState state) {
+        return new BiniaxSimulator(state);
     }
 
     public void setState(BiniaxState state) {
@@ -80,16 +73,16 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
             break;
         }
 
-        if (locations[x][y] / ELEMENT_LIMIT == element) {
-            element = (byte) (locations[x][y] % ELEMENT_LIMIT);
-        } else if (locations[x][y] % ELEMENT_LIMIT == element) {
-            element = (byte) (locations[x][y] / ELEMENT_LIMIT);
+        if (locations[x][y] / BiniaxState.ELEMENT_LIMIT == element) {
+            element = (byte) (locations[x][y] % BiniaxState.ELEMENT_LIMIT);
+        } else if (locations[x][y] % BiniaxState.ELEMENT_LIMIT == element) {
+            element = (byte) (locations[x][y] / BiniaxState.ELEMENT_LIMIT);
         }
         locations[x][y] = element;
 
         freeMoves--;
         if (freeMoves == 0) {
-            freeMoves = N_FREE_MOVES;
+            freeMoves = BiniaxState.MAX_FREE_MOVES;
             // Move all elements down
             int emptyLocation = (int) (Math.random() * BiniaxState.getWidth());
             for (int i = BiniaxState.getHeight() - 1; i >= 0; i--) {
@@ -115,13 +108,13 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
                 if (y < BiniaxState.getHeight() - 1) {
                     locations[x][y + 1] = 0;
                 }
-            } else if (locations[x][y] / ELEMENT_LIMIT == element) {
-                locations[x][y] = (byte) (locations[x][y] % ELEMENT_LIMIT);
+            } else if (locations[x][y] / BiniaxState.ELEMENT_LIMIT == element) {
+                locations[x][y] = (byte) (locations[x][y] % BiniaxState.ELEMENT_LIMIT);
                 if (y < BiniaxState.getHeight() - 1) {
                     locations[x][y + 1] = 0;
                 }
-            } else if (locations[x][y] % ELEMENT_LIMIT == element) {
-                locations[x][y] = (byte) (locations[x][y] / ELEMENT_LIMIT);
+            } else if (locations[x][y] % BiniaxState.ELEMENT_LIMIT == element) {
+                locations[x][y] = (byte) (locations[x][y] / BiniaxState.ELEMENT_LIMIT);
                 if (y < BiniaxState.getHeight() - 1) {
                     locations[x][y + 1] = 0;
                 }
@@ -136,25 +129,25 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
      * always in order from smallest to largest
      * @return int of random values from 0 to numElements_ - 1
      */
-    private int generateRandomElementPair(int nTurns) {
+    public static int generateRandomElementPair(int nTurns) {
         int nElementTypes = getNElementTypes(nTurns);
         int element1 = ((int) (Math.random() * nElementTypes)) + 1;
         int element2 = ((int) (Math.random() * (nElementTypes - 1))) + 1;
         if (element1 <= element2) {
-            return element1 * ELEMENT_LIMIT + element2 + 1;
+            return element1 * BiniaxState.ELEMENT_LIMIT + element2 + 1;
         } else {
-            return element2 * ELEMENT_LIMIT + element1;
+            return element2 * BiniaxState.ELEMENT_LIMIT + element1;
         }
     }
 
-    private int getNElementTypes(int nTurns) {
+    private static int getNElementTypes(int nTurns) {
         return Math.min(INITIAL_ELEMENTS + nTurns / ELEMENT_INCREMENT_INTERVAL, BiniaxState.getMaxElements());
     }
 
     private int[] getElementLocation() {
         for (int i = 0; i < BiniaxState.getWidth(); i++) {
             for (int j = 0; j < BiniaxState.getHeight(); j++) {
-                if (state_.getLocation(i, j) > 0 && state_.getLocation(i, j) < ELEMENT_LIMIT) {
+                if (state_.getLocation(i, j) > 0 && state_.getLocation(i, j) < BiniaxState.ELEMENT_LIMIT) {
                     return new int[] {i, j};
                 }
             }
@@ -166,7 +159,6 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
      * A legal action is one that moves the single element to an empty space or
      * an element pair that contains that element and avoids being pushed off
      * the board.
-     * @return List of legal actions
      */
     private void computeLegalActions() {
         legalActions_.get(0).clear();
@@ -177,8 +169,8 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
         byte[][] locations = state_.getLocations();
 
         if (y != 0 && (locations[x][y - 1] == 0 ||
-                        locations[x][y - 1] / ELEMENT_LIMIT == element ||
-                        locations[x][y - 1] % ELEMENT_LIMIT == element)) {
+                        locations[x][y - 1] / BiniaxState.ELEMENT_LIMIT == element ||
+                        locations[x][y - 1] % BiniaxState.ELEMENT_LIMIT == element)) {
             legalActions_.get(0).add(BiniaxAction.NORTH);
         }
 
@@ -186,26 +178,26 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
             int nextElement = 0;
             if (locations[x + 1][y] == 0) {
                 nextElement = element;
-            } else if (locations[x + 1][y] / ELEMENT_LIMIT == element) {
-                nextElement = locations[x + 1][y] % ELEMENT_LIMIT;
+            } else if (locations[x + 1][y] / BiniaxState.ELEMENT_LIMIT == element) {
+                nextElement = locations[x + 1][y] % BiniaxState.ELEMENT_LIMIT;
             } else if (locations[x + 1][y] % 10 == element) {
-                nextElement = locations[x + 1][y] / ELEMENT_LIMIT;
+                nextElement = locations[x + 1][y] / BiniaxState.ELEMENT_LIMIT;
             }
 
             if (nextElement != 0) {
                 if (state_.getFreeMoves() > 1 ||
                         y < BiniaxState.getHeight() - 1 ||
                         locations[x + 1][y - 1] == 0 ||
-                        locations[x + 1][y - 1] / ELEMENT_LIMIT == nextElement ||
-                        locations[x + 1][y - 1] % ELEMENT_LIMIT == nextElement) {
+                        locations[x + 1][y - 1] / BiniaxState.ELEMENT_LIMIT == nextElement ||
+                        locations[x + 1][y - 1] % BiniaxState.ELEMENT_LIMIT == nextElement) {
                     legalActions_.get(0).add(BiniaxAction.EAST);
                 }
             }
         }
 
         if (y != BiniaxState.getHeight() - 1 && (locations[x][y + 1] == 0 ||
-                        locations[x][y + 1] / ELEMENT_LIMIT == element ||
-                        locations[x][y + 1] % ELEMENT_LIMIT == element)) {
+                        locations[x][y + 1] / BiniaxState.ELEMENT_LIMIT == element ||
+                        locations[x][y + 1] % BiniaxState.ELEMENT_LIMIT == element)) {
             legalActions_.get(0).add(BiniaxAction.SOUTH);
         }
 
@@ -213,45 +205,22 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
             int nextElement = 0;
             if (locations[x - 1][y] == 0) {
                 nextElement = element;
-            } else if (locations[x - 1][y] / ELEMENT_LIMIT == element) {
-                nextElement = locations[x - 1][y] % ELEMENT_LIMIT;
-            } else if (locations[x - 1][y] % ELEMENT_LIMIT == element) {
-                nextElement = locations[x - 1][y] / ELEMENT_LIMIT;
+            } else if (locations[x - 1][y] / BiniaxState.ELEMENT_LIMIT == element) {
+                nextElement = locations[x - 1][y] % BiniaxState.ELEMENT_LIMIT;
+            } else if (locations[x - 1][y] % BiniaxState.ELEMENT_LIMIT == element) {
+                nextElement = locations[x - 1][y] / BiniaxState.ELEMENT_LIMIT;
             }
 
             if (nextElement != 0) {
                 if (state_.getFreeMoves() > 1 ||
                         y < BiniaxState.getHeight() - 1 ||
                         locations[x - 1][y - 1] == 0 ||
-                        locations[x - 1][y - 1] / ELEMENT_LIMIT == nextElement ||
-                        locations[x - 1][y - 1] % ELEMENT_LIMIT == nextElement) {
+                        locations[x - 1][y - 1] / BiniaxState.ELEMENT_LIMIT == nextElement ||
+                        locations[x - 1][y - 1] % BiniaxState.ELEMENT_LIMIT == nextElement) {
                     legalActions_.get(0).add(BiniaxAction.WEST);
                 }
             }
         }
-    }
-
-    /**
-     * The intial state for biniax starts with the player at the bottom of
-     * the grid and some random elements above the player.
-     *
-     * @return an initial state in the biniax domain.
-     */
-    public BiniaxState getInitialState() {
-        byte[][] locations = new byte[BiniaxState.getWidth()][BiniaxState.getHeight()];
-        for (int i = 0; i < BiniaxState.getHeight(); i++) {
-            int emptyLocation = (int) (Math.random() * BiniaxState.getWidth());
-            for (int j = 0; j < BiniaxState.getWidth(); j++) {
-                if (j != emptyLocation && i < BiniaxState.getHeight() - BUFFER) {
-                    locations[j][i] = (byte) generateRandomElementPair(0);
-                    if (i == BiniaxState.getHeight() - BUFFER - 1) {
-                        locations[j][i] = (byte) (locations[j][i] % ELEMENT_LIMIT + ELEMENT_LIMIT);
-                    }
-                }
-            }
-        }
-        locations[BiniaxState.getWidth() / 2][BiniaxState.getHeight() - 1] = 1;
-        return new BiniaxState(locations, N_FREE_MOVES, 0);
     }
 
     public int getNAgents() {
