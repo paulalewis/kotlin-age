@@ -19,15 +19,15 @@ public final class Arbiter<S extends State<S>, A extends Action> {
     private List<Simulator<S, A>> simulators_ = new ArrayList<>();
     private History<S, A> history_;
     private int historyIndex_;
-    private List<Agent> agents_ = new ArrayList<>();
+    private final List<Agent> agents_ = new ArrayList<>();
     private long[] decisionTimes_;
     private ExecutorService executor_;
     private CountDownLatch actionsReady_;
 
     private class AgentAction implements Runnable {
-        private int agentId_;
-        private Vector<A> actions_;
-        private long[] decisionTimes_;
+        private final int agentId_;
+        private final Vector<A> actions_;
+        private final long[] decisionTimes_;
 
         public AgentAction(int agentId,
                            Vector<A> actions,
@@ -109,13 +109,13 @@ public final class Arbiter<S extends State<S>, A extends Action> {
      * Take a single state transition in domain.
      * If the agent has no legal actions to take
      * from a given state then that agent is only
-     * allowed to ruturn a null action. This method
+     * allowed to return a null action. This method
      * skips an agents select action method if the
      * only action available is null.
      */
     public synchronized void step() throws InterruptedException {
         if (!world_.isTerminalState()) {
-            Vector<A> actions = new Vector<A>();
+            Vector<A> actions = new Vector<>();
             actions.setSize(world_.getNAgents());
             actionsReady_ = new CountDownLatch(world_.getNAgents());
             try {
