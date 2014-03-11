@@ -7,10 +7,10 @@ import com.castlefrog.agl.Action;
 
 public final class BackgammonAction implements Action {
     /** List of individual moves form an action. */
-    private List<BackgammonMove> moves_;
+    private final List<BackgammonMove> moves_;
 
     public BackgammonAction(List<BackgammonMove> moves) {
-        moves_ = new ArrayList<BackgammonMove>();
+        moves_ = new ArrayList<>();
         for (BackgammonMove move : moves) {
             moves_.add(move);
         }
@@ -71,7 +71,7 @@ public final class BackgammonAction implements Action {
         StringBuilder output = new StringBuilder();
         output.append("[ ");
         for (int i = 0; i < size(); i++) {
-            output.append(getMove(i) + " ");
+            output.append(getMove(i)).append(" ");
         }
         output.append("]");
         return output.toString();

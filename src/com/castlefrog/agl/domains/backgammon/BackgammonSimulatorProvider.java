@@ -18,6 +18,6 @@ public final class BackgammonSimulatorProvider implements SimulatorProvider {
     }
 
     public BackgammonSimulator newSimulator(List<String> params) {
-        return BackgammonSimulator.create(params);
+        return BackgammonSimulator.create(new BackgammonState());
     }
 }

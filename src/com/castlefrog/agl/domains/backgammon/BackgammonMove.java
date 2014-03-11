@@ -1,5 +1,7 @@
 package com.castlefrog.agl.domains.backgammon;
 
+import com.sun.istack.internal.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +11,11 @@ import java.util.List;
  */
 public final class BackgammonMove implements Comparable<BackgammonMove> {
     /** List of all legal moves. */
-    private static List<List<BackgammonMove>> moves_ = generateMoves();
+    private static final List<List<BackgammonMove>> moves_ = generateMoves();
 
-    private int from_;
+    private final int from_;
 
-    private int distance_;
+    private final int distance_;
 
     private BackgammonMove(int from, int distance) {
         from_ = from;
@@ -25,7 +27,7 @@ public final class BackgammonMove implements Comparable<BackgammonMove> {
     }
 
     private static List<List<BackgammonMove>> generateMoves() {
-        List<List<BackgammonMove>> moves = new ArrayList<List<BackgammonMove>>();
+        List<List<BackgammonMove>> moves = new ArrayList<>();
         for (int i = 0; i < BackgammonState.getNumberOfLocations(); i++) {
             moves.add(new ArrayList<BackgammonMove>());
             for (int j = 0; j < BackgammonState.getNumberOfDieFaces(); j++) {
@@ -43,6 +45,7 @@ public final class BackgammonMove implements Comparable<BackgammonMove> {
         return distance_;
     }
 
+    @Override
     public int compareTo(BackgammonMove move) {
         if (from_ < move.getFrom()) {
             return -1;

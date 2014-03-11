@@ -15,13 +15,15 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
     private static final int N_AGENTS = 2;
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
 
-    public BackgammonSimulator() {
-        state_ = getInitialState();
-        rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<List<BackgammonAction>>();
+    private static final int[] REWARDS_BLACK_WINS = new int[] { 1, -1 };
+    private static final int[] REWARDS_WHITE_WINS = new int[] { -1, 1 };
+    private static final int[] REWARDS_NEUTRAL = new int[] { 0, 0 };
+
+    private BackgammonSimulator(BackgammonState state) {
+        legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<BackgammonAction>());
         legalActions_.add(new ArrayList<BackgammonAction>());
-        computeLegalActions();
+        setState(state);
     }
 
     private BackgammonSimulator(BackgammonSimulator simulator) {
@@ -32,8 +34,8 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
         return new BackgammonSimulator(this);
     }
 
-    public static BackgammonSimulator create(List<String> params) {
-        return new BackgammonSimulator();
+    public static BackgammonSimulator create(BackgammonState state) {
+        return new BackgammonSimulator(state);
     }
 
     public void setState(BackgammonState state) {
@@ -84,8 +86,7 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
     }
 
     private void computeLegalActions() {
-        legalActions_.get(0).clear();
-        legalActions_.get(1).clear();
+        clearLegalActions();
         List<BackgammonAction> legalActions = legalActions_.get(state_.getAgentTurn());
         byte[] locations = state_.getLocations();
         byte[] dice = state_.getDice();
@@ -139,7 +140,7 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
     private List<BackgammonAction> dfs(byte[] locations,
             LinkedList<BackgammonMove> moves, byte[] values, int piece,
             int depth) {
-        List<BackgammonAction> legalActions = new ArrayList<BackgammonAction>();
+        List<BackgammonAction> legalActions = new ArrayList<>();
         int limit = BackgammonState.getNumberOfLocations();
         int start = 0;
 
@@ -205,8 +206,6 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
 
     /**
      * Checks if a player can start moving pieces off of the board.
-     * @param locations
-     * @param piece
      * @return true if legal to move off board.
      */
     private boolean canMoveOff(byte[] locations, int piece) {
@@ -226,10 +225,6 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
         return true;
     }
 
-    /**
-     * @return {-1,1} for loss and {1,-1} for win at terminal state otherwise
-     *         returns {0,0}
-     */
     public void computeRewards() {
         boolean pos = false, neg = false;
         for (int i = 0; i < BackgammonState.getNumberOfLocations(); i += 1) {
@@ -240,36 +235,12 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
             }
         }
         if (!pos) {
-            rewards_[0] = 1;
-            rewards_[1] = -1;
+            rewards_ = REWARDS_BLACK_WINS;
         } else if (!neg) {
-            rewards_[0] = -1;
-            rewards_[1] = 1;
+            rewards_ = REWARDS_WHITE_WINS;
         } else {
-            rewards_[0] = 0;
-            rewards_[1] = 0;
+            rewards_ = REWARDS_NEUTRAL;
         }
-    }
-
-    public BackgammonState getInitialState() {
-        byte[] locations = new byte[] {0, 2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0,
-                                       5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2, 0};
-        byte[] dice = new byte[BackgammonState.getNumberOfDice()];
-        int agentTurn;
-
-        do {
-            dice[0] = (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1);
-            dice[1] = (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1);
-        } while (dice[0] == dice[1]);
-
-        if (dice[0] > dice[1]) {
-            dice[1] = (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1);
-            agentTurn = 0;
-        } else {
-            dice[0] = (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1);
-            agentTurn = 1;
-        }
-        return new BackgammonState(locations, dice, agentTurn);
     }
 
     public int getNAgents() {

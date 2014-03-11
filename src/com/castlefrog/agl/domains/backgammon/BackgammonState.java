@@ -16,6 +16,24 @@ public final class BackgammonState implements State<BackgammonState> {
     private byte[] dice_;
     private int agentTurn_;
 
+    public BackgammonState() {
+        locations_ = new byte[] {0, 2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2, 0};
+        dice_ = new byte[BackgammonState.getNumberOfDice()];
+
+        do {
+            dice_[0] = (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1);
+            dice_[1] = (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1);
+        } while (dice_[0] == dice_[1]);
+
+        if (dice_[0] > dice_[1]) {
+            dice_[1] = (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1);
+            agentTurn_ = 0;
+        } else {
+            dice_[0] = (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1);
+            agentTurn_ = 1;
+        }
+    }
+
     public BackgammonState(byte[] locations, byte[] dice, int agentTurn) {
         locations_ = locations;
         dice_ = dice;
@@ -92,7 +110,7 @@ public final class BackgammonState implements State<BackgammonState> {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("[" + dice_[0] + "][" + dice_[1] + "]\n");
+        output.append("[").append(dice_[0]).append("][").append(dice_[1]).append("]\n");
         for (int i = 12; i > 6; i--) {
             if (locations_[i] >= 0) {
                 output.append(" ");
@@ -106,7 +124,7 @@ public final class BackgammonState implements State<BackgammonState> {
             }
             output.append(locations_[i]);
         }
-        output.append(" [" + locations_[0] + "]\n");
+        output.append(" [").append(locations_[0]).append("]\n");
         output.append("------------|------------\n");
         for (int i = 13; i < 19; i++) {
             if (locations_[i] >= 0) {
@@ -121,7 +139,7 @@ public final class BackgammonState implements State<BackgammonState> {
             }
             output.append(locations_[i]);
         }
-        output.append(" [" + locations_[25] + "]");
+        output.append(" [").append(locations_[25]).append("]");
         return output.toString();
     }
 }
