@@ -15,15 +15,12 @@ import com.castlefrog.agl.TurnType;
  */
 public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
     private static final int N_AGENTS = 2;
-    private static final int DIE_SIDES = 6;
 
-    public EwnSimulator() {
-        state_ = getInitialState();
-        rewards_ = new int[N_AGENTS];
-        legalActions_ = new ArrayList<List<EwnAction>>();
+    private EwnSimulator(EwnState state) {
+        legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<EwnAction>());
         legalActions_.add(new ArrayList<EwnAction>());
-        computeLegalActions();
+        setState(state);
     }
 
     private EwnSimulator(EwnSimulator simulator) {
@@ -34,8 +31,8 @@ public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
         return new EwnSimulator(this);
     }
 
-    public static EwnSimulator create(List<String> params) {
-        return new EwnSimulator();
+    public static EwnSimulator create(EwnState state) {
+        return new EwnSimulator(state);
     }
 
     public void setState(EwnState state) {
@@ -80,7 +77,7 @@ public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
                 locations[EwnState.getSize() - 1][1] = (byte) -setupAction.getValue(3);
                 locations[EwnState.getSize() - 2][1] = (byte) -setupAction.getValue(4);
                 locations[EwnState.getSize() - 1][2] = (byte) -setupAction.getValue(5);
-                dieRoll = (int) ((Math.random() * DIE_SIDES) + 1);
+                dieRoll = (int) ((Math.random() * EwnState.DIE_SIDES) + 1);
             }
         } else {
             assert (action instanceof EwnMoveAction);
@@ -118,7 +115,7 @@ public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
                 break;
             }
             locations[moveAction.getXLocation()][moveAction.getYLocation()] = 0;
-            dieRoll = (int) ((Math.random() * DIE_SIDES) + 1);
+            dieRoll = (int) ((Math.random() * EwnState.DIE_SIDES) + 1);
         }
         state_ = new EwnState(locations, dieRoll, getNextAgentTurn());
         computeRewards();
@@ -305,13 +302,6 @@ public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
 
     public int getNextAgentTurn() {
         return (state_.getAgentTurn() + 1) % 2;
-    }
-
-    public EwnState getInitialState() {
-        byte[][] locations = new byte[][] {{0, 0, 3, 2, 1},
-                {0, 0, 0, 5, 4}, {-6, 0, 0, 0, 6}, {-4, -5, 0, 0, 0},
-                {-1, -2, -3, 0, 0}};
-        return new EwnState(locations, (byte) (Math.random() * DIE_SIDES + 1), 0);
     }
 
     public int getNAgents() {

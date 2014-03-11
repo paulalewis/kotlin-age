@@ -18,6 +18,6 @@ public final class EwnSimulatorProvider implements SimulatorProvider {
     }
 
     public EwnSimulator newSimulator(List<String> params) {
-        return EwnSimulator.create(params);
+        return EwnSimulator.create(new EwnState());
     }
 }
