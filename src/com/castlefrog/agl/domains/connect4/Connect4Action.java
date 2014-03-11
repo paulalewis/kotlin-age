@@ -5,21 +5,17 @@ import java.util.List;
 
 import com.castlefrog.agl.Action;
 
-/**
- * Represents a Connect 4 action.
- */
 public final class Connect4Action implements Action {
     /** Holds list of all possible actions. */
-    private static List<Connect4Action> connect4Actions_ = new ArrayList<Connect4Action>();
+    private static final List<Connect4Action> connect4Actions_ = new ArrayList<>();
+
+    static {
+        initActions();
+    }
 
     /** Slot location to place piece. */
-    private int location_;
+    private final int location_;
 
-    /**
-     * Create a Connect 4 action by specifying a move location.
-     * @param location
-     *            value assumes range from 0 to Connect4State.WIDTH - 1.
-     */
     private Connect4Action(int location) {
         location_ = location;
     }
@@ -28,18 +24,20 @@ public final class Connect4Action implements Action {
         return this;
     }
 
+    private static void initActions() {
+        for (int i = 0; i < Connect4State.WIDTH; i += 1) {
+            connect4Actions_.add(new Connect4Action(i));
+        }
+    }
+
     /**
-     * Returns the Connect 4 action representation of the int location.
+     * Returns the Connect 4 action representation of the slot location.
      * @param location
-     *            slot location to place piece.
+     *      slot location to place piece.
+     *      value range from 0 to Connect4State.WIDTH - 1.
      * @return a Connect 4 action.
      */
     public static Connect4Action valueOf(int location) {
-        if (connect4Actions_.size() <= location) {
-            for (int i = connect4Actions_.size(); i <= location; i++) {
-                connect4Actions_.add(new Connect4Action(i));
-            }
-        }
         return connect4Actions_.get(location);
     }
 

@@ -13,11 +13,11 @@ import com.castlefrog.agl.State;
  *  0  7 14 21 28 35 42
  */
 public final class Connect4State implements State<Connect4State> {
-    private static final int WIDTH = 7;
-    private static final int HEIGHT = 6;
+    public static final int WIDTH = 7;
+    public static final int HEIGHT = 6;
 
-    private long[] bitBoards_;
-    private byte agentTurn_;
+    private final long[] bitBoards_;
+    private final byte agentTurn_;
 
     public Connect4State(long[] bitBoards, int agentTurn) {
         bitBoards_ = bitBoards;
@@ -30,26 +30,12 @@ public final class Connect4State implements State<Connect4State> {
 
     public long[] getBitBoards() {
         long[] bitBoards = new long[bitBoards_.length];
-        for (int i = 0; i < bitBoards_.length; i++) {
-            bitBoards[i] = bitBoards_[i];
-        }
+        System.arraycopy(bitBoards_, 0, bitBoards, 0, bitBoards_.length);
         return bitBoards;
-    }
-
-    public static int getWidth() {
-        return WIDTH;
-    }
-
-    public static int getHeight() {
-        return HEIGHT;
     }
 
     public int getAgentTurn() {
         return agentTurn_;
-    }
-
-    public int getNextAgentTurn() {
-        return (agentTurn_ + 1) % 2;
     }
 
     @Override
@@ -75,11 +61,11 @@ public final class Connect4State implements State<Connect4State> {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        for (int i = 0; i < 2 * WIDTH + 3; i++) {
+        for (int i = 0; i < 2 * WIDTH + 3; i += 1) {
             output.append("-");
         }
         output.append("\n");
-        for (int i = HEIGHT - 1; i >= 0; i--) {
+        for (int i = HEIGHT - 1; i >= 0; i -= 1) {
             output.append(": ");
             for (int j = i; j < ((HEIGHT + 1) * WIDTH); j += (HEIGHT + 1)) {
                 long mask = 1L << j;
@@ -94,7 +80,7 @@ public final class Connect4State implements State<Connect4State> {
             }
             output.append(":\n");
         }
-        for (int i = 0; i < 2 * WIDTH + 3; i++) {
+        for (int i = 0; i < 2 * WIDTH + 3; i += 1) {
             output.append("-");
         }
         return output.toString();
