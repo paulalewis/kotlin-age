@@ -101,9 +101,8 @@ public final class Connect4Simulator extends AbstractSimulator<Connect4State, Co
         clearLegalActions();
         computeHeights(bitBoards);
         if (rewards_ == REWARDS_NEUTRAL) {
-            //long bitBoard = bitBoards[0] | bitBoards[1];
             for (int i = 0; i < Connect4State.WIDTH; i += 1) {
-                if (((/*bitBoard |*/ (1L << columnHeights_[i])) & ABOVE_TOP_ROW) == 0) {
+                if (((1L << columnHeights_[i]) & ABOVE_TOP_ROW) == 0) {
                     legalActions_.get(state_.getAgentTurn()).add(Connect4Action.valueOf(i));
                 }
             }
@@ -141,11 +140,7 @@ public final class Connect4Simulator extends AbstractSimulator<Connect4State, Co
             case SEQUENTIAL:
                 return (agentTurn + 1) % N_AGENTS;
             case RANDOM_ORDER:
-                if (agentTurn >= 0) {
-                    return ((agentTurn + 1) % N_AGENTS) * -1 - 1;
-                } else {
-                    return (int)(Math.random() * N_AGENTS);
-                }
+                throw new NotImplementedException();
             case BIDDING:
                 throw new NotImplementedException();
         }
@@ -159,7 +154,7 @@ public final class Connect4Simulator extends AbstractSimulator<Connect4State, Co
             case SEQUENTIAL:
                 return new Connect4State(new long[N_AGENTS], 0);
             case RANDOM_ORDER:
-                return new Connect4State(new long[N_AGENTS], (int)(Math.random() * N_AGENTS));
+                throw new NotImplementedException();
             case BIDDING:
                 throw new NotImplementedException();
         }
