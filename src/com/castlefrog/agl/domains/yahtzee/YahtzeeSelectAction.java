@@ -5,10 +5,10 @@ import java.util.List;
 
 public final class YahtzeeSelectAction implements YahtzeeAction {
     /** Holds list of all possible select actions. */
-    private static List<YahtzeeSelectAction> selectActions_ = generateSelectActions();
+    private static final List<YahtzeeSelectAction> selectActions_ = generateSelectActions();
 
     /** Each select action selects a particular score category. */
-    private YahtzeeScoreCategory scoreCategory_;
+    private final YahtzeeScoreCategory scoreCategory_;
 
     private YahtzeeSelectAction(YahtzeeScoreCategory scoreCategory) {
         scoreCategory_ = scoreCategory;
@@ -27,7 +27,7 @@ public final class YahtzeeSelectAction implements YahtzeeAction {
     }
 
     private static List<YahtzeeSelectAction> generateSelectActions() {
-        List<YahtzeeSelectAction> selectActions = new ArrayList<YahtzeeSelectAction>();
+        List<YahtzeeSelectAction> selectActions = new ArrayList<>();
         for (YahtzeeScoreCategory scoreCategory : YahtzeeScoreCategory.values()) {
             selectActions.add(new YahtzeeSelectAction(scoreCategory));
         }

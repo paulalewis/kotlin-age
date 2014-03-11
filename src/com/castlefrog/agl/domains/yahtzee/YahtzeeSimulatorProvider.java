@@ -6,18 +6,22 @@ import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;
 
 public final class YahtzeeSimulatorProvider implements SimulatorProvider {
+    private static YahtzeeSimulatorProvider instance_;
+
     static {
         Simulators.registerProvider("yahtzee", YahtzeeSimulatorProvider.getInstance());
     }
 
-    private YahtzeeSimulatorProvider() {
-    }
+    private YahtzeeSimulatorProvider() {}
 
     public static YahtzeeSimulatorProvider getInstance() {
-        return new YahtzeeSimulatorProvider();
+        if (instance_ == null) {
+            instance_ = new YahtzeeSimulatorProvider();
+        }
+        return instance_;
     }
 
     public YahtzeeSimulator newSimulator(List<String> params) {
-        return new YahtzeeSimulator();
+        return YahtzeeSimulator.create(new YahtzeeState());
     }
 }

@@ -12,5 +12,6 @@ public enum YahtzeeScoreCategory {
     FULL_HOUSE,
     SMALL_STRAIGHT,
     LARGE_STRAIGHT,
-    YAHTZEE, CHANCE
+    YAHTZEE,
+    CHANCE
 }

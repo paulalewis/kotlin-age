@@ -7,9 +7,21 @@ public final class YahtzeeState implements State<YahtzeeState> {
     public static final int N_VALUES = 6;
     public static final int N_SCORES = YahtzeeScoreCategory.values().length;
 
-    private byte[] diceValues_;
-    private byte rolls_;
-    private int[] scores_;
+    private final byte[] diceValues_;
+    private final byte rolls_;
+    private final int[] scores_;
+
+    public YahtzeeState() {
+        diceValues_ = new byte[YahtzeeState.N_VALUES];
+        for (int i = 0; i < YahtzeeState.N_DICE; i++) {
+            diceValues_[(byte) (Math.random() * YahtzeeState.N_VALUES)] += 1;
+        }
+        rolls_ = 1;
+        scores_ = new int[YahtzeeState.N_SCORES];
+        for (int i = 0; i < YahtzeeState.N_SCORES; i++) {
+            scores_[i] = -1;
+        }
+    }
 
     public YahtzeeState(byte[] diceValues, int rolls, int[] scores) {
         diceValues_ = diceValues;
@@ -27,9 +39,7 @@ public final class YahtzeeState implements State<YahtzeeState> {
 
     public byte[] getDiceValues() {
         byte[] diceValues = new byte[N_VALUES];
-        for (int i = 0; i < N_VALUES; i++) {
-            diceValues[i] = diceValues_[i];
-        }
+        System.arraycopy(diceValues_, 0, diceValues, 0, N_VALUES);
         return diceValues;
     }
 
@@ -39,18 +49,12 @@ public final class YahtzeeState implements State<YahtzeeState> {
 
     public int[] getScores() {
         int[] scores = new int[N_SCORES];
-        for (int i = 0; i < N_SCORES; i++) {
-            scores[i] = scores_[i];
-        }
+        System.arraycopy(scores_, 0, scores, 0, N_SCORES);
         return scores;
     }
 
     public int getScore(int index) {
         return scores_[index];
-    }
-
-    public int getAgentTurn() {
-        return 0;
     }
 
     @Override
@@ -93,18 +97,18 @@ public final class YahtzeeState implements State<YahtzeeState> {
         YahtzeeScoreCategory[] scoreCategories = YahtzeeScoreCategory.values();
         for (int i = 0; i < N_SCORES; i++) {
             if (scores_[i] != -1) {
-                output.append(scoreCategories[i].name() + ": " + scores_[i] + "\n");
+                output.append(scoreCategories[i].name()).append(": ").append(scores_[i]).append("\n");
             }
         }
-        output.append("Rolls: " + rolls_ + "\n");
+        output.append("Rolls: ").append(rolls_).append("\n");
         output.append("Dice: [ ");
-        for (int i = 0; i < diceValues_.length; i++) {
-            output.append(diceValues_[i] + " ");
+        for (byte diceValue : diceValues_) {
+            output.append(diceValue).append(" ");
         }
         output.append("]\n");
         for (int i = 0; i < N_SCORES; i++) {
             if (scores_[i] == -1) {
-                output.append(scoreCategories[i].name() + " ");
+                output.append(scoreCategories[i].name()).append(" ");
             }
         }
         return output.toString();
