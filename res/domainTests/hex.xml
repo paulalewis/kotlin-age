@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <domainTest>
     <nSimulations>1</nSimulations>
-    <world>
+    <domain>
         <name>hex</name>
         <params>
             <param>11</param>
             <param>SEQUENTIAL</param>
         </params>
-    </world>
+    </domain>
     <agents>
         <agent>
             <name>console</name>

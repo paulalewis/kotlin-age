@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <domainTest>
     <nSimulations>1</nSimulations>
-    <world>
+    <domain>
         <name>backgammon</name>
-    </world>
+    </domain>
     <agents>
         <agent>
             <name>console</name>
