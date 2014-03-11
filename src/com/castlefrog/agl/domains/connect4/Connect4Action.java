@@ -7,11 +7,7 @@ import com.castlefrog.agl.Action;
 
 public final class Connect4Action implements Action {
     /** Holds list of all possible actions. */
-    private static final List<Connect4Action> connect4Actions_ = new ArrayList<>();
-
-    static {
-        initActions();
-    }
+    private static final List<Connect4Action> actions_ = generateActions();
 
     /** Slot location to place piece. */
     private final int location_;
@@ -24,10 +20,12 @@ public final class Connect4Action implements Action {
         return this;
     }
 
-    private static void initActions() {
+    private static List<Connect4Action> generateActions() {
+        List<Connect4Action> actions = new ArrayList<>();
         for (int i = 0; i < Connect4State.WIDTH; i += 1) {
-            connect4Actions_.add(new Connect4Action(i));
+            actions.add(new Connect4Action(i));
         }
+        return actions;
     }
 
     /**
@@ -38,7 +36,7 @@ public final class Connect4Action implements Action {
      * @return a Connect 4 action.
      */
     public static Connect4Action valueOf(int location) {
-        return connect4Actions_.get(location);
+        return actions_.get(location);
     }
 
     public int getLocation() {
