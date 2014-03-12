@@ -63,28 +63,19 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
 
     private void computeLegalActions(HexAction prevAction) {
         if (rewards_ == REWARDS_NEUTRAL) {
-            int nPieces = state_.getNPieces();
             int agentTurn = state_.getAgentTurn();
             int otherTurn = (agentTurn + 1) % 2;
             legalActions_.set(agentTurn, legalActions_.get(otherTurn));
             legalActions_.set(otherTurn, new ArrayList<HexAction>());
             List<HexAction> legalActions = legalActions_.get(agentTurn);
-            if (prevAction != null && nPieces > 2) {
+            if (prevAction != null && state_.getNPieces() > 2) {
                 legalActions.remove(prevAction);
             } else {
                 legalActions.clear();
-                if (nPieces == 1 && state_.getAgentTurn() == 1) {
-                    for (int i = 0; i < state_.getBoardSize(); i += 1) {
-                        for (int j = 0; j < state_.getBoardSize(); j += 1) {
+                for (int i = 0; i < state_.getBoardSize(); i += 1) {
+                    for (int j = 0; j < state_.getBoardSize(); j += 1) {
+                        if (state_.isLocationEmpty(i, j)) {
                             legalActions.add(HexAction.valueOf(i, j));
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < state_.getBoardSize(); i += 1) {
-                        for (int j = 0; j < state_.getBoardSize(); j += 1) {
-                            if (state_.isLocationEmpty(i, j)) {
-                                legalActions.add(HexAction.valueOf(i, j));
-                            }
                         }
                     }
                 }
@@ -95,24 +86,22 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     }
 
     private void computeRewards() {
-        //if (state_.getNPieces() > 2 * state_.getBoardSize() - 2) {
-            byte[][] locations = state_.getLocations();
-            boolean[][] visited = new boolean[state_.getBoardSize()][state_.getBoardSize()];
-            for (int i = 0; i < state_.getBoardSize(); i += 1) {
-                if (locations[0][i] == 1 && !visited[0][i]) {
-                    if ((dfsSides(0, i, locations, visited) & 3) == 3) {
-                        rewards_ = REWARDS_BLACK_WINS;
-                        return;
-                    }
-                }
-                if (locations[i][0] == 2 && !visited[i][0]) {
-                    if ((dfsSides(i, 0, locations, visited) & 12) == 12) {
-                        rewards_ = REWARDS_WHITE_WINS;
-                        return;
-                    }
+        byte[][] locations = state_.getLocations();
+        boolean[][] visited = new boolean[state_.getBoardSize()][state_.getBoardSize()];
+        for (int i = 0; i < state_.getBoardSize(); i += 1) {
+            if (locations[0][i] == 1 && !visited[0][i]) {
+                if ((dfsSides(0, i, locations, visited) & 3) == 3) {
+                    rewards_ = REWARDS_BLACK_WINS;
+                    return;
                 }
             }
-        //}
+            if (locations[i][0] == 2 && !visited[i][0]) {
+                if ((dfsSides(i, 0, locations, visited) & 12) == 12) {
+                    rewards_ = REWARDS_WHITE_WINS;
+                    return;
+                }
+            }
+        }
         rewards_ = REWARDS_NEUTRAL;
     }
 
