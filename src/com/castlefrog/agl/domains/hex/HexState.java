@@ -3,122 +3,128 @@ package com.castlefrog.agl.domains.hex;
 import java.io.Serializable;
 
 import com.castlefrog.agl.State;
+import sun.management.resources.agent;
+import sun.net.www.content.audio.basic;
 
 /*
  * A Hex state consists of a board of hexagon locations
- * that are either empty or have a piece controlled by
- * one of two players.
+ * that are either empty or have a piece black or
+ * white piece.
  */
 public final class HexState implements State<HexState>, Serializable {
-    private static final long serialVersionUID = 1L;
-    /** Representation of hex board. */
-    private byte[][] locations_;
-    /** agent next to move */
+    private static final int MIN_BOARD_SIZE = 1;
+
+    private byte[][] bitBoards_;
+    private byte boardSize_;
     private byte agentTurn_;
-    /** number pieces on board */
-    private int nPieces_;
 
-    public enum Location {
-        EMPTY,
-        AGENT1,
-        AGENT2
-    }
+    public static final int
+        LOCATION_EMPTY = 0,
+        LOCATION_BLACK = 1,
+        LOCATION_WHITE = 2;
 
-    public HexState(int size) {
-        this(new byte[size][size], 0);
-    }
-
-    public HexState(byte[][] locations,
+    public HexState(int boardSize,
+                    byte[][] bitBoards,
                     int agentTurn) {
-        locations_ = new byte[locations.length][locations[0].length];
-        for (int i = 0; i < locations.length; i += 1) {
-            for (int j = 0; j < locations[0].length; j += 1) {
-                locations_[i][j] = locations[i][j];
-                if (locations_[i][j] != 0) {
-                    nPieces_ += 1;
-                }
-            }
+        if (boardSize < MIN_BOARD_SIZE) {
+            throw new IllegalArgumentException("Invalid board size: " + boardSize);
+        }
+        boardSize_ = (byte) boardSize;
+        bitBoards_ = new byte[bitBoards.length][bitBoards[0].length];
+        for (int i = 0; i < bitBoards.length; i += 1) {
+            System.arraycopy(bitBoards[i], 0, bitBoards_[i], 0, bitBoards[0].length);
         }
         agentTurn_ = (byte) agentTurn;
-    }
-
-    public HexState(byte[][] locations,
-                    int agentTurn,
-                    int nPieces) {
-        locations_ = new byte[locations.length][locations[0].length];
-        for (int i = 0; i < locations.length; i += 1) {
-            for (int j = 0; j < locations[0].length; j += 1) {
-                locations_[i][j] = locations[i][j];
-            }
-        }
-        agentTurn_ = (byte) agentTurn;
-        nPieces_ = nPieces;
     }
 
     public HexState copy() {
-        return new HexState(locations_, agentTurn_, nPieces_);
+        return new HexState(boardSize_, bitBoards_, agentTurn_);
+    }
+
+    public byte[][] getBitBoards() {
+        byte[][] bitBoards = new byte[bitBoards_.length][bitBoards_.length];
+        for (int i = 0; i < bitBoards_.length; i += 1) {
+            System.arraycopy(bitBoards_[i], 0, bitBoards[i], 0, bitBoards_.length);
+        }
+        return bitBoards;
     }
 
     public byte[][] getLocations() {
-        //byte[][] locations = new byte[locations_.length][locations_.length];
-        //for (int i = 0; i < locations_.length; i += 1)
-        //    for (int j = 0; j < locations_.length; j += 1)
-        //        locations[i][j] = locations_[i][j];
-        //return locations;
-        return locations_;
+        byte[][] locations = new byte[boardSize_][boardSize_];
+        for (int i = 0; i < boardSize_; i += 1) {
+            for (int j = 0; j < boardSize_; j += 1) {
+                locations[i][j] = (byte) getLocation(i, j);
+            }
+        }
+        return locations;
     }
 
-    public byte getLocation(int x, int y) {
-        return locations_[x][y];
+    public int getLocation(int x, int y) {
+        int bitLocation = y * boardSize_ + x;
+        int byteLocation = bitLocation / Byte.SIZE;
+        if ((bitBoards_[0][byteLocation] & (1 << bitLocation % Byte.SIZE)) != 0) {
+            return LOCATION_BLACK;
+        } else if ((bitBoards_[1][byteLocation] & ( 1 << bitLocation % Byte.SIZE)) != 0) {
+            return  LOCATION_WHITE;
+        } else {
+            return LOCATION_EMPTY;
+        }
     }
 
-    public int getSize() {
-        return locations_.length;
+    public int getBoardSize() {
+        return boardSize_;
     }
 
-    public int getAgentTurn() {
+    public byte getAgentTurn() {
         return agentTurn_;
     }
 
-    public int getNPieces() {
-        return nPieces_;
+    public boolean isLocationEmpty(int x, int y) {
+        return getLocation(x, y) == LOCATION_EMPTY;
     }
 
-    public boolean isLocationEmpty(int x, int y) {
-        return locations_[x][y] == 0;
+    public boolean isBoardEmpty() {
+        for (int i = 0; i < bitBoards_.length; i += 1) {
+            for (int j = 0; j < bitBoards_[0].length; j += 1) {
+                if (bitBoards_[i][j] != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void setLocation(int x, int y, int value) {
-        if (locations_[x][y] == 0 && value != 0) {
-            nPieces_ += 1;
-        } else if (locations_[x][y] != 0 && value == 0) {
-            nPieces_ -= 1;
+        int bitLocation = y * boardSize_ + x;
+        int byteLocation = bitLocation / Byte.SIZE;
+        int byteShift = bitLocation % Byte.SIZE;
+        if (value == LOCATION_EMPTY) {
+            bitBoards_[0][byteLocation] &= ((1 << byteShift) ^ 0xff);
+            bitBoards_[1][byteLocation] &= ((1 << byteShift) ^ 0xff);
+        } else if (value == LOCATION_BLACK) {
+            bitBoards_[0][byteLocation] |= 1 << byteShift;
+            bitBoards_[1][byteLocation] &= ((1 << byteShift) ^ 0xff);
+        } else if (value == LOCATION_WHITE) {
+            bitBoards_[0][byteLocation] &= ((1 << byteShift) ^ 0xff);
+            bitBoards_[1][byteLocation] |= 1 << byteShift;
         }
-        locations_[x][y] = (byte) value;
     }
 
-    public void setLocation(int x, int y, Location value) {
-        if (locations_[x][y] == 0 && value != Location.EMPTY) {
-            nPieces_ += 1;
-        } else if (locations_[x][y] != 0 && value == Location.EMPTY) {
-            nPieces_ -= 1;
-        }
-        locations_[x][y] = (byte) value.ordinal();
-    }
-
-    public void switchAgentTurn() {
-        agentTurn_ = (byte) ((agentTurn_ + 1) % 2);
+    public void setAgentTurn(int agentTurn) {
+        agentTurn_ = (byte) agentTurn;
     }
 
     @Override
     public int hashCode() {
-        int code = 7;
-        for (byte[] row : locations_) {
+        int hashCode = 17;
+        hashCode = hashCode * 13 + boardSize_;
+        hashCode = hashCode * 23 + agentTurn_;
+        for (byte[] row : bitBoards_) {
             for (byte location : row) {
-                code = 11 * code + location;
+                hashCode = 31 * hashCode + location;
             }
         }
-        return code;
+        return hashCode;
     }
 
     @Override
@@ -127,27 +133,29 @@ public final class HexState implements State<HexState>, Serializable {
             return false;
         }
         HexState state = (HexState) object;
-        for (int i = 0; i < locations_.length; i += 1) {
-            for (int j = 0; j < locations_.length; j += 1) {
-                if (locations_[i][j] != state.getLocation(i, j)) {
+        byte[][] bitBoards = state.getBitBoards();
+        for (int i = 0; i < bitBoards_.length; i += 1) {
+            for (int j = 0; j < bitBoards_.length; j += 1) {
+                if (bitBoards_[i][j] != bitBoards[i][j]) {
                     return false;
                 }
             }
         }
-        return true;
+        return agentTurn_ == state.getAgentTurn() &&
+               boardSize_ == state.getBoardSize();
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        for (int i = locations_.length - 1; i >= 0; i -= 1) {
-            for (int j = i; j < locations_.length - 1; j += 1) {
+        for (int i = boardSize_ - 1; i >= 0; i -= 1) {
+            for (int j = i; j < boardSize_ - 1; j += 1) {
                 output.append(" ");
             }
-            for (int j = 0; j < locations_.length; j += 1) {
-                if (locations_[j][i] == 1) {
+            for (int j = 0; j < boardSize_; j += 1) {
+                if (getLocation(j, i) == LOCATION_BLACK) {
                     output.append("X ");
-                } else if (locations_[j][i] == 2) {
+                } else if (getLocation(j, i) == LOCATION_WHITE) {
                     output.append("O ");
                 } else {
                     output.append("- ");

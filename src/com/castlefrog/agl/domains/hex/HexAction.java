@@ -10,9 +10,7 @@ import com.castlefrog.agl.Action;
  * Immutable object that represents a hex action.
  */
 public final class HexAction implements Action, Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private static List<List<HexAction>> actions_ = new ArrayList<List<HexAction>>();
+    private static final List<List<HexAction>> actions_ = new ArrayList<>();
 
     private final byte x_;
     private final byte y_;
@@ -25,10 +23,10 @@ public final class HexAction implements Action, Serializable {
 
     /**
      * Returns a hex action.
-     * @param x x-coord
-     * @param y y-coord
+     * @param x x-coordinate
+     * @param y y-coordinate
      * @return
-     *      action corrisponding to x and y coord
+     *      action corresponding to x and y coordinate
      */
     public static HexAction valueOf(int x, int y) {
         if (x >= actions_.size() || y >= actions_.get(0).size()) {
@@ -76,6 +74,6 @@ public final class HexAction implements Action, Serializable {
 
     @Override
     public String toString() {
-        return "(" + ((char) (0x41 + x_)) + y_ + ")";
+        return "" + ((char) (0x41 + x_)) + y_;
     }
 }

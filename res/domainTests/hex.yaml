@@ -2,8 +2,13 @@ nSimulations: 1
 domain:
     name: hex
     params:
-        - '11'
+        - '5'
         - sequential
 agents:
     - name: console
-    - name: random
+    - name: uct
+      params:
+          - 1000
+          - 1
+          - -1
+          - 1
