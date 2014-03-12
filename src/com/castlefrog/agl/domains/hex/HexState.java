@@ -94,6 +94,19 @@ public final class HexState implements State<HexState>, Serializable {
         return true;
     }
 
+    public int getNPieces() {
+        int nPieces = 0;
+        byte[][] locations = getLocations();
+        for (int i = 0; i < locations.length; i += 1) {
+            for (int j = 0; j < locations.length; j += 1) {
+                if (locations[i][j] != LOCATION_EMPTY) {
+                    nPieces += 1;
+                }
+            }
+        }
+        return nPieces;
+    }
+
     public void setLocation(int x, int y, int value) {
         int bitLocation = y * boardSize_ + x;
         int byteLocation = bitLocation / Byte.SIZE;

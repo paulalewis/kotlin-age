@@ -63,7 +63,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
 
     private void computeLegalActions(HexAction prevAction) {
         if (rewards_ == REWARDS_NEUTRAL) {
-            int nPieces = getNPieces();
+            int nPieces = state_.getNPieces();
             int agentTurn = state_.getAgentTurn();
             int otherTurn = (agentTurn + 1) % 2;
             legalActions_.set(agentTurn, legalActions_.get(otherTurn));
@@ -114,14 +114,6 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
             }
         //}
         rewards_ = REWARDS_NEUTRAL;
-    }
-
-    private int getNPieces() {
-        byte[][] bitBoards = state_.getBitBoards();
-        for (int i = 0; i < bitBoards.length; i += 1) {
-            int temp = (bitBoards[0][i] | bitBoards[1][i]);
-        }
-        return 0;
     }
 
     private void computeRewards(HexAction action) {
