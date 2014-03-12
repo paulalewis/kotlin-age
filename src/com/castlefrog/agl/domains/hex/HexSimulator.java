@@ -50,31 +50,46 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         }
         int x = action.getX();
         int y = action.getY();
+        switch (state_.getBoardState()) {
+            case EMPTY:
+                state_.setBoardState(HexState.BoardState.FIRST_MOVE);
+                break;
+            case FIRST_MOVE:
+                state_.setBoardState(HexState.BoardState.SECOND_MOVE);
+                break;
+            case SECOND_MOVE:
+                state_.setBoardState(HexState.BoardState.OTHER);
+                break;
+        }
         if (state_.isLocationEmpty(x, y)) {
             state_.setLocation(x, y, state_.getAgentTurn() + 1);
+            state_.setAgentTurn(getNextAgentTurn());
+            computeRewards(action);
+            computeLegalActions(action);
         } else {
             state_.setLocation(x, y, 0);
             state_.setLocation(y, x, state_.getAgentTurn() + 1);
+            state_.setAgentTurn(getNextAgentTurn());
+            computeRewards(action);
+            computeLegalActions(null);
         }
-        state_.setAgentTurn(getNextAgentTurn());
-        computeRewards(action);
-        computeLegalActions(action);
     }
 
     private void computeLegalActions(HexAction prevAction) {
         if (rewards_ == REWARDS_NEUTRAL) {
             int agentTurn = state_.getAgentTurn();
-            int otherTurn = (agentTurn + 1) % 2;
+            int otherTurn = (agentTurn + 1) % N_AGENTS;
             legalActions_.set(agentTurn, legalActions_.get(otherTurn));
             legalActions_.set(otherTurn, new ArrayList<HexAction>());
             List<HexAction> legalActions = legalActions_.get(agentTurn);
-            if (prevAction != null && state_.getNPieces() > 2) {
+            if (prevAction != null && state_.getBoardState() == HexState.BoardState.OTHER) {
                 legalActions.remove(prevAction);
             } else {
                 legalActions.clear();
                 for (int i = 0; i < state_.getBoardSize(); i += 1) {
                     for (int j = 0; j < state_.getBoardSize(); j += 1) {
-                        if (state_.isLocationEmpty(i, j)) {
+                        if (state_.isLocationEmpty(i, j) ||
+                                state_.getBoardState() == HexState.BoardState.FIRST_MOVE) {
                             legalActions.add(HexAction.valueOf(i, j));
                         }
                     }
@@ -171,7 +186,7 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     }
 
     public static HexState getInitialState(int boardSize) {
-        return new HexState(boardSize, new byte[N_AGENTS][(boardSize * boardSize + Byte.SIZE - 1) / Byte.SIZE], 0);
+        return new HexState(boardSize, new byte[N_AGENTS][(boardSize * boardSize + Byte.SIZE - 1) / Byte.SIZE], 0, HexState.BoardState.EMPTY);
     }
 
     public int getNAgents() {

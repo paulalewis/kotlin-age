@@ -17,15 +17,24 @@ public final class HexState implements State<HexState>, Serializable {
     private byte[][] bitBoards_;
     private byte boardSize_;
     private byte agentTurn_;
+    private BoardState boardState_;
+
+    public enum BoardState {
+        EMPTY,
+        FIRST_MOVE,
+        SECOND_MOVE,
+        OTHER
+    }
 
     public static final int
-        LOCATION_EMPTY = 0,
-        LOCATION_BLACK = 1,
-        LOCATION_WHITE = 2;
+            LOCATION_EMPTY = 0,
+            LOCATION_BLACK = 1,
+            LOCATION_WHITE = 2;
 
     public HexState(int boardSize,
                     byte[][] bitBoards,
-                    int agentTurn) {
+                    int agentTurn,
+                    BoardState boardState) {
         if (boardSize < MIN_BOARD_SIZE) {
             throw new IllegalArgumentException("Invalid board size: " + boardSize);
         }
@@ -35,10 +44,11 @@ public final class HexState implements State<HexState>, Serializable {
             System.arraycopy(bitBoards[i], 0, bitBoards_[i], 0, bitBoards[0].length);
         }
         agentTurn_ = (byte) agentTurn;
+        boardState_ = boardState;
     }
 
     public HexState copy() {
-        return new HexState(boardSize_, bitBoards_, agentTurn_);
+        return new HexState(boardSize_, bitBoards_, agentTurn_, boardState_);
     }
 
     public byte[][] getBitBoards() {
@@ -83,15 +93,20 @@ public final class HexState implements State<HexState>, Serializable {
         return getLocation(x, y) == LOCATION_EMPTY;
     }
 
+    public BoardState getBoardState() {
+        return boardState_;
+    }
+
     public boolean isBoardEmpty() {
-        for (int i = 0; i < bitBoards_.length; i += 1) {
+        /*for (int i = 0; i < bitBoards_.length; i += 1) {
             for (int j = 0; j < bitBoards_[0].length; j += 1) {
                 if (bitBoards_[i][j] != 0) {
                     return false;
                 }
             }
         }
-        return true;
+        return true;*/
+        return boardState_ == BoardState.EMPTY;
     }
 
     public int getNPieces() {
@@ -125,6 +140,10 @@ public final class HexState implements State<HexState>, Serializable {
 
     public void setAgentTurn(int agentTurn) {
         agentTurn_ = (byte) agentTurn;
+    }
+
+    public void setBoardState(BoardState boardState) {
+        boardState_ = boardState;
     }
 
     @Override
