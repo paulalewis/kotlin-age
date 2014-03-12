@@ -9,47 +9,40 @@ import com.castlefrog.agl.State;
  * empty or have a piece controlled by one of two players.
  */
 public final class HavannahState implements State<HavannahState>, Serializable {
-    private static final long serialVersionUID = 1L;
-    /**
-     * 0 is empty or not playable
-     * 1 is player 1
-     * 2 is player 2
-     */
+    private static final int MIN_BASE = 2;
+
+    private byte base_;
     private byte[][] locations_;
-    /** id of agent to play next piece */
     private byte agentTurn_;
 
     public enum Location {
         EMPTY,
-        AGENT1,
-        AGENT2
+        BLACK,
+        WHITE
     }
 
-    public HavannahState(int size) {
-        this(new byte[size][size], 0);
-    }
-
-    private HavannahState(byte[][] locations,
-                          int agentTurn) {
+    public HavannahState(int base,
+                         byte[][] locations,
+                         int agentTurn) {
+        if (base < MIN_BASE) {
+            throw new IllegalArgumentException("Invalid board size: " + base);
+        }
+        base_ = (byte) base;
         locations_ = new byte[locations.length][locations[0].length];
         for (int i = 0; i < locations.length; i += 1) {
-            for (int j = 0; j < locations[0].length; j += 1) {
-                locations_[i][j] = locations[i][j];
-            }
+            System.arraycopy(locations[i], 0, locations_[i], 0, locations[0].length);
         }
         agentTurn_ = (byte) agentTurn;
     }
 
     public HavannahState copy() {
-        return new HavannahState(locations_, agentTurn_);
+        return new HavannahState(base_, locations_, agentTurn_);
     }
 
     public byte[][] getLocations() {
         byte[][] locations = new byte[locations_.length][locations_.length];
         for (int i = 0; i < locations_.length; i += 1) {
-            for (int j = 0; j < locations_.length; j += 1) {
-                locations[i][j] = locations_[i][j];
-            }
+            System.arraycopy(locations_[i], 0, locations[i], 0, locations_.length);
         }
         return locations;
     }
@@ -66,11 +59,43 @@ public final class HavannahState implements State<HavannahState>, Serializable {
     }
 
     public int getBase() {
-        return (locations_.length + 1) / 2;
+        return base_;
     }
 
     public int getSize() {
         return locations_.length;
+    }
+
+    public int getNLocations() {
+        return 3 * base_ * base_ - 3 * base_ + 1;
+    }
+
+    public int[][] getCorners() {
+        return new int[][] {{0, 0},
+                            {0, base_ - 1},
+                            {base_ - 1, 0},
+                            {base_ - 1, getSize() - 1},
+                            {getSize() - 1, base_ - 1},
+                            {getSize() - 1, getSize() - 1}};
+    }
+
+    public int[][][] getSides() {
+        int[][][] sides = new int[6][base_ - 2][2];
+        for (int i = 0; i < base_ - 2; i += 1) {
+            sides[0][i][0] = 0;
+            sides[0][i][1] = i + 1;
+            sides[1][i][0] = i + 1;
+            sides[1][i][1] = 0;
+            sides[2][i][0] = i + 1;
+            sides[2][i][1] = base_ + i;
+            sides[3][i][0] = base_ + i;
+            sides[3][i][1] = getSize() - 1;
+            sides[4][i][0] = getSize() - 1;
+            sides[4][i][1] = base_ + i;
+            sides[5][i][0] = base_ + i;
+            sides[5][i][1] = i + 1;
+        }
+        return sides;
     }
 
     public int getNPieces() {
@@ -83,11 +108,6 @@ public final class HavannahState implements State<HavannahState>, Serializable {
             }
         }
         return nPieces;
-    }
-
-    public int getNLocations() {
-        int base = getBase();
-        return 3 * base * base - 3 * base + 1;
     }
 
     public int getAgentTurn() {
@@ -106,8 +126,8 @@ public final class HavannahState implements State<HavannahState>, Serializable {
         locations_[x][y] = (byte) value.ordinal();
     }
 
-    public void switchAgentTurn() {
-        agentTurn_ = (byte) ((agentTurn_ + 1) % 2);
+    public void setAgentTurn(int agentTurn) {
+        agentTurn_ = (byte) agentTurn;
     }
 
     @Override
@@ -142,15 +162,15 @@ public final class HavannahState implements State<HavannahState>, Serializable {
     public String toString() {
         StringBuilder output = new StringBuilder();
         for (int i = locations_.length - 1; i >= 0; i -= 1) {
-            for (int j = 0; j < getBase() - i - 1 || j < i - getBase() + 1; j += 1) {
+            for (int j = 0; j < base_ - i - 1 || j < i - base_ + 1; j += 1) {
                 output.append(" ");
             }
             int xMin = 0;
             int xMax = locations_.length;
-            if (i >= getBase()) {
-                xMin = i - getBase() + 1;
+            if (i >= base_) {
+                xMin = i - base_ + 1;
             } else {
-                xMax = getBase() + i;
+                xMax = base_ + i;
             }
             for (int j = xMin; j < xMax; j += 1) {
                 if (locations_[j][i] == 1) {

@@ -6,11 +6,8 @@ import java.util.Vector;
 import com.castlefrog.agl.Action;
 
 public final class HavannahAction implements Action, Serializable {
-    private static final long serialVersionUID = 1L;
-
     /** list of all possible Havannah actions */
-    private static Vector<Vector<HavannahAction>> actions_
-        = new Vector<Vector<HavannahAction>>();
+    private static final Vector<Vector<HavannahAction>> actions_ = new Vector<>();
 
     /** x coordinate */
     private final byte x_;
@@ -34,8 +31,7 @@ public final class HavannahAction implements Action, Serializable {
     }
 
     /**
-     * Contains all possible actions and a few impossible actions.
-     * @return set of possible actions.
+     * Generates all possible actions and a few impossible actions.
      */
     private static void generateActions(int size) {
         actions_.setSize(size);
@@ -76,6 +72,6 @@ public final class HavannahAction implements Action, Serializable {
 
     @Override
     public String toString() {
-        return "(" + ((char) (0x41 + x_)) + y_ + ")";
+        return "" + ((char) (0x41 + x_)) + y_;
     }
 }
