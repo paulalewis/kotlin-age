@@ -1,0 +1,6 @@
+nSimulations: 1
+domain:
+    name: backgammon
+agents:
+    - name: console
+    - name: uct

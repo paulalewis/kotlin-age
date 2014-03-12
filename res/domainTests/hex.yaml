@@ -1,0 +1,9 @@
+nSimulations: 1
+domain:
+    name: hex
+    params:
+        - '11'
+        - sequential
+agents:
+    - name: console
+    - name: random

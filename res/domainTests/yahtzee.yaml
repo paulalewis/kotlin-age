@@ -1,0 +1,10 @@
+nSimulations: 100
+domain:
+    name: yahtzee
+agents:
+    - name: uct
+      params:
+          - 1000
+          - 1
+          - -1
+          - 1

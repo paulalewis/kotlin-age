@@ -1,0 +1,14 @@
+nSimulations: 1
+domain:
+    name: havannah
+    params:
+        - '6'
+        - sequential
+agents:
+    - name: console
+    - name: uct
+      params:
+          - 1000
+          - 1
+          - -1
+          - 1
