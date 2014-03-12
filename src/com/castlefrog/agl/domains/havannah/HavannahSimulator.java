@@ -80,7 +80,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
     private void computeLegalActions(HavannahAction prevAction) {
         if (rewards_ == REWARDS_NEUTRAL) {
             int agentTurn = state_.getAgentTurn();
-            int otherTurn = (agentTurn + 1) % 2;
+            int otherTurn = (agentTurn + 1) % N_AGENTS;
             legalActions_.set(agentTurn, legalActions_.get(otherTurn));
             legalActions_.set(otherTurn, new ArrayList<HavannahAction>());
             List<HavannahAction> legalActions = legalActions_.get(agentTurn);

@@ -15,11 +15,10 @@ public final class HavannahState implements State<HavannahState>, Serializable {
     private byte[][] locations_;
     private byte agentTurn_;
 
-    public enum Location {
-        EMPTY,
-        BLACK,
-        WHITE
-    }
+    public static final int
+        LOCATION_EMPTY = 0,
+        LOCATION_BLACK = 1,
+        LOCATION_WHITE = 2;
 
     public HavannahState(int base,
                          byte[][] locations,
@@ -55,7 +54,7 @@ public final class HavannahState implements State<HavannahState>, Serializable {
     }
 
     public boolean isLocationEmpty(int x, int y) {
-        return locations_[x][y] == 0;
+        return locations_[x][y] == LOCATION_EMPTY;
     }
 
     public int getBase() {
@@ -120,12 +119,6 @@ public final class HavannahState implements State<HavannahState>, Serializable {
         locations_[x][y] = (byte) value;
     }
 
-    public void setLocation(int x,
-                            int y,
-                            Location value) {
-        locations_[x][y] = (byte) value.ordinal();
-    }
-
     public void setAgentTurn(int agentTurn) {
         agentTurn_ = (byte) agentTurn;
     }
@@ -133,9 +126,11 @@ public final class HavannahState implements State<HavannahState>, Serializable {
     @Override
     public int hashCode() {
         int code = 7;
+        code = code * 13 + base_;
+        code = code * 23 + agentTurn_;
         for (byte[] row : locations_) {
             for (byte location : row) {
-                code = 11 * code + location;
+                code = 31 * code + location;
             }
         }
         return code;
@@ -155,7 +150,7 @@ public final class HavannahState implements State<HavannahState>, Serializable {
                 }
             }
         }
-        return true;
+        return agentTurn_ == state.getAgentTurn();
     }
 
     @Override
