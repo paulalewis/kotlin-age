@@ -7,6 +7,7 @@ import java.util.Stack;
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
+import com.castlefrog.agl.domains.hex.HexAction;
 
 public final class HavannahSimulator extends AbstractSimulator<HavannahState, HavannahAction> {
     private static final int N_AGENTS = 2;
@@ -254,20 +255,20 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         return value;
     }
 
-    /*public int[][] getWinningConnection() {
-        int[][] connection = new int[size_][size_];
-        if (rewards_[0] != 0) {
-            Simulator<HavannahState, HavannahAction> simulator = new HavannahSimulator(base_, TurnType.SEQUENTIAL);
+    public List<HexAction> getWinningConnection() {
+        List<HexAction> connection = new ArrayList<>();
+        if (rewards_ != REWARDS_NEUTRAL) {
+            HavannahSimulator simulator = HavannahSimulator.create(base_, turnType_);
             HavannahState state = state_.copy();
             for (int i = 0; i < size_; i += 1) {
                 for (int j = 0; j < size_; j += 1) {
                     int location = state.getLocation(i, j);
                     if (!state.isLocationEmpty(i, j) &&
                             location != state.getAgentTurn() + 1) {
-                        state.setLocation(i, j, HavannahState.Location.EMPTY);
+                        state.setLocation(i, j, HavannahState.LOCATION_EMPTY);
                         simulator.setState(state);
                         if (!simulator.isTerminalState()) {
-                            connection[i][j] = 1;
+                            connection.add(HexAction.valueOf(i, j));
                             state.setLocation(i, j, location);
                         }
                     }
@@ -275,7 +276,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
             }
         }
         return connection;
-    }*/
+    }
 
     private int getCornerMask(int x, int y) {
         for (int i = 0; i < corners_.length; i += 1) {
