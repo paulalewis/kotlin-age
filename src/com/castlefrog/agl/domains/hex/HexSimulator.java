@@ -166,6 +166,29 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         return value;
     }
 
+    public List<HexAction> getWinningConnection() {
+        List<HexAction> connection = new ArrayList<>();
+        if (rewards_ != REWARDS_NEUTRAL) {
+            HexSimulator simulator = HexSimulator.create(state_.getBoardSize(), turnType_);
+            HexState state = state_.copy();
+            for (int i = 0; i < state_.getBoardSize(); i += 1) {
+                for (int j = 0; j < state_.getBoardSize(); j += 1) {
+                    int location = state.getLocation(i, j);
+                    if (!state.isLocationEmpty(i, j) &&
+                            location != state.getAgentTurn() + 1) {
+                        state.setLocation(i, j, HexState.LOCATION_EMPTY);
+                        simulator.setState(state);
+                        if (!simulator.isTerminalState()) {
+                            connection.add(HexAction.valueOf(i, j));
+                            state.setLocation(i, j, location);
+                        }
+                    }
+                }
+            }
+        }
+        return connection;
+    }
+
     private int getLocationMask(int x, int y) {
         int side = 0;
         if (x == 0) {

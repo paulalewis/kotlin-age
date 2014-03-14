@@ -7,7 +7,6 @@ import java.util.Stack;
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
-import com.castlefrog.agl.domains.hex.HexAction;
 
 public final class HavannahSimulator extends AbstractSimulator<HavannahState, HavannahAction> {
     private static final int N_AGENTS = 2;
@@ -255,8 +254,8 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
         return value;
     }
 
-    public List<HexAction> getWinningConnection() {
-        List<HexAction> connection = new ArrayList<>();
+    public List<HavannahAction> getWinningConnection() {
+        List<HavannahAction> connection = new ArrayList<>();
         if (rewards_ != REWARDS_NEUTRAL) {
             HavannahSimulator simulator = HavannahSimulator.create(base_, turnType_);
             HavannahState state = state_.copy();
@@ -268,7 +267,7 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
                         state.setLocation(i, j, HavannahState.LOCATION_EMPTY);
                         simulator.setState(state);
                         if (!simulator.isTerminalState()) {
-                            connection.add(HexAction.valueOf(i, j));
+                            connection.add(HavannahAction.valueOf(i, j));
                             state.setLocation(i, j, location);
                         }
                     }
