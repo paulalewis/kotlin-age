@@ -3,8 +3,6 @@ package com.castlefrog.agl.domains.hex;
 import java.io.Serializable;
 
 import com.castlefrog.agl.State;
-import sun.management.resources.agent;
-import sun.net.www.content.audio.basic;
 
 /*
  * A Hex state consists of a board of hexagon locations

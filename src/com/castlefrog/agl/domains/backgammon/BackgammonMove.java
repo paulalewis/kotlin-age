@@ -1,7 +1,5 @@
 package com.castlefrog.agl.domains.backgammon;
 
-import com.sun.istack.internal.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 

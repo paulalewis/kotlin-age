@@ -51,6 +51,12 @@ public final class Arbiter<S extends State<S>, A extends Action> {
 
     public Arbiter(S initialState,
                    Simulator<S, A> world,
+                   List<Agent> agents) {
+        this(initialState, world, null, agents);
+    }
+
+    public Arbiter(S initialState,
+                   Simulator<S, A> world,
                    List<Simulator<S, A>> simulators,
                    List<Agent> agents) {
         this(new History<S, A>(initialState), world, simulators, agents);
