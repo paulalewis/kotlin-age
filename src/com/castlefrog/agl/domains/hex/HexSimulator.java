@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.hex;
 
-import com.castlefrog.agl.AbstractSimulator;
+import com.castlefrog.agl.Adversarial2AgentSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
@@ -8,13 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
-    private static final int N_AGENTS = 2;
-
-    private static final int[] REWARDS_BLACK_WINS = new int[] { 1, -1 };
-    private static final int[] REWARDS_WHITE_WINS = new int[] { -1, 1 };
-    private static final int[] REWARDS_NEUTRAL = new int[] { 0, 0 };
-
+public final class HexSimulator extends Adversarial2AgentSimulator<HexState, HexAction> {
     private static final int MIN_BOARD_SIZE = 1;
 
     private TurnType turnType_;
@@ -111,13 +105,13 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         for (int i = 0; i < state_.getBoardSize(); i += 1) {
             if (locations[0][i] == HexState.LOCATION_BLACK && !visited[0][i]) {
                 if ((dfsSides(0, i, locations, visited) & 3) == 3) {
-                    rewards_ = REWARDS_BLACK_WINS;
+                    rewards_ = REWARDS_AGENT1_WINS;
                     return;
                 }
             }
             if (locations[i][0] == HexState.LOCATION_WHITE && !visited[i][0]) {
                 if ((dfsSides(i, 0, locations, visited) & 12) == 12) {
-                    rewards_ = REWARDS_WHITE_WINS;
+                    rewards_ = REWARDS_AGENT2_WINS;
                     return;
                 }
             }
@@ -132,9 +126,9 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         int y = action.getY();
         int value = dfsSides(x, y, locations, visited);
         if (locations[x][y] == HexState.LOCATION_WHITE && (value & 3) == 3) {
-            rewards_ = REWARDS_BLACK_WINS;
+            rewards_ = REWARDS_AGENT1_WINS;
         } else if (locations[x][y] == HexState.LOCATION_BLACK && (value & 12) == 12) {
-            rewards_ = REWARDS_WHITE_WINS;
+            rewards_ = REWARDS_AGENT2_WINS;
         } else {
             rewards_ = REWARDS_NEUTRAL;
         }
@@ -215,10 +209,6 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
 
     public static HexState getInitialState(int boardSize) {
         return new HexState(boardSize, new byte[N_AGENTS][(boardSize * boardSize + Byte.SIZE - 1) / Byte.SIZE], 0, HexState.BoardState.EMPTY);
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
     }
 
     public TurnType getTurnType() {
