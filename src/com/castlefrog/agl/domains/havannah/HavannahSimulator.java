@@ -1,19 +1,14 @@
 package com.castlefrog.agl.domains.havannah;
 
+import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.IllegalActionException;
+import com.castlefrog.agl.TurnType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.castlefrog.agl.AbstractSimulator;
-import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.TurnType;
-
-public final class HavannahSimulator extends AbstractSimulator<HavannahState, HavannahAction> {
-    private static final int N_AGENTS = 2;
-    private static final int[] REWARDS_BLACK_WINS = new int[] { 1, -1 };
-    private static final int[] REWARDS_WHITE_WINS = new int[] { -1, 1 };
-    private static final int[] REWARDS_NEUTRAL = new int[] { 0, 0 };
-
+public final class HavannahSimulator extends Adversarial2AgentSimulator<HavannahState, HavannahAction> {
     private TurnType turnType_;
     /** length of a side of board */
     private final int base_;
@@ -162,10 +157,10 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
                     }
                     if (corners >= 2 || sides >= 3) {
                         if (locations[x][y] == 1) {
-                            rewards_ = REWARDS_BLACK_WINS;
+                            rewards_ = REWARDS_AGENT1_WINS;
                             return;
                         } else {
-                            rewards_ = REWARDS_WHITE_WINS;
+                            rewards_ = REWARDS_AGENT2_WINS;
                             return;
                         }
                     }
@@ -208,10 +203,10 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
                 if (locations[x][y] != 0 && !visited[x][y]) {
                     if (dfsCornersSides(x, y, locations, visited) == 0) {
                         if (state_.getAgentTurn() == 0) {
-                            rewards_ = REWARDS_WHITE_WINS;
+                            rewards_ = REWARDS_AGENT2_WINS;
                             return;
                         } else {
-                            rewards_ = REWARDS_BLACK_WINS;
+                            rewards_ = REWARDS_AGENT1_WINS;
                             return;
                         }
                     }
@@ -299,10 +294,6 @@ public final class HavannahSimulator extends AbstractSimulator<HavannahState, Ha
 
     public static HavannahState getInitialState(int base) {
         return new HavannahState(base, new byte[2 * base - 1][2 * base - 1], 0);
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
     }
 
     public TurnType getTurnType() {
