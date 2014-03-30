@@ -1,14 +1,13 @@
 package com.castlefrog.agl.domains.draughts;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.castlefrog.agl.AbstractSimulator;
+import com.castlefrog.agl.Adversarial2AgentSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
-public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, DraughtsAction> {
-    private static final int N_AGENTS = 2;
+import java.util.ArrayList;
+import java.util.List;
+
+public final class DraughtsSimulator extends Adversarial2AgentSimulator<DraughtsState, DraughtsAction> {
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
     //private static final int SIZE = 10;
 
@@ -55,10 +54,6 @@ public final class DraughtsSimulator extends AbstractSimulator<DraughtsState, Dr
     public int[] computeRewards() {
         //TODO - scan for no pieces left on one side or the other
         return new int[N_AGENTS];
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
     }
 
     public TurnType getTurnType() {

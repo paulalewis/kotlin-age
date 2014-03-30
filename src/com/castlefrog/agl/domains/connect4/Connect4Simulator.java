@@ -1,23 +1,18 @@
 package com.castlefrog.agl.domains.connect4;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.castlefrog.agl.AbstractSimulator;
+import com.castlefrog.agl.Adversarial2AgentSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public final class Connect4Simulator extends AbstractSimulator<Connect4State, Connect4Action> {
-    private static final int N_AGENTS = 2;
+import java.util.ArrayList;
+import java.util.List;
+
+public final class Connect4Simulator extends Adversarial2AgentSimulator<Connect4State, Connect4Action> {
     private static final long ALL_LOCATIONS = (1L << ((Connect4State.HEIGHT + 1) * Connect4State.WIDTH)) - 1;
     private static final long FIRST_COLUMN = (1L << Connect4State.HEIGHT + 1) - 1;
     private static final long BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN;
     private static final long ABOVE_TOP_ROW = BOTTOM_ROW << Connect4State.HEIGHT;
-
-    private static final int[] REWARDS_BLACK_WINS = new int[] { 1, -1 };
-    private static final int[] REWARDS_WHITE_WINS = new int[] { -1, 1 };
-    private static final int[] REWARDS_NEUTRAL = new int[] { 0, 0 };
 
     private final int[] columnHeights_;
     private final TurnType turnType_;
@@ -122,10 +117,10 @@ public final class Connect4Simulator extends AbstractSimulator<Connect4State, Co
                     (diagonal2 & (diagonal2 >> 2 * (height + 2))) |
                     (vertical & (vertical >> 2))) != 0) {
                 if (i == 0) {
-                    rewards_ = REWARDS_BLACK_WINS;
+                    rewards_ = REWARDS_AGENT1_WINS;
                     return;
                 } else {
-                    rewards_ = REWARDS_WHITE_WINS;
+                    rewards_ = REWARDS_AGENT2_WINS;
                     return;
                 }
             }
@@ -159,10 +154,6 @@ public final class Connect4Simulator extends AbstractSimulator<Connect4State, Co
                 throw new NotImplementedException();
         }
         throw new IllegalArgumentException("Invalid TurnType " + turnType);
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
     }
 
     public TurnType getTurnType() {

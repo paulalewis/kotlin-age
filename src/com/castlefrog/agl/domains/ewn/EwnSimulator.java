@@ -1,11 +1,11 @@
 package com.castlefrog.agl.domains.ewn;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.castlefrog.agl.AbstractSimulator;
+import com.castlefrog.agl.Adversarial2AgentSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Current version of ewn uses the same initial setup for each match. This is
@@ -13,9 +13,7 @@ import com.castlefrog.agl.TurnType;
  * and either it would need to be partially observable or simultaneous movement
  * the make the setup phase fair.
  */
-public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
-    private static final int N_AGENTS = 2;
-
+public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, EwnAction> {
     private EwnSimulator(EwnState state) {
         legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<EwnAction>());
@@ -47,7 +45,7 @@ public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
         if (legalActions_.size() == 0) {
             computeRewards();
         } else {
-            rewards_ = new int[N_AGENTS];
+            rewards_ = REWARDS_NEUTRAL;
         }
     }
 
@@ -130,7 +128,7 @@ public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
         legalActions_.get(0).clear();
         legalActions_.get(1).clear();
         int agentTurn = state_.getAgentTurn();
-        if (rewards_[0] == 0) {
+        if (rewards_ == REWARDS_NEUTRAL) {
             if (isSetupPhase()) {
                 for (byte i = 1; i <= 6; i++) {
                     for (byte j = 1; j <= 6; j++) {
@@ -272,11 +270,11 @@ public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
 
     private void computeRewards() {
         if (isSetupPhase()) {
-            rewards_ = new int[N_AGENTS];
+            rewards_ = REWARDS_NEUTRAL;
         } else if (state_.getLocation(EwnState.getSize() - 1, 0) > 0) {
-            rewards_ = new int[] {1, -1};
+            rewards_ = REWARDS_AGENT1_WINS;
         } else if (state_.getLocation(0, EwnState.getSize() - 1) < 0) {
-            rewards_ = new int[] {-1, 1};
+            rewards_ = REWARDS_AGENT2_WINS;
         } else {
             boolean redFound = false;
             boolean blueFound = false;
@@ -291,21 +289,17 @@ public final class EwnSimulator extends AbstractSimulator<EwnState, EwnAction> {
                 }
             }
             if (!redFound && blueFound) {
-                rewards_ = new int[] {-1, 1};
+                rewards_ = REWARDS_AGENT2_WINS;
             } else if (redFound && !blueFound) {
-                rewards_ = new int[] {1, -1};
+                rewards_ = REWARDS_AGENT1_WINS;
             } else {
-                rewards_ = new int[N_AGENTS];
+                rewards_ = REWARDS_NEUTRAL;
             }
         }
     }
 
     public int getNextAgentTurn() {
         return (state_.getAgentTurn() + 1) % 2;
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
     }
 
     public TurnType getTurnType() {

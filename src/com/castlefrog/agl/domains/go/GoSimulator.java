@@ -1,13 +1,12 @@
 package com.castlefrog.agl.domains.go;
 
-import java.util.List;
-
-import com.castlefrog.agl.AbstractSimulator;
+import com.castlefrog.agl.Adversarial2AgentSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
-public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
-    private static final int N_AGENTS = 2;
+import java.util.List;
+
+public final class GoSimulator extends Adversarial2AgentSimulator<GoState, GoAction> {
     //private static final int MIN_BOARD_SIZE = 5;
     static final int MAX_BOARD_SIZE = 19;
 
@@ -84,10 +83,6 @@ public final class GoSimulator extends AbstractSimulator<GoState, GoAction> {
 
     public int getSize() {
         return boardSize_;
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
     }
 
     public TurnType getTurnType() {

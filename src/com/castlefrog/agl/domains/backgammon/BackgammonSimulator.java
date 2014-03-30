@@ -1,23 +1,18 @@
 package com.castlefrog.agl.domains.backgammon;
 
+import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.IllegalActionException;
+import com.castlefrog.agl.TurnType;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.castlefrog.agl.AbstractSimulator;
-import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.TurnType;
-
 /**
  * Backgammon has about 100 actions per game.
  */
-public final class BackgammonSimulator extends AbstractSimulator<BackgammonState, BackgammonAction> {
-    private static final int N_AGENTS = 2;
+public final class BackgammonSimulator extends Adversarial2AgentSimulator<BackgammonState, BackgammonAction> {
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
-
-    private static final int[] REWARDS_BLACK_WINS = new int[] { 1, -1 };
-    private static final int[] REWARDS_WHITE_WINS = new int[] { -1, 1 };
-    private static final int[] REWARDS_NEUTRAL = new int[] { 0, 0 };
 
     private BackgammonSimulator(BackgammonState state) {
         legalActions_ = new ArrayList<>();
@@ -235,16 +230,12 @@ public final class BackgammonSimulator extends AbstractSimulator<BackgammonState
             }
         }
         if (!pos) {
-            rewards_ = REWARDS_BLACK_WINS;
+            rewards_ = REWARDS_AGENT1_WINS;
         } else if (!neg) {
-            rewards_ = REWARDS_WHITE_WINS;
+            rewards_ = REWARDS_AGENT2_WINS;
         } else {
             rewards_ = REWARDS_NEUTRAL;
         }
-    }
-
-    public int getNAgents() {
-        return N_AGENTS;
     }
 
     public TurnType getTurnType() {
