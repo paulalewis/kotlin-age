@@ -1,17 +1,10 @@
 package com.castlefrog.agl.domains.hex;
 
-import java.io.Serializable;
-
 import com.castlefrog.agl.State;
 
-/*
- * A Hex state consists of a board of hexagon locations
- * that are either empty or have a piece black or
- * white piece.
- */
-public final class HexState implements State<HexState>, Serializable {
-    private static final int MIN_BOARD_SIZE = 1;
+import java.io.Serializable;
 
+public final class HexState implements State<HexState>, Serializable {
     private byte[][] bitBoards_;
     private byte boardSize_;
     private byte agentTurn_;
@@ -25,17 +18,14 @@ public final class HexState implements State<HexState>, Serializable {
     }
 
     public static final int
-            LOCATION_EMPTY = 0,
-            LOCATION_BLACK = 1,
-            LOCATION_WHITE = 2;
+        LOCATION_EMPTY = 0,
+        LOCATION_BLACK = 1,
+        LOCATION_WHITE = 2;
 
     public HexState(int boardSize,
                     byte[][] bitBoards,
                     int agentTurn,
                     BoardState boardState) {
-        if (boardSize < MIN_BOARD_SIZE) {
-            throw new IllegalArgumentException("Invalid board size: " + boardSize);
-        }
         boardSize_ = (byte) boardSize;
         bitBoards_ = new byte[bitBoards.length][bitBoards[0].length];
         for (int i = 0; i < bitBoards.length; i += 1) {
@@ -50,11 +40,7 @@ public final class HexState implements State<HexState>, Serializable {
     }
 
     public byte[][] getBitBoards() {
-        byte[][] bitBoards = new byte[bitBoards_.length][bitBoards_.length];
-        for (int i = 0; i < bitBoards_.length; i += 1) {
-            System.arraycopy(bitBoards_[i], 0, bitBoards[i], 0, bitBoards_.length);
-        }
-        return bitBoards;
+        return bitBoards_;
     }
 
     public byte[][] getLocations() {
@@ -87,34 +73,26 @@ public final class HexState implements State<HexState>, Serializable {
         return agentTurn_;
     }
 
-    public boolean isLocationEmpty(int x, int y) {
-        return getLocation(x, y) == LOCATION_EMPTY;
-    }
-
     public BoardState getBoardState() {
         return boardState_;
     }
 
-    public boolean isBoardEmpty() {
-        /*for (int i = 0; i < bitBoards_.length; i += 1) {
-            for (int j = 0; j < bitBoards_[0].length; j += 1) {
-                if (bitBoards_[i][j] != 0) {
-                    return false;
-                }
-            }
-        }
-        return true;*/
-        return boardState_ == BoardState.EMPTY;
+    public boolean isLocationEmpty(int x, int y) {
+        int bitLocation = y * boardSize_ + x;
+        int byteLocation = bitLocation / Byte.SIZE;
+        return ((bitBoards_[0][byteLocation] | bitBoards_[1][byteLocation]) &
+                (1 << bitLocation % Byte.SIZE)) == LOCATION_EMPTY;
     }
 
     public int getNPieces() {
         int nPieces = 0;
-        byte[][] locations = getLocations();
-        for (int i = 0; i < locations.length; i += 1) {
-            for (int j = 0; j < locations.length; j += 1) {
-                if (locations[i][j] != LOCATION_EMPTY) {
+        for (int i = 0; i < bitBoards_[0].length; i += 1) {
+            int value = bitBoards_[0][i] | bitBoards_[1][i];
+            for (int j = 0; j < Byte.SIZE; i += 1) {
+                if ((value & 0b1) != 0) {
                     nPieces += 1;
                 }
+                value = value >>> 1;
             }
         }
         return nPieces;
@@ -183,9 +161,10 @@ public final class HexState implements State<HexState>, Serializable {
                 output.append(" ");
             }
             for (int j = 0; j < boardSize_; j += 1) {
-                if (getLocation(j, i) == LOCATION_BLACK) {
+                int location = getLocation(j, i);
+                if (location == LOCATION_BLACK) {
                     output.append("X ");
-                } else if (getLocation(j, i) == LOCATION_WHITE) {
+                } else if (location == LOCATION_WHITE) {
                     output.append("O ");
                 } else {
                     output.append("- ");

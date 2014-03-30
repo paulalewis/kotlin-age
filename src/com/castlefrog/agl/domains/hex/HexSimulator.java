@@ -1,12 +1,12 @@
 package com.castlefrog.agl.domains.hex;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
 import com.castlefrog.agl.AbstractSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     private static final int N_AGENTS = 2;
@@ -14,6 +14,8 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     private static final int[] REWARDS_BLACK_WINS = new int[] { 1, -1 };
     private static final int[] REWARDS_WHITE_WINS = new int[] { -1, 1 };
     private static final int[] REWARDS_NEUTRAL = new int[] { 0, 0 };
+
+    private static final int MIN_BOARD_SIZE = 1;
 
     private TurnType turnType_;
 
@@ -34,6 +36,9 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
     }
 
     public static HexSimulator create(int boardSize, TurnType turnType) {
+        if (boardSize < MIN_BOARD_SIZE) {
+            throw new IllegalArgumentException("Invalid board size: " + boardSize);
+        }
         return new HexSimulator(getInitialState(boardSize));
     }
 
@@ -104,13 +109,13 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         byte[][] locations = state_.getLocations();
         boolean[][] visited = new boolean[state_.getBoardSize()][state_.getBoardSize()];
         for (int i = 0; i < state_.getBoardSize(); i += 1) {
-            if (locations[0][i] == 1 && !visited[0][i]) {
+            if (locations[0][i] == HexState.LOCATION_BLACK && !visited[0][i]) {
                 if ((dfsSides(0, i, locations, visited) & 3) == 3) {
                     rewards_ = REWARDS_BLACK_WINS;
                     return;
                 }
             }
-            if (locations[i][0] == 2 && !visited[i][0]) {
+            if (locations[i][0] == HexState.LOCATION_WHITE && !visited[i][0]) {
                 if ((dfsSides(i, 0, locations, visited) & 12) == 12) {
                     rewards_ = REWARDS_WHITE_WINS;
                     return;
@@ -126,9 +131,9 @@ public final class HexSimulator extends AbstractSimulator<HexState, HexAction> {
         int x = action.getX();
         int y = action.getY();
         int value = dfsSides(x, y, locations, visited);
-        if (locations[x][y] == 1 && (value & 3) == 3) {
+        if (locations[x][y] == HexState.LOCATION_WHITE && (value & 3) == 3) {
             rewards_ = REWARDS_BLACK_WINS;
-        } else if (locations[x][y] == 2 && (value & 12) == 12) {
+        } else if (locations[x][y] == HexState.LOCATION_BLACK && (value & 12) == 12) {
             rewards_ = REWARDS_WHITE_WINS;
         } else {
             rewards_ = REWARDS_NEUTRAL;
