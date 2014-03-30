@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Stack;
 
 public final class HavannahSimulator extends Adversarial2AgentSimulator<HavannahState, HavannahAction> {
+    private static final int MIN_BASE = 2;
+
     private TurnType turnType_;
     /** length of a side of board */
     private final int base_;
@@ -47,8 +49,11 @@ public final class HavannahSimulator extends Adversarial2AgentSimulator<Havannah
         return new HavannahSimulator(this, corners_, sides_);
     }
 
-    public static HavannahSimulator create(int boardSize, TurnType turnType) {
-        return new HavannahSimulator(getInitialState(boardSize));
+    public static HavannahSimulator create(int baseSize, TurnType turnType) {
+        if (baseSize < MIN_BASE) {
+            throw new IllegalArgumentException("Invalid board size: " + baseSize);
+        }
+        return new HavannahSimulator(getInitialState(baseSize));
     }
 
     public void setState(HavannahState state) {

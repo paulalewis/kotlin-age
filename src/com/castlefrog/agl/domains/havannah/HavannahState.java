@@ -1,16 +1,10 @@
 package com.castlefrog.agl.domains.havannah;
 
-import java.io.Serializable;
-
 import com.castlefrog.agl.State;
 
-/**
- * A Havannah state consists of a board of hexagon locations that are either
- * empty or have a piece controlled by one of two players.
- */
-public final class HavannahState implements State<HavannahState>, Serializable {
-    private static final int MIN_BASE = 2;
+import java.io.Serializable;
 
+public final class HavannahState implements State<HavannahState>, Serializable {
     private byte base_;
     private byte[][] locations_;
     private byte agentTurn_;
@@ -23,9 +17,6 @@ public final class HavannahState implements State<HavannahState>, Serializable {
     public HavannahState(int base,
                          byte[][] locations,
                          int agentTurn) {
-        if (base < MIN_BASE) {
-            throw new IllegalArgumentException("Invalid board size: " + base);
-        }
         base_ = (byte) base;
         locations_ = new byte[locations.length][locations[0].length];
         for (int i = 0; i < locations.length; i += 1) {
@@ -101,7 +92,7 @@ public final class HavannahState implements State<HavannahState>, Serializable {
         int nPieces = 0;
         for (int i = 0; i < locations_.length; i += 1) {
             for (int j = 0; j < locations_[0].length; j += 1) {
-                if (locations_[i][j] != 0) {
+                if (locations_[i][j] != LOCATION_EMPTY) {
                     nPieces += 1;
                 }
             }
@@ -168,9 +159,9 @@ public final class HavannahState implements State<HavannahState>, Serializable {
                 xMax = base_ + i;
             }
             for (int j = xMin; j < xMax; j += 1) {
-                if (locations_[j][i] == 1) {
+                if (locations_[j][i] == LOCATION_BLACK) {
                     output.append("X ");
-                } else if (locations_[j][i] == 2) {
+                } else if (locations_[j][i] == LOCATION_WHITE) {
                     output.append("O ");
                 } else {
                     output.append("- ");
