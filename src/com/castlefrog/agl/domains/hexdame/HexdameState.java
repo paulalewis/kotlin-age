@@ -1,100 +1,54 @@
 package com.castlefrog.agl.domains.hexdame;
 
-import java.io.Serializable;
-
 import com.castlefrog.agl.State;
 
-/**
- * A Hexdame state consists of a board of hexagon locations that are either
- * empty or have a piece controlled by one of two players.
- */
+import java.io.Serializable;
+
 public final class HexdameState implements State<HexdameState>, Serializable {
-    private static final long serialVersionUID = 1L;
+    public static final int BASE = 5;
+    public static final int SIZE = 2 * BASE - 1;
+    public static final int N_LOCATIONS = 3 * BASE * BASE - 3 * BASE + 1;
 
     private byte[][] locations_;
-    /** id of agent to play next piece */
     private byte agentTurn_;
-    /** number of pieces on board */
-    private int nPieces_;
 
-    public enum Location {
-        EMPTY,
-        AGENT1,
-        AGENT1_KING,
-        AGENT2,
-        AGENT2_KING
-    }
+    public static final int
+        LOCATION_EMPTY = 0,
+        LOCATION_AGENT1 = 1,
+        LOCATION_AGENT1_KING = 2,
+        LOCATION_AGENT2 = 3,
+        LOCATION_AGENT2_KING = 4;
 
     public HexdameState() {
+        locations_ = new byte[SIZE][SIZE];
+        for (int i = 0; i < 4; i += 1) {
+            for (int j = 0; j < 4; j += 1) {
+                locations_[i][j] = LOCATION_AGENT1;
+                locations_[SIZE - i][SIZE - j] = LOCATION_AGENT2;
+            }
+        }
+        agentTurn_ = 0;
     }
 
     public HexdameState(byte[][] locations,
-                         int agentTurn) {
-        locations_ = new byte[locations.length][locations[0].length];
-        for (int i = 0; i < locations.length; i += 1) {
-            for (int j = 0; j < locations[0].length; j += 1) {
-                locations_[i][j] = locations[i][j];
-                if (locations_[i][j] != 0) {
-                    nPieces_ += 1;
-                }
-            }
+                        int agentTurn) {
+        locations_ = new byte[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i += 1) {
+            System.arraycopy(locations, 0, locations_, 0, SIZE);
         }
         agentTurn_ = (byte) agentTurn;
-    }
-
-    private HexdameState(byte[][] locations,
-                          int agentTurn,
-                          int nPieces) {
-        locations_ = new byte[locations.length][locations[0].length];
-        for (int i = 0; i < locations.length; i += 1) {
-            for (int j = 0; j < locations[0].length; j += 1) {
-                locations_[i][j] = locations[i][j];
-            }
-        }
-        agentTurn_ = (byte) agentTurn;
-        nPieces_ = nPieces;
     }
 
     public HexdameState copy() {
-        return new HexdameState(locations_, agentTurn_, nPieces_);
+        return new HexdameState(locations_, agentTurn_);
     }
 
     public byte[][] getLocations() {
-        byte[][] locations = new byte[locations_.length][locations_.length];
-        for (int i = 0; i < locations_.length; i += 1) {
-            for (int j = 0; j < locations_.length; j += 1) {
-                locations[i][j] = locations_[i][j];
-            }
-        }
-        return locations;
+        return locations_;
     }
 
-    /**
-     * Gets a location on board.
-     */
     public byte getLocation(int x, int y) {
         return locations_[x][y];
-    }
-
-    public boolean isLocationEmpty(int x, int y) {
-        return locations_[x][y] == 0;
-    }
-
-    public int getBase() {
-        return (locations_.length + 1) / 2;
-    }
-
-    public int getSize() {
-        return locations_.length;
-    }
-
-    public int getNPieces() {
-        return nPieces_;
-    }
-
-    public int getNLocations() {
-        int base = getBase();
-        return 3 * base * base - 3 * base + 1;
     }
 
     public int getAgentTurn() {
@@ -104,32 +58,41 @@ public final class HexdameState implements State<HexdameState>, Serializable {
     public void setLocation(int x,
                             int y,
                             int value) {
-        if (locations_[x][y] == 0 && value != 0) {
-            nPieces_ += 1;
-        } else if (locations_[x][y] != 0 && value == 0) {
-            nPieces_ -= 1;
-        }
         locations_[x][y] = (byte) value;
     }
 
-    public void setLocation(int x,
-                            int y,
-                            Location value) {
-        if (locations_[x][y] == 0 && value != Location.EMPTY) {
-            nPieces_ += 1;
-        } else if (locations_[x][y] != 0 && value == Location.EMPTY) {
-            nPieces_ -= 1;
-        }
-        locations_[x][y] = (byte) value.ordinal();
+    private int[][] getCorners() {
+        return new int[][] {{0, 0},
+                            {0, BASE - 1},
+                            {BASE - 1, 0},
+                            {BASE - 1, SIZE - 1},
+                            {SIZE - 1, BASE - 1},
+                            {SIZE - 1, SIZE - 1}};
     }
 
-    public void switchAgentTurn() {
-        agentTurn_ = (byte) ((agentTurn_ + 1) % 2);
+    private int[][][] getSides() {
+        int[][][] sides = new int[6][BASE - 2][2];
+        for (int i = 0; i < BASE - 2; i += 1) {
+            sides[0][i][0] = 0;
+            sides[0][i][1] = i + 1;
+            sides[1][i][0] = i + 1;
+            sides[1][i][1] = 0;
+            sides[2][i][0] = i + 1;
+            sides[2][i][1] = BASE + i;
+            sides[3][i][0] = BASE + i;
+            sides[3][i][1] = SIZE - 1;
+            sides[4][i][0] = SIZE - 1;
+            sides[4][i][1] = BASE + i;
+            sides[5][i][0] = BASE + i;
+            sides[5][i][1] = i + 1;
+        }
+        return sides;
     }
 
     @Override
     public int hashCode() {
         int code = 7;
+        code = 31 * code + agentTurn_;
         for (byte[] row : locations_) {
             for (byte location : row) {
                 code = 11 * code + location;
@@ -145,35 +108,39 @@ public final class HexdameState implements State<HexdameState>, Serializable {
         }
         HexdameState state = (HexdameState) object;
         byte[][] locations = state.getLocations();
-        for (int i = 0; i < locations_.length; i += 1) {
-            for (int j = 0; j < locations_.length; j += 1) {
+        for (int i = 0; i < SIZE; i += 1) {
+            for (int j = 0; j < SIZE; j += 1) {
                 if (locations[i][j] != locations_[i][j]) {
                     return false;
                 }
             }
         }
-        return true;
+        return agentTurn_ == state.getAgentTurn();
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
         for (int i = locations_.length - 1; i >= 0; i -= 1) {
-            for (int j = 0; j < getBase() - i - 1 || j < i - getBase() + 1; j += 1) {
+            for (int j = 0; j < BASE - i - 1 || j < i - BASE + 1; j += 1) {
                 output.append(" ");
             }
             int xMin = 0;
             int xMax = locations_.length;
-            if (i >= getBase()) {
-                xMin = i - getBase() + 1;
+            if (i >= BASE) {
+                xMin = i - BASE + 1;
             } else {
-                xMax = getBase() + i;
+                xMax = BASE + i;
             }
             for (int j = xMin; j < xMax; j += 1) {
-                if (locations_[j][i] == 1) {
-                    output.append("X ");
-                } else if (locations_[j][i] == 2) {
-                    output.append("O ");
+                if (locations_[j][i] == LOCATION_AGENT1) {
+                    output.append("b ");
+                } else if (locations_[j][i] == LOCATION_AGENT1_KING) {
+                    output.append("B ");
+                } else if (locations_[j][i] == LOCATION_AGENT2) {
+                    output.append("w ");
+                } else if (locations_[j][i] == LOCATION_AGENT2_KING) {
+                    output.append("W ");
                 } else {
                     output.append("- ");
                 }

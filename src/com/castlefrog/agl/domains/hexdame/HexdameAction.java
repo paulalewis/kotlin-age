@@ -1,13 +1,11 @@
 package com.castlefrog.agl.domains.hexdame;
 
+import com.castlefrog.agl.Action;
+
 import java.io.Serializable;
 import java.util.Vector;
 
-import com.castlefrog.agl.Action;
-
 public final class HexdameAction implements Action, Serializable {
-    private static final long serialVersionUID = 1L;
-
     /** list of all possible Hexdame actions */
     private static Vector<Vector<HexdameAction>> actions_ = new Vector<Vector<HexdameAction>>();
 
