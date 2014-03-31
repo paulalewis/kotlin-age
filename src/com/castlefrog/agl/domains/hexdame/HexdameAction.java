@@ -3,76 +3,38 @@ package com.castlefrog.agl.domains.hexdame;
 import com.castlefrog.agl.Action;
 
 import java.io.Serializable;
-import java.util.Vector;
 
-public final class HexdameAction implements Action, Serializable {
-    /** list of all possible Hexdame actions */
-    private static Vector<Vector<HexdameAction>> actions_ = new Vector<Vector<HexdameAction>>();
+public abstract class HexdameAction implements Action, Serializable {
+    public static class Location {
+        public final byte x;
+        public final byte y;
 
-    /** x coordinate */
-    private final byte x_;
-    /** y coordinate */
-    private final byte y_;
-
-    private HexdameAction(int x, int y) {
-        x_ = (byte) x;
-        y_ = (byte) y;
-    }
-
-    public static HexdameAction valueOf(int x, int y) {
-        if (x >= actions_.size() || y >= actions_.size()) {
-            generateActions(Math.max(x + 1, y + 1));
+        public Location(int x, int y) {
+            this.x = (byte) x;
+            this.y = (byte) y;
         }
-        return actions_.get(x).get(y);
-    }
 
-    public HexdameAction copy() {
-        return this;
-    }
+        public Location copy() {
+            return new Location(x, y);
+        }
 
-    /**
-     * Contains all possible actions and a few impossible actions.
-     * @return set of possible actions.
-     */
-    private static void generateActions(int size) {
-        actions_.setSize(size);
-        for (int i = 0; i < size; i += 1) {
-            if (actions_.get(i) == null) {
-                actions_.set(i, new Vector<HexdameAction>());
+        @Override
+        public boolean equals(Object object) {
+            if (!(object instanceof Location)) {
+                return false;
             }
-            actions_.get(i).setSize(size);
-            for (int j = 0; j < size; j += 1) {
-                if (actions_.get(i).get(j) == null) {
-                    actions_.get(i).set(j, new HexdameAction(i, j));
-                }
-            }
+            Location other = (Location) object;
+            return x == other.x && y == other.y;
         }
     }
 
-    public int getX() {
-        return x_;
+    protected final Location initial_;
+
+    protected HexdameAction(Location initial) {
+        initial_ = initial.copy();
     }
 
-    public int getY() {
-        return y_;
-    }
-
-    @Override
-    public int hashCode() {
-        return 11 * (7 + x_) + y_;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof HexdameAction)) {
-            return false;
-        }
-        HexdameAction action = (HexdameAction) object;
-        return x_ == action.getX() && y_ == action.getY();
-    }
-
-    @Override
-    public String toString() {
-        return "(" + ((char) (0x41 + x_)) + y_ + ")";
+    public Location getInitial() {
+        return initial_;
     }
 }

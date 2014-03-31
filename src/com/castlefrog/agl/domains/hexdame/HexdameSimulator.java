@@ -4,6 +4,7 @@ import com.castlefrog.agl.Adversarial2AgentSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class HexdameSimulator extends Adversarial2AgentSimulator<HexdameState, HexdameAction> {
@@ -30,8 +31,11 @@ public final class HexdameSimulator extends Adversarial2AgentSimulator<HexdameSt
 
     public void setState(HexdameState state) {
         state_ = state;
-        computeRewards();
-        computeLegalActions(null);
+        legalActions_ = new ArrayList<>();
+        legalActions_.add(new ArrayList<HexdameAction>());
+        legalActions_.add(new ArrayList<HexdameAction>());
+        computeLegalActions(legalActions_);
+        rewards_ = computeRewards(legalActions_);
     }
 
     public void stateTransition(List<HexdameAction> actions) {
@@ -39,36 +43,48 @@ public final class HexdameSimulator extends Adversarial2AgentSimulator<HexdameSt
         if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
             throw new IllegalActionException(action, state_);
         }
-        state_.setLocation(action.getX(), action.getY(), state_.getAgentTurn() + 1);
-        //state_.switchAgentTurn();
-        computeRewards();
-        computeLegalActions(action);
-    }
-
-    private void computeLegalActions(HexdameAction prevAction) {
-    }
-
-    private void computeRewards() {
-        byte[][] locations = state_.getLocations();
-        boolean hasAgent1Pieces = false;
-        boolean hasAgent2Pieces = false;
-        for (int i = 0; i < HexdameState.SIZE; i += 1) {
-            for (int j = 0; j < HexdameState.SIZE; j += 1) {
-                if (locations[i][j] == HexdameState.LOCATION_AGENT1 ||
-                        locations[i][j] == HexdameState.LOCATION_AGENT1_KING) {
-                    hasAgent1Pieces = true;
-                } else if (locations[i][j] == HexdameState.LOCATION_AGENT2 ||
-                        locations[i][j] == HexdameState.LOCATION_AGENT2_KING) {
-                    hasAgent2Pieces = true;
-                }
+        if (action instanceof HexdameMoveAction) {
+            HexdameMoveAction moveAction = (HexdameMoveAction) action;
+            HexdameAction.Location initial = moveAction.getInitial();
+            HexdameAction.Location move = moveAction.getMove();
+            int piece = state_.getLocation(initial.x, initial.y);
+            state_.setLocation(move.x, move.y, piece);
+            state_.setLocation(initial.x, initial.y, HexdameState.LOCATION_EMPTY);
+        }
+        if (action instanceof HexdameJumpAction) {
+            HexdameJumpAction jumpAction = (HexdameJumpAction) action;
+            HexdameAction.Location initial = jumpAction.getInitial();
+            HexdameAction.Location move = jumpAction.getMove();
+            int piece = state_.getLocation(initial.x, initial.y);
+            state_.setLocation(move.x, move.y, piece);
+            state_.setLocation(initial.x, initial.y, HexdameState.LOCATION_EMPTY);
+            for (int i = 0; i < jumpAction.getNJumps(); i += 1) {
+                HexdameAction.Location jump = jumpAction.getJump(i);
+                state_.setLocation(jump.x, jump.y, HexdameState.LOCATION_EMPTY);
             }
         }
-        if (hasAgent2Pieces) {
-            rewards_ = REWARDS_AGENT1_WINS;
-        } else if (hasAgent1Pieces) {
-            rewards_ = REWARDS_AGENT2_WINS;
+        state_.setAgentTurn((state_.getAgentTurn() + 1) % N_AGENTS);
+        computeLegalActions(legalActions_);
+        rewards_ = computeRewards(legalActions_);
+    }
+
+    private void computeLegalActions(List<List<HexdameAction>> actions) {
+        //TODO
+    }
+
+    /**
+     * A player with no legal moves (i.e. the player
+     * has no pieces to move) loses the game.
+     * If neither play has legal actions then the game is
+     * a draw.
+     */
+    private int[] computeRewards(List<List<HexdameAction>> actions) {
+        if (actions.get(0).isEmpty() && !actions.get(1).isEmpty()) {
+            return REWARDS_AGENT2_WINS;
+        } else if (actions.get(1).isEmpty() && !actions.get(0).isEmpty()) {
+            return REWARDS_AGENT1_WINS;
         } else {
-            rewards_ = REWARDS_NEUTRAL;
+            return REWARDS_NEUTRAL;
         }
     }
 

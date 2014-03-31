@@ -61,6 +61,10 @@ public final class HexdameState implements State<HexdameState>, Serializable {
         locations_[x][y] = (byte) value;
     }
 
+    public void setAgentTurn(int agentTurn) {
+        agentTurn_ = (byte) agentTurn;
+    }
+
     private int[][] getCorners() {
         return new int[][] {{0, 0},
                             {0, BASE - 1},
