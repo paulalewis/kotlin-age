@@ -1,7 +1,2 @@
 bin/
 dist/
-out/
-
-# Intellij Project Files
-.idea
-*.iml
