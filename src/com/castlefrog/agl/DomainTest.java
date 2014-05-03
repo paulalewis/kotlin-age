@@ -6,24 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import org.yaml.snakeyaml.Yaml;
 
 /**
  * This class is used to run tests between agents on simulators.
  */
 public final class DomainTest {
-    private static final String ROOT_ELEMENT = "domainTest";
     private static final String N_SIMULATIONS_ELEMENT = "nSimulations";
     private static final String DOMAIN_ELEMENT = "domain";
 
@@ -42,13 +33,7 @@ public final class DomainTest {
             registerAgents();
             try {
                 File inputFile = new File(args[0]);
-                if (inputFile.getName().contains(".yaml")) {
-                    readYamlFile(inputFile);
-                } else if (inputFile.getName().contains(".xml")) {
-                    readXmlFile(inputFile);
-                } else {
-                    throw new IllegalArgumentException("Invalid file type: " + args[0]);
-                }
+                readYamlFile(inputFile);
 
                 List<Simulator<?, ?>> simulators = new ArrayList<>();
                 List<double[]> rewardsData = new ArrayList<>();
@@ -119,60 +104,11 @@ public final class DomainTest {
                     System.out.println(output.toString());
                 }
                 arbiter.done();
-            } catch (ParserConfigurationException | SAXException | IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             System.out.println("Illegal arguments\nusage: java -jar DomainTest.jar test_filename [output_filename]");
-        }
-    }
-
-    private void readXmlFile(File file) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(file);
-        doc.getDocumentElement().normalize();
-
-        if (!doc.getDocumentElement().getNodeName().equals(ROOT_ELEMENT)) {
-            throw new IllegalArgumentException("Root tag should be '" + ROOT_ELEMENT + "'");
-        }
-        nSimulations = Integer.parseInt(getTagValue(N_SIMULATIONS_ELEMENT, doc.getDocumentElement()));
-        NodeList nList = doc.getElementsByTagName(DOMAIN_ELEMENT);
-        Element element = (Element) nList.item(0);
-        String simulatorName = getTagValue("name", element);
-        NodeList paramList = element.getElementsByTagName("params");
-        List<String> simulatorParams = new ArrayList<>();
-        if (paramList.getLength() != 0) {
-            NodeList paramNodes = ((Element) paramList.item(0)).getElementsByTagName("param");
-            for (int j = 0; j < paramNodes.getLength(); j += 1) {
-                Node paramNode = paramNodes.item(j);
-                if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
-                    simulatorParams.add(paramNode.getTextContent());
-                }
-            }
-        }
-
-        domain = Simulators.getSimulator(simulatorName, simulatorParams);
-
-        NodeList agentList = doc.getElementsByTagName("agents");
-        NodeList agentNodes = ((Element) agentList.item(0)).getElementsByTagName("agent");
-        for (int i = 0; i < agentNodes.getLength(); i += 1) {
-            Element agentNode = (Element) agentNodes.item(i);
-            if (agentNode.getNodeType() == Node.ELEMENT_NODE) {
-                String name = getTagValue("name", agentNode);
-                paramList = agentNode.getElementsByTagName("params");
-                List<String> params = new ArrayList<>();
-                if (paramList.getLength() != 0) {
-                    NodeList paramNodes = ((Element) paramList.item(0)).getElementsByTagName("param");
-                    for (int j = 0; j < paramNodes.getLength(); j += 1) {
-                        Node paramNode = paramNodes.item(j);
-                        if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
-                            params.add(paramNode.getTextContent());
-                        }
-                    }
-                }
-                agents.add(Agents.getAgent(name, params));
-            }
         }
     }
 
