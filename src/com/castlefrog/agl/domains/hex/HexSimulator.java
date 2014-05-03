@@ -125,9 +125,9 @@ public final class HexSimulator extends Adversarial2AgentSimulator<HexState, Hex
         int x = action.getX();
         int y = action.getY();
         int value = dfsSides(x, y, locations, visited);
-        if (locations[x][y] == HexState.LOCATION_WHITE && (value & 3) == 3) {
+        if (locations[x][y] == HexState.LOCATION_BLACK && (value & 3) == 3) {
             rewards_ = REWARDS_AGENT1_WINS;
-        } else if (locations[x][y] == HexState.LOCATION_BLACK && (value & 12) == 12) {
+        } else if (locations[x][y] == HexState.LOCATION_WHITE && (value & 12) == 12) {
             rewards_ = REWARDS_AGENT2_WINS;
         } else {
             rewards_ = REWARDS_NEUTRAL;
