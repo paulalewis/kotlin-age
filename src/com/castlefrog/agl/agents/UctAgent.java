@@ -14,8 +14,6 @@ import com.castlefrog.agl.State;
  * based on input parameters.
  */
 public final class UctAgent implements Agent {
-    private static final String NAME = "uct";
-
     /** number of simulations to run */
     private int nSimulations_;
 
@@ -466,14 +464,10 @@ public final class UctAgent implements Agent {
         return totalRewards;
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append(getName()).append(" agent");
+        output.append(UctAgent.class.getSimpleName());
         output.append("\n  number of simulations:     ").append(nSimulations_);
         output.append("\n  UCT constant:              ").append(uctConstant_);
         if (sparseSampleSize_ > 0) {

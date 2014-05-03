@@ -8,8 +8,6 @@ import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.State;
 
 public final class ExternalAgent implements Agent {
-    private static final String NAME = "external";
-
     /** selected action to return from selectAction */
     private Object action_;
     /** indicates when external program has updated action_ */
@@ -43,12 +41,8 @@ public final class ExternalAgent implements Agent {
         actionReady_.countDown();
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     @Override
     public String toString() {
-        return getName() + " agent";
+        return ExternalAgent.class.getSimpleName();
     }
 }

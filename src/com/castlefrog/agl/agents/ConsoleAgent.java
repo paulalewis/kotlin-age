@@ -11,8 +11,6 @@ import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.State;
 
 public final class ConsoleAgent implements Agent {
-    private static final String NAME = "console";
-
     public <S extends State<S>, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);
         A action = null;
@@ -53,12 +51,8 @@ public final class ConsoleAgent implements Agent {
         }
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     @Override
     public String toString() {
-        return getName() + " agent";
+        return ConsoleAgent.class.getSimpleName();
     }
 }
