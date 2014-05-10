@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.connect4;
 
 import java.util.List;
-import java.util.Map;
 
 import com.castlefrog.agl.SimulatorProvider;
 import com.castlefrog.agl.Simulators;

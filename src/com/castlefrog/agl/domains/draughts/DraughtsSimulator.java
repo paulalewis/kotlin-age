@@ -46,7 +46,7 @@ public final class DraughtsSimulator extends Adversarial2AgentSimulator<Draughts
     }
 
     private List<List<DraughtsAction>> computeLegalActions() {
-        List<List<DraughtsAction>> legalActions = new ArrayList<List<DraughtsAction>>();
+        List<List<DraughtsAction>> legalActions = new ArrayList<>();
         //TODO - code here
         return legalActions;
     }

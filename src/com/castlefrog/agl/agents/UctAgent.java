@@ -324,7 +324,6 @@ public final class UctAgent implements Agent {
         StateNode<S, A> temp = new StateNode<>(simulator.getState(), legalActions);
         double[] rootActionRewards = new double[temp.getChildren().size()];
         int[] rootActionVisits = new int[temp.getChildren().size()];
-        temp = null;
         // Generate UCT trees equal to the number of ensembles
         for (int i = 0; i < nEnsembles_; i += 1) {
             StateNode<S, A> root = new StateNode<>(simulator.getState(), legalActions);

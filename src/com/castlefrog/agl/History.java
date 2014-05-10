@@ -35,11 +35,11 @@ public final class History<S extends State<S>, A extends Action> implements Seri
     /**
      * Construct a History object starting from
      * the given state.
-     * @param state
+     * @param initialState
      *      initial state of history
      */
     public History(S initialState) {
-        nodes_ = new ArrayList<Node>();
+        nodes_ = new ArrayList<>();
         add(initialState, new ArrayList<A>());
     }
 
@@ -84,8 +84,8 @@ public final class History<S extends State<S>, A extends Action> implements Seri
     public String toString() {
         StringBuilder output = new StringBuilder();
         for (Node node: nodes_) {
-            output.append(node.getActions() + "\n\n");
-            output.append(node.getState() + "\n\n");
+            output.append(node.getActions()).append("\n\n");
+            output.append(node.getState()).append("\n\n");
         }
         return output.toString();
     }

@@ -125,7 +125,6 @@ public final class BiniaxState implements State<BiniaxState> {
 
     @Override
     public String toString() {
-        final String elements = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         StringBuilder output = new StringBuilder();
         output.append("(Turns: ").append(nTurns_).append(")\n");
         output.append("(Free Moves:").append(freeMoves_).append(")\n");
@@ -145,12 +144,12 @@ public final class BiniaxState implements State<BiniaxState> {
                     output.append("<X>");
                 } else if (locations_[i][j] > 0 && locations_[i][j] < (MAX_ELEMENTS + 1)) {
                     output.append("[");
-                    output.append(elements.charAt(locations_[i][j]));
+                    output.append((char)(0x40 + locations_[i][j]));
                     output.append("]");
                 } else {
-                    output.append(elements.charAt(locations_[i][j] / (MAX_ELEMENTS + 1)));
+                    output.append((char)(0x40 + (locations_[i][j] / (MAX_ELEMENTS + 1))));
                     output.append("-");
-                    output.append(elements.charAt(locations_[i][j] % (MAX_ELEMENTS + 1)));
+                    output.append((char)(0x40 + (locations_[i][j] % (MAX_ELEMENTS + 1))));
                 }
             }
             output.append(":\n");

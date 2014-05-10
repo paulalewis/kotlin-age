@@ -1,5 +1,7 @@
 package com.castlefrog.agl.domains.ewn;
 
+import java.util.Arrays;
+
 public final class EwnSetupAction implements EwnAction {
     private static final int NUMBER_OF_PIECES = 6;
 
@@ -11,7 +13,7 @@ public final class EwnSetupAction implements EwnAction {
         for (int i = 0; i < values_.length; i++) {
             values_[i] = values[i];
             if (used[values[i] - 1]) {
-                throw new IllegalArgumentException("Illegal Setup Action: " + values);
+                throw new IllegalArgumentException("Illegal Setup Action: " + Arrays.toString(values));
             }
             used[values[i] - 1] = true;
         }
@@ -53,7 +55,7 @@ public final class EwnSetupAction implements EwnAction {
         StringBuilder output = new StringBuilder();
         output.append("[ ");
         for (int i = 0; i < NUMBER_OF_PIECES; i++) {
-            output.append(values_[i] + " ");
+            output.append(values_[i]).append(" ");
         }
         output.append("]");
         return output.toString();

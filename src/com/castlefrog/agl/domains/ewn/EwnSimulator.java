@@ -62,19 +62,19 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
             assert (action instanceof EwnSetupAction);
             EwnSetupAction setupAction = (EwnSetupAction) action;
             if (state_.getAgentTurn() == 0) {
-                locations[0][EwnState.getSize() - 1] = setupAction.getValue(0);
-                locations[1][EwnState.getSize() - 1] = setupAction.getValue(1);
-                locations[2][EwnState.getSize() - 1] = setupAction.getValue(2);
-                locations[0][EwnState.getSize() - 2] = setupAction.getValue(3);
-                locations[1][EwnState.getSize() - 2] = setupAction.getValue(4);
-                locations[0][EwnState.getSize() - 3] = setupAction.getValue(5);
+                locations[0][EwnState.SIZE - 1] = setupAction.getValue(0);
+                locations[1][EwnState.SIZE - 1] = setupAction.getValue(1);
+                locations[2][EwnState.SIZE - 1] = setupAction.getValue(2);
+                locations[0][EwnState.SIZE - 2] = setupAction.getValue(3);
+                locations[1][EwnState.SIZE - 2] = setupAction.getValue(4);
+                locations[0][EwnState.SIZE - 3] = setupAction.getValue(5);
             } else {
-                locations[EwnState.getSize() - 1][0] = (byte) -setupAction.getValue(0);
-                locations[EwnState.getSize() - 2][0] = (byte) -setupAction.getValue(1);
-                locations[EwnState.getSize() - 3][0] = (byte) -setupAction.getValue(2);
-                locations[EwnState.getSize() - 1][1] = (byte) -setupAction.getValue(3);
-                locations[EwnState.getSize() - 2][1] = (byte) -setupAction.getValue(4);
-                locations[EwnState.getSize() - 1][2] = (byte) -setupAction.getValue(5);
+                locations[EwnState.SIZE - 1][0] = (byte) -setupAction.getValue(0);
+                locations[EwnState.SIZE - 2][0] = (byte) -setupAction.getValue(1);
+                locations[EwnState.SIZE - 3][0] = (byte) -setupAction.getValue(2);
+                locations[EwnState.SIZE - 1][1] = (byte) -setupAction.getValue(3);
+                locations[EwnState.SIZE - 2][1] = (byte) -setupAction.getValue(4);
+                locations[EwnState.SIZE - 1][2] = (byte) -setupAction.getValue(5);
                 dieRoll = (int) ((Math.random() * EwnState.DIE_SIDES) + 1);
             }
         } else {
@@ -173,8 +173,8 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
                 int low = 0;
                 int high = 7;
                 int x1 = -1, x2 = -1, y1 = -1, y2 = -1;
-                for (int i = 0; i < EwnState.getSize() && high != low; i++) {
-                    for (int j = 0; j < EwnState.getSize() && high != low; j++) {
+                for (int i = 0; i < EwnState.SIZE && high != low; i++) {
+                    for (int j = 0; j < EwnState.SIZE && high != low; j++) {
                         if (state_.getLocation(i, j) * current > 0) {
                             int value = Math.abs(state_.getLocation(i, j));
                             if (value == roll) {
@@ -199,14 +199,14 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
                 // Generate possible actions
                 if (low != 0) {
                     if (state_.getAgentTurn() == 0) {
-                        if (x1 != EwnState.getSize() - 1 && y1 != 0) {
+                        if (x1 != EwnState.SIZE - 1 && y1 != 0) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x1, y1,
                                     EwnMoveAction.Direction.SE));
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x1, y1,
                                     EwnMoveAction.Direction.EAST));
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x1, y1,
                                     EwnMoveAction.Direction.SOUTH));
-                        } else if (x1 != EwnState.getSize() - 1) {
+                        } else if (x1 != EwnState.SIZE - 1) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x1, y1,
                                     EwnMoveAction.Direction.EAST));
                         } else if (y1 != 0) {
@@ -214,7 +214,7 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
                                     EwnMoveAction.Direction.SOUTH));
                         }
                     } else {
-                        if (x1 != 0 && y1 != EwnState.getSize() - 1) {
+                        if (x1 != 0 && y1 != EwnState.SIZE - 1) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x1, y1,
                                     EwnMoveAction.Direction.NW));
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x1, y1,
@@ -224,7 +224,7 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
                         } else if (x1 != 0) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x1, y1,
                                     EwnMoveAction.Direction.WEST));
-                        } else if (y1 != EwnState.getSize() - 1) {
+                        } else if (y1 != EwnState.SIZE - 1) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x1, y1,
                                     EwnMoveAction.Direction.NORTH));
                         }
@@ -233,14 +233,14 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
 
                 if (high != 7 && low != high) {
                     if (state_.getAgentTurn() == 0) {
-                        if (x2 != EwnState.getSize() - 1 && y2 != 0) {
+                        if (x2 != EwnState.SIZE - 1 && y2 != 0) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x2, y2,
                                     EwnMoveAction.Direction.SE));
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x2, y2,
                                     EwnMoveAction.Direction.EAST));
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x2, y2,
                                     EwnMoveAction.Direction.SOUTH));
-                        } else if (x2 != EwnState.getSize() - 1) {
+                        } else if (x2 != EwnState.SIZE - 1) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x2, y2,
                                     EwnMoveAction.Direction.EAST));
                         } else if (y2 != 0) {
@@ -248,7 +248,7 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
                                     EwnMoveAction.Direction.SOUTH));
                         }
                     } else {
-                        if (x2 != 0 && y2 != EwnState.getSize() - 1) {
+                        if (x2 != 0 && y2 != EwnState.SIZE - 1) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x2, y2,
                                     EwnMoveAction.Direction.NW));
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x2, y2,
@@ -258,7 +258,7 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
                         } else if (x2 != 0) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x2, y2,
                                     EwnMoveAction.Direction.WEST));
-                        } else if (y2 != EwnState.getSize() - 1) {
+                        } else if (y2 != EwnState.SIZE - 1) {
                             legalActions_.get(agentTurn).add(EwnMoveAction.valueOf(x2, y2,
                                     EwnMoveAction.Direction.NORTH));
                         }
@@ -271,15 +271,15 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
     private void computeRewards() {
         if (isSetupPhase()) {
             rewards_ = REWARDS_NEUTRAL;
-        } else if (state_.getLocation(EwnState.getSize() - 1, 0) > 0) {
+        } else if (state_.getLocation(EwnState.SIZE - 1, 0) > 0) {
             rewards_ = REWARDS_AGENT1_WINS;
-        } else if (state_.getLocation(0, EwnState.getSize() - 1) < 0) {
+        } else if (state_.getLocation(0, EwnState.SIZE - 1) < 0) {
             rewards_ = REWARDS_AGENT2_WINS;
         } else {
             boolean redFound = false;
             boolean blueFound = false;
-            for (int i = 0; i < EwnState.getSize(); i++) {
-                for (int j = 0; j < EwnState.getSize(); j++) {
+            for (int i = 0; i < EwnState.SIZE; i++) {
+                for (int j = 0; j < EwnState.SIZE; j++) {
                     if (state_.getLocation(i, j) > 0) {
                         redFound = true;
                     }

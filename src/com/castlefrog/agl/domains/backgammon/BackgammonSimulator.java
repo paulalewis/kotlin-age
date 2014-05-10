@@ -82,7 +82,6 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
 
     private void computeLegalActions() {
         clearLegalActions();
-        List<BackgammonAction> legalActions = legalActions_.get(state_.getAgentTurn());
         byte[] locations = state_.getLocations();
         byte[] dice = state_.getDice();
         int piece;
@@ -115,7 +114,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
                 }
             }
 
-            legalActions = dfs(locations, new LinkedList<BackgammonMove>(), values, piece, depth);
+            List<BackgammonAction> legalActions = dfs(locations, new LinkedList<BackgammonMove>(), values, piece, depth);
 
             // Prune moves that are too small
             int max = 0;
@@ -220,7 +219,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
         return true;
     }
 
-    public void computeRewards() {
+    private void computeRewards() {
         boolean pos = false, neg = false;
         for (int i = 0; i < BackgammonState.getNumberOfLocations(); i += 1) {
             if (state_.getLocation(i) > 0) {

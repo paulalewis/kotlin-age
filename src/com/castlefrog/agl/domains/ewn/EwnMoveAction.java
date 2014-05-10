@@ -38,10 +38,10 @@ public final class EwnMoveAction implements EwnAction {
      * @return list of all possible moves.
      */
     private static List<List<List<EwnMoveAction>>> generateMoveActions() {
-        List<List<List<EwnMoveAction>>> moveActions = new ArrayList<List<List<EwnMoveAction>>>();
-        for (int i = 0; i < EwnState.getSize(); i++) {
+        List<List<List<EwnMoveAction>>> moveActions = new ArrayList<>();
+        for (int i = 0; i < EwnState.SIZE; i++) {
             moveActions.add(new ArrayList<List<EwnMoveAction>>());
-            for (int j = 0; j < EwnState.getSize(); j++) {
+            for (int j = 0; j < EwnState.SIZE; j++) {
                 moveActions.get(i).add(new ArrayList<EwnMoveAction>());
                 for (int k = 0; k < Direction.values().length; k++) {
                     moveActions.get(i).get(j).add(

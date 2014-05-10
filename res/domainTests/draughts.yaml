@@ -1,5 +1,6 @@
 nSimulations: 1
 domain:
-    name: biniax
+    name: draughts 
 agents:
     - name: console
+    - name: random

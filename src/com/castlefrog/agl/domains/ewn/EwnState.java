@@ -40,19 +40,13 @@ public final class EwnState implements State<EwnState> {
     public byte[][] getLocations() {
         byte[][] locations = new byte[SIZE][SIZE];
         for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                locations[i][j] = locations_[i][j];
-            }
+            System.arraycopy(locations_[i], 0, locations[i], 0, SIZE);
         }
         return locations;
     }
 
     public int getDieRoll() {
         return dieRoll_;
-    }
-
-    public static int getSize() {
-        return SIZE;
     }
 
     public int getAgentTurn() {
@@ -89,7 +83,7 @@ public final class EwnState implements State<EwnState> {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("(" + dieRoll_ + ")\n");
+        output.append("(").append(dieRoll_).append(")\n");
         for (int i = 0; i < 3 * SIZE + 1; i++) {
             output.append("-");
         }
@@ -102,9 +96,9 @@ public final class EwnState implements State<EwnState> {
                 }
                 int value = locations_[j][i];
                 if (value > 0) {
-                    output.append("X" + value);
+                    output.append("X").append(value);
                 } else if (value < 0) {
-                    output.append("O" + -1 * value);
+                    output.append("O").append(-1 * value);
                 } else {
                     output.append("  ");
                 }

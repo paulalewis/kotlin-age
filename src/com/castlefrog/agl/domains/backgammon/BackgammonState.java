@@ -46,9 +46,7 @@ public final class BackgammonState implements State<BackgammonState> {
 
     public byte[] getLocations() {
         byte[] locations = new byte[NUMBER_OF_LOCATIONS];
-        for (int i = 0; i < NUMBER_OF_LOCATIONS; i += 1) {
-            locations[i] = locations_[i];
-        }
+        System.arraycopy(locations_, 0, locations, 0, NUMBER_OF_LOCATIONS);
         return locations;
     }
 
@@ -58,9 +56,7 @@ public final class BackgammonState implements State<BackgammonState> {
 
     public byte[] getDice() {
         byte[] dice = new byte[NUMBER_OF_DICE];
-        for (int i = 0; i < NUMBER_OF_DICE; i += 1) {
-            dice[i] = dice_[i];
-        }
+        System.arraycopy(dice_, 0, dice, 0, NUMBER_OF_DICE);
         return dice;
     }
 

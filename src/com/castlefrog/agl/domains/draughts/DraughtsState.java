@@ -19,9 +19,7 @@ public final class DraughtsState implements State<DraughtsState> {
     public byte[][] getLocations() {
         byte[][] locations = new byte[locations_.length][locations_.length];
         for (int i = 0; i < locations_.length; i++) {
-            for (int j = 0; j < locations_.length; j++) {
-                locations[i][j] = locations_[i][j];
-            }
+            System.arraycopy(locations_[i], 0, locations[i], 0, locations_.length);
         }
         return locations;
     }
@@ -68,7 +66,7 @@ public final class DraughtsState implements State<DraughtsState> {
     @Override
     public String toString() {
         final String pieces = " XO";
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         for (int i = 0; i < locations_.length; i++) {
             for (int j = 0; j < locations_.length; j++) {
                 if (i % 2 == 0) {
