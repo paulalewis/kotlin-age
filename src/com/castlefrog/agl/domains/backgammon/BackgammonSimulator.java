@@ -12,8 +12,6 @@ import java.util.List;
  * Backgammon has about 100 actions per game.
  */
 public final class BackgammonSimulator extends Adversarial2AgentSimulator<BackgammonState, BackgammonAction> {
-    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
-
     private BackgammonSimulator(BackgammonState state) {
         legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<BackgammonAction>());
@@ -58,7 +56,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
                 piece = -1;
             }
             int to = from + distance * piece;
-            if (to > 0 && to < BackgammonState.getNumberOfLocations() - 1) {
+            if (to > 0 && to < BackgammonState.N_LOCATIONS - 1) {
                 if (locations[to] * piece < 0) {
                     locations[to] = piece;
                     if (piece > 0) {
@@ -73,8 +71,8 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
             locations[from] -= piece;
         }
         byte[] dice = new byte[] {
-                (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1),
-                (byte) (Math.random() * BackgammonState.getNumberOfDieFaces() + 1) };
+                (byte) (Math.random() * BackgammonState.N_DIE_FACES + 1),
+                (byte) (Math.random() * BackgammonState.N_DIE_FACES + 1) };
         state_ = new BackgammonState(locations, dice, (state_.getAgentTurn() + 1) % 2);
         computeRewards();
         computeLegalActions();
@@ -108,7 +106,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
             }
 
             // Simplify the board
-            for (int i = 0; i < BackgammonState.getNumberOfLocations(); i++) {
+            for (int i = 0; i < BackgammonState.N_LOCATIONS; i++) {
                 if (locations[i] * piece == -1) {
                     locations[i] = 0;
                 }
@@ -135,7 +133,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
             LinkedList<BackgammonMove> moves, byte[] values, int piece,
             int depth) {
         List<BackgammonAction> legalActions = new ArrayList<>();
-        int limit = BackgammonState.getNumberOfLocations();
+        int limit = BackgammonState.N_LOCATIONS;
         int start = 0;
 
         if (piece > 0 && locations[0] > 0) {
@@ -156,7 +154,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
                             if (depth > 1) {
                                 locations[i] -= piece;
                                 int next = i + values[j] * piece;
-                                if (next > 0 && next < BackgammonState.getNumberOfLocations() - 1) {
+                                if (next > 0 && next < BackgammonState.N_LOCATIONS - 1) {
                                     locations[next] += piece;
                                 }
                                 int k = 0;
@@ -168,7 +166,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
                                     }
                                 }
                                 legalActions.addAll(dfs(locations, moves, new byte[] {values[k]}, piece, depth - 1));
-                                if (next > 0 && next < BackgammonState.getNumberOfLocations() - 1) {
+                                if (next > 0 && next < BackgammonState.N_LOCATIONS - 1) {
                                     locations[next] -= piece;
                                 }
                                 locations[i] += piece;
@@ -190,8 +188,8 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
     private boolean canMove(int location, int distance, boolean moveOff) {
         if (state_.getAgentTurn() == 0) {
             int next = location + distance;
-            return (next < BackgammonState.getNumberOfLocations() - 1 && state_.getLocation(next) >= -1) ||
-                   (moveOff && next >= BackgammonState.getNumberOfLocations() - 1);
+            return (next < BackgammonState.N_LOCATIONS - 1 && state_.getLocation(next) >= -1) ||
+                   (moveOff && next >= BackgammonState.N_LOCATIONS - 1);
         } else {
             int next = location - distance;
             return (next > 0 && state_.getLocation(next) <= 1) || (moveOff && next <= 0);
@@ -210,7 +208,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
                 }
             }
         } else {
-            for (int i = 7; i < BackgammonState.getNumberOfLocations(); i += 1) {
+            for (int i = 7; i < BackgammonState.N_LOCATIONS; i += 1) {
                 if (locations[i] < 0) {
                     return false;
                 }
@@ -221,7 +219,7 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
 
     private void computeRewards() {
         boolean pos = false, neg = false;
-        for (int i = 0; i < BackgammonState.getNumberOfLocations(); i += 1) {
+        for (int i = 0; i < BackgammonState.N_LOCATIONS; i += 1) {
             if (state_.getLocation(i) > 0) {
                 pos = true;
             } else if (state_.getLocation(i) < 0) {
@@ -229,15 +227,11 @@ public final class BackgammonSimulator extends Adversarial2AgentSimulator<Backga
             }
         }
         if (!pos) {
-            rewards_ = REWARDS_AGENT1_WINS;
+            rewards_ = REWARDS_BLACK_WINS;
         } else if (!neg) {
-            rewards_ = REWARDS_AGENT2_WINS;
+            rewards_ = REWARDS_WHITE_WINS;
         } else {
             rewards_ = REWARDS_NEUTRAL;
         }
-    }
-
-    public TurnType getTurnType() {
-        return TURN_TYPE;
     }
 }

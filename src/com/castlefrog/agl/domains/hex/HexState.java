@@ -22,6 +22,10 @@ public final class HexState implements State<HexState>, Serializable {
         LOCATION_BLACK = 1,
         LOCATION_WHITE = 2;
 
+    public static final int
+        TURN_BLACK = 0,
+        TURN_WHITE = 1;
+
     public HexState(int boardSize,
                     byte[][] bitBoards,
                     int agentTurn,

@@ -6,6 +6,17 @@ public final class DraughtsState implements State<DraughtsState> {
     private byte[][] locations_;
     private byte agentTurn_;
 
+    public static final int
+        LOCATION_EMPTY = 0,
+        LOCATION_BLACK = 1,
+        LOCATION_BLACK_KING = 2,
+        LOCATION_WHITE = 4,
+        LOCATION_WHITE_KING = 8;
+
+    public static final int
+        TURN_BLACK = 0,
+        TURN_WHITE = 1;
+
     public DraughtsState(byte[][] locations,
                          int agentTurn) {
         locations_ = locations;
@@ -22,6 +33,20 @@ public final class DraughtsState implements State<DraughtsState> {
             System.arraycopy(locations_[i], 0, locations[i], 0, locations_.length);
         }
         return locations;
+    }
+
+    public int getNPieces(int agentTurn) {
+        int count = 0;
+        for (int i = 0; i < locations_.length; i += 1) {
+            for (int j = 0; j < locations_[0].length; j += 1) {
+                if (agentTurn == TURN_BLACK && ((locations_[i][j] & 3) != 0)) {
+                    count += 1;
+                } else if (agentTurn == TURN_WHITE && ((locations_[i][j] & 12) != 0)) {
+                    count += 1;
+                }
+            }
+        }
+        return count;
     }
 
     public int getLocation(int x, int y) {

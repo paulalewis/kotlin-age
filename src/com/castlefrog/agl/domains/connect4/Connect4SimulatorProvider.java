@@ -39,10 +39,4 @@ public final class Connect4SimulatorProvider implements SimulatorProvider {
         }
         return Connect4Simulator.create(turnType);
     }
-
-    //public Connect4Simulator newSimulator(Map<String, String> params) {
-    //    String turnTypeArg = params.get(TURN_TYPE_ARG_NAME);
-    //    TurnType turnType = (turnTypeArg == null) ? TurnType.SEQUENTIAL : TurnType.valueOf(turnTypeArg.toUpperCase());
-    //    return Connect4Simulator.create(turnType);
-    //}
 }

@@ -117,10 +117,10 @@ public final class Connect4Simulator extends Adversarial2AgentSimulator<Connect4
                     (diagonal2 & (diagonal2 >> 2 * (height + 2))) |
                     (vertical & (vertical >> 2))) != 0) {
                 if (i == 0) {
-                    rewards_ = REWARDS_AGENT1_WINS;
+                    rewards_ = REWARDS_BLACK_WINS;
                     return;
                 } else {
-                    rewards_ = REWARDS_AGENT2_WINS;
+                    rewards_ = REWARDS_WHITE_WINS;
                     return;
                 }
             }

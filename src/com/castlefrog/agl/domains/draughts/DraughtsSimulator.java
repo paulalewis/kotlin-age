@@ -2,14 +2,12 @@ package com.castlefrog.agl.domains.draughts;
 
 import com.castlefrog.agl.Adversarial2AgentSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.TurnType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class DraughtsSimulator extends Adversarial2AgentSimulator<DraughtsState, DraughtsAction> {
-    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
-    //private static final int SIZE = 10;
+    private static final int SIZE = 10;
 
     private DraughtsSimulator(DraughtsState state) {
         setState(state);
@@ -23,8 +21,8 @@ public final class DraughtsSimulator extends Adversarial2AgentSimulator<Draughts
         return new DraughtsSimulator(this);
     }
 
-    public static DraughtsSimulator create(DraughtsState state) {
-        return new DraughtsSimulator(state);
+    public static DraughtsSimulator create() {
+        return new DraughtsSimulator(getInitialState());
     }
 
     public void setState(DraughtsState state) {
@@ -51,12 +49,23 @@ public final class DraughtsSimulator extends Adversarial2AgentSimulator<Draughts
         return legalActions;
     }
 
-    public int[] computeRewards() {
-        //TODO - scan for no pieces left on one side or the other
-        return new int[N_AGENTS];
+    private int[] computeRewards() {
+        if (state_.getNPieces(DraughtsState.TURN_BLACK) == 0) {
+            return REWARDS_WHITE_WINS;
+        } else if (state_.getNPieces(DraughtsState.TURN_WHITE) == 0) {
+            return REWARDS_BLACK_WINS;
+        }
+        return REWARDS_NEUTRAL;
     }
 
-    public TurnType getTurnType() {
-        return TURN_TYPE;
+    public static DraughtsState getInitialState() {
+        byte[][] locations = new byte[SIZE / 2][SIZE / 2];
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < SIZE / 2; j++) {
+                locations[i][j] = DraughtsState.LOCATION_BLACK;
+                locations[SIZE / 2 - 1 - i][j] = DraughtsState.LOCATION_WHITE;
+            }
+        }
+        return new DraughtsState(locations, DraughtsState.TURN_BLACK);
     }
 }

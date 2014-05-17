@@ -162,10 +162,10 @@ public final class HavannahSimulator extends Adversarial2AgentSimulator<Havannah
                     }
                     if (corners >= 2 || sides >= 3) {
                         if (locations[x][y] == 1) {
-                            rewards_ = REWARDS_AGENT1_WINS;
+                            rewards_ = REWARDS_BLACK_WINS;
                             return;
                         } else {
-                            rewards_ = REWARDS_AGENT2_WINS;
+                            rewards_ = REWARDS_WHITE_WINS;
                             return;
                         }
                     }
@@ -208,10 +208,10 @@ public final class HavannahSimulator extends Adversarial2AgentSimulator<Havannah
                 if (locations[x][y] != 0 && !visited[x][y]) {
                     if (dfsCornersSides(x, y, locations, visited) == 0) {
                         if (state_.getAgentTurn() == 0) {
-                            rewards_ = REWARDS_AGENT2_WINS;
+                            rewards_ = REWARDS_WHITE_WINS;
                             return;
                         } else {
-                            rewards_ = REWARDS_AGENT1_WINS;
+                            rewards_ = REWARDS_BLACK_WINS;
                             return;
                         }
                     }

@@ -80,9 +80,9 @@ public final class HexdameSimulator extends Adversarial2AgentSimulator<HexdameSt
      */
     private int[] computeRewards(List<List<HexdameAction>> actions) {
         if (actions.get(0).isEmpty() && !actions.get(1).isEmpty()) {
-            return REWARDS_AGENT2_WINS;
+            return REWARDS_WHITE_WINS;
         } else if (actions.get(1).isEmpty() && !actions.get(0).isEmpty()) {
-            return REWARDS_AGENT1_WINS;
+            return REWARDS_BLACK_WINS;
         } else {
             return REWARDS_NEUTRAL;
         }

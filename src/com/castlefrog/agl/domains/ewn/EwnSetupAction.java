@@ -3,13 +3,13 @@ package com.castlefrog.agl.domains.ewn;
 import java.util.Arrays;
 
 public final class EwnSetupAction implements EwnAction {
-    private static final int NUMBER_OF_PIECES = 6;
+    private static final int N_PIECES = 6;
 
     private byte[] values_;
 
     public EwnSetupAction(byte[] values) {
-        boolean[] used = new boolean[NUMBER_OF_PIECES];
-        values_ = new byte[NUMBER_OF_PIECES];
+        boolean[] used = new boolean[N_PIECES];
+        values_ = new byte[N_PIECES];
         for (int i = 0; i < values_.length; i++) {
             values_[i] = values[i];
             if (used[values[i] - 1]) {
@@ -42,7 +42,7 @@ public final class EwnSetupAction implements EwnAction {
             return false;
         }
         EwnSetupAction action = (EwnSetupAction) object;
-        for (int i = 0; i < NUMBER_OF_PIECES; i++) {
+        for (int i = 0; i < N_PIECES; i++) {
             if (values_[i] != action.getValue(i)) {
                 return false;
             }
@@ -54,7 +54,7 @@ public final class EwnSetupAction implements EwnAction {
     public String toString() {
         StringBuilder output = new StringBuilder();
         output.append("[ ");
-        for (int i = 0; i < NUMBER_OF_PIECES; i++) {
+        for (int i = 0; i < N_PIECES; i++) {
             output.append(values_[i]).append(" ");
         }
         output.append("]");

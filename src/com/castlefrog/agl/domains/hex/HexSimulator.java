@@ -105,13 +105,13 @@ public final class HexSimulator extends Adversarial2AgentSimulator<HexState, Hex
         for (int i = 0; i < state_.getBoardSize(); i += 1) {
             if (locations[0][i] == HexState.LOCATION_BLACK && !visited[0][i]) {
                 if ((dfsSides(0, i, locations, visited) & 3) == 3) {
-                    rewards_ = REWARDS_AGENT1_WINS;
+                    rewards_ = REWARDS_BLACK_WINS;
                     return;
                 }
             }
             if (locations[i][0] == HexState.LOCATION_WHITE && !visited[i][0]) {
                 if ((dfsSides(i, 0, locations, visited) & 12) == 12) {
-                    rewards_ = REWARDS_AGENT2_WINS;
+                    rewards_ = REWARDS_WHITE_WINS;
                     return;
                 }
             }
@@ -126,9 +126,9 @@ public final class HexSimulator extends Adversarial2AgentSimulator<HexState, Hex
         int y = action.getY();
         int value = dfsSides(x, y, locations, visited);
         if (locations[x][y] == HexState.LOCATION_BLACK && (value & 3) == 3) {
-            rewards_ = REWARDS_AGENT1_WINS;
+            rewards_ = REWARDS_BLACK_WINS;
         } else if (locations[x][y] == HexState.LOCATION_WHITE && (value & 12) == 12) {
-            rewards_ = REWARDS_AGENT2_WINS;
+            rewards_ = REWARDS_WHITE_WINS;
         } else {
             rewards_ = REWARDS_NEUTRAL;
         }
@@ -208,7 +208,7 @@ public final class HexSimulator extends Adversarial2AgentSimulator<HexState, Hex
     }
 
     public static HexState getInitialState(int boardSize) {
-        return new HexState(boardSize, new byte[N_AGENTS][(boardSize * boardSize + Byte.SIZE - 1) / Byte.SIZE], 0, HexState.BoardState.EMPTY);
+        return new HexState(boardSize, new byte[N_AGENTS][(boardSize * boardSize + Byte.SIZE - 1) / Byte.SIZE], HexState.TURN_BLACK, HexState.BoardState.EMPTY);
     }
 
     public TurnType getTurnType() {

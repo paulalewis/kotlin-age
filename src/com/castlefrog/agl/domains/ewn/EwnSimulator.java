@@ -272,26 +272,26 @@ public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, Ewn
         if (isSetupPhase()) {
             rewards_ = REWARDS_NEUTRAL;
         } else if (state_.getLocation(EwnState.SIZE - 1, 0) > 0) {
-            rewards_ = REWARDS_AGENT1_WINS;
+            rewards_ = REWARDS_BLACK_WINS;
         } else if (state_.getLocation(0, EwnState.SIZE - 1) < 0) {
-            rewards_ = REWARDS_AGENT2_WINS;
+            rewards_ = REWARDS_WHITE_WINS;
         } else {
-            boolean redFound = false;
-            boolean blueFound = false;
+            boolean blackFound = false;
+            boolean whiteFound = false;
             for (int i = 0; i < EwnState.SIZE; i++) {
                 for (int j = 0; j < EwnState.SIZE; j++) {
                     if (state_.getLocation(i, j) > 0) {
-                        redFound = true;
+                        blackFound = true;
                     }
                     if (state_.getLocation(i, j) < 0) {
-                        blueFound = true;
+                        whiteFound = true;
                     }
                 }
             }
-            if (!redFound && blueFound) {
-                rewards_ = REWARDS_AGENT2_WINS;
-            } else if (redFound && !blueFound) {
-                rewards_ = REWARDS_AGENT1_WINS;
+            if (!blackFound && whiteFound) {
+                rewards_ = REWARDS_WHITE_WINS;
+            } else if (blackFound && !whiteFound) {
+                rewards_ = REWARDS_BLACK_WINS;
             } else {
                 rewards_ = REWARDS_NEUTRAL;
             }

@@ -82,9 +82,4 @@ public interface Simulator<S extends State<S>, A extends Action> extends Copyabl
      * @return number of agents.
      */
     int getNAgents();
-
-    /**
-     * Get the turn type of this domain.
-     */
-    TurnType getTurnType();
 }

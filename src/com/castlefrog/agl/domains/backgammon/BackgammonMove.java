@@ -26,9 +26,9 @@ public final class BackgammonMove implements Comparable<BackgammonMove> {
 
     private static List<List<BackgammonMove>> generateMoves() {
         List<List<BackgammonMove>> moves = new ArrayList<>();
-        for (int i = 0; i < BackgammonState.getNumberOfLocations(); i++) {
+        for (int i = 0; i < BackgammonState.N_LOCATIONS; i++) {
             moves.add(new ArrayList<BackgammonMove>());
-            for (int j = 0; j < BackgammonState.getNumberOfDieFaces(); j++) {
+            for (int j = 0; j < BackgammonState.N_DIE_FACES; j++) {
                 moves.get(i).add(new BackgammonMove(i, j + 1));
             }
         }
