@@ -6,6 +6,8 @@ import com.castlefrog.agl.Simulators;
 import java.util.List;
 
 public final class HexdameSimulatorProvider implements SimulatorProvider {
+    private static HexdameSimulatorProvider instance_;
+
     static {
         Simulators.registerProvider("hexdame", HexdameSimulatorProvider.getInstance());
     }
@@ -13,7 +15,10 @@ public final class HexdameSimulatorProvider implements SimulatorProvider {
     private HexdameSimulatorProvider() {}
 
     public static HexdameSimulatorProvider getInstance() {
-        return new HexdameSimulatorProvider();
+        if (instance_ == null) {
+            instance_ = new HexdameSimulatorProvider();
+        }
+        return instance_;
     }
 
     public HexdameSimulator newSimulator(List<String> params) {
