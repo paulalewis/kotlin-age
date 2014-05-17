@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.havannah;
 
-import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.AdversarialSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public final class HavannahSimulator extends Adversarial2AgentSimulator<HavannahState, HavannahAction> {
+public final class HavannahSimulator extends AdversarialSimulator<HavannahState, HavannahAction> {
     private static final int MIN_BASE = 2;
 
     private TurnType turnType_;

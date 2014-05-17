@@ -1,12 +1,12 @@
 package com.castlefrog.agl.domains.draughts;
 
-import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.AdversarialSimulator;
 import com.castlefrog.agl.IllegalActionException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DraughtsSimulator extends Adversarial2AgentSimulator<DraughtsState, DraughtsAction> {
+public final class DraughtsSimulator extends AdversarialSimulator<DraughtsState, DraughtsAction> {
     private static final int SIZE = 10;
 
     private DraughtsSimulator(DraughtsState state) {

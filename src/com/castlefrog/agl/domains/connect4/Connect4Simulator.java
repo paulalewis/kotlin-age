@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.connect4;
 
-import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.AdversarialSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -8,7 +8,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Connect4Simulator extends Adversarial2AgentSimulator<Connect4State, Connect4Action> {
+public final class Connect4Simulator extends AdversarialSimulator<Connect4State, Connect4Action> {
     private static final long ALL_LOCATIONS = (1L << ((Connect4State.HEIGHT + 1) * Connect4State.WIDTH)) - 1;
     private static final long FIRST_COLUMN = (1L << Connect4State.HEIGHT + 1) - 1;
     private static final long BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN;

@@ -1,15 +1,15 @@
 package com.castlefrog.agl;
 
-public abstract class Adversarial2AgentSimulator<S extends State<S>, A extends Action>
+public abstract class AdversarialSimulator<S extends State<S>, A extends Action>
         extends AbstractSimulator<S, A> {
     protected static final int N_AGENTS = 2;
     protected static final int[] REWARDS_NEUTRAL = new int[] { 0, 0 };
     protected static final int[] REWARDS_BLACK_WINS = new int[] { 1, -1 };
     protected static final int[] REWARDS_WHITE_WINS = new int[] { -1, 1 };
 
-    protected Adversarial2AgentSimulator() {}
+    protected AdversarialSimulator() {}
 
-    protected Adversarial2AgentSimulator(Adversarial2AgentSimulator<S, A> simulator) {
+    protected AdversarialSimulator(AdversarialSimulator<S, A> simulator) {
         super(simulator);
     }
 

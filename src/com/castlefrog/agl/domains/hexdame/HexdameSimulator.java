@@ -1,13 +1,13 @@
 package com.castlefrog.agl.domains.hexdame;
 
-import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.AdversarialSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class HexdameSimulator extends Adversarial2AgentSimulator<HexdameState, HexdameAction> {
+public final class HexdameSimulator extends AdversarialSimulator<HexdameState, HexdameAction> {
     private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
 
     private static int[][] corners_;

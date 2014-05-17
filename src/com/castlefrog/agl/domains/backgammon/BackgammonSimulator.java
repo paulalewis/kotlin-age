@@ -1,8 +1,7 @@
 package com.castlefrog.agl.domains.backgammon;
 
-import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.AdversarialSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.TurnType;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,7 +10,7 @@ import java.util.List;
 /**
  * Backgammon has about 100 actions per game.
  */
-public final class BackgammonSimulator extends Adversarial2AgentSimulator<BackgammonState, BackgammonAction> {
+public final class BackgammonSimulator extends AdversarialSimulator<BackgammonState, BackgammonAction> {
     private BackgammonSimulator(BackgammonState state) {
         legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<BackgammonAction>());

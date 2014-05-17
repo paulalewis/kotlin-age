@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.ewn;
 
-import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.AdversarialSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * and either it would need to be partially observable or simultaneous movement
  * the make the setup phase fair.
  */
-public final class EwnSimulator extends Adversarial2AgentSimulator<EwnState, EwnAction> {
+public final class EwnSimulator extends AdversarialSimulator<EwnState, EwnAction> {
     private EwnSimulator(EwnState state) {
         legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<EwnAction>());

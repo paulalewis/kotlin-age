@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.hex;
 
-import com.castlefrog.agl.Adversarial2AgentSimulator;
+import com.castlefrog.agl.AdversarialSimulator;
 import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public final class HexSimulator extends Adversarial2AgentSimulator<HexState, HexAction> {
+public final class HexSimulator extends AdversarialSimulator<HexState, HexAction> {
     private static final int MIN_BOARD_SIZE = 1;
 
     private TurnType turnType_;
