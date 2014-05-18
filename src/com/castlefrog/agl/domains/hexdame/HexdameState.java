@@ -14,20 +14,24 @@ public final class HexdameState implements State<HexdameState>, Serializable {
 
     public static final int
         LOCATION_EMPTY = 0,
-        LOCATION_AGENT1 = 1,
-        LOCATION_AGENT1_KING = 2,
-        LOCATION_AGENT2 = 3,
-        LOCATION_AGENT2_KING = 4;
+        LOCATION_BLACK = 1,
+        LOCATION_WHITE = 2,
+        LOCATION_BLACK_KING = 3,
+        LOCATION_WHITE_KING = 4;
+
+    public static final int
+        TURN_BLACK = 0,
+        TURN_WHITE = 1;
 
     public HexdameState() {
         locations_ = new byte[SIZE][SIZE];
         for (int i = 0; i < 4; i += 1) {
             for (int j = 0; j < 4; j += 1) {
-                locations_[i][j] = LOCATION_AGENT1;
-                locations_[SIZE - i][SIZE - j] = LOCATION_AGENT2;
+                locations_[i][j] = LOCATION_BLACK;
+                locations_[SIZE - 1 - i][SIZE - 1 - j] = LOCATION_WHITE;
             }
         }
-        agentTurn_ = 0;
+        agentTurn_ = TURN_BLACK;
     }
 
     public HexdameState(byte[][] locations,
@@ -137,13 +141,13 @@ public final class HexdameState implements State<HexdameState>, Serializable {
                 xMax = BASE + i;
             }
             for (int j = xMin; j < xMax; j += 1) {
-                if (locations_[j][i] == LOCATION_AGENT1) {
+                if (locations_[j][i] == LOCATION_BLACK) {
                     output.append("b ");
-                } else if (locations_[j][i] == LOCATION_AGENT1_KING) {
+                } else if (locations_[j][i] == LOCATION_BLACK_KING) {
                     output.append("B ");
-                } else if (locations_[j][i] == LOCATION_AGENT2) {
+                } else if (locations_[j][i] == LOCATION_WHITE) {
                     output.append("w ");
-                } else if (locations_[j][i] == LOCATION_AGENT2_KING) {
+                } else if (locations_[j][i] == LOCATION_WHITE_KING) {
                     output.append("W ");
                 } else {
                     output.append("- ");

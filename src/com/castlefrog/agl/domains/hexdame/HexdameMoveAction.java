@@ -38,7 +38,6 @@ public class HexdameMoveAction extends HexdameAction {
 
     @Override
     public String toString() {
-        return ((char) (0x41 + initial_.x)) + initial_.y + "-" +
-               ((char) (0x41 + move_.x)) + move_.y;
+        return "" + ((char)(0x41 + initial_.x)) + initial_.y + "-" + ((char)(0x41 + move_.x)) + move_.y;
     }
 }

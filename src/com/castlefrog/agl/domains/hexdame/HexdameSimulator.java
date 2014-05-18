@@ -2,17 +2,11 @@ package com.castlefrog.agl.domains.hexdame;
 
 import com.castlefrog.agl.AdversarialSimulator;
 import com.castlefrog.agl.IllegalActionException;
-import com.castlefrog.agl.TurnType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class HexdameSimulator extends AdversarialSimulator<HexdameState, HexdameAction> {
-    private static final TurnType TURN_TYPE = TurnType.SEQUENTIAL;
-
-    private static int[][] corners_;
-    private static int[][][] sides_;
-
     private HexdameSimulator(HexdameState state) {
         setState(state);
     }
@@ -34,7 +28,7 @@ public final class HexdameSimulator extends AdversarialSimulator<HexdameState, H
         legalActions_ = new ArrayList<>();
         legalActions_.add(new ArrayList<HexdameAction>());
         legalActions_.add(new ArrayList<HexdameAction>());
-        computeLegalActions(legalActions_);
+        computeLegalActions();
         rewards_ = computeRewards(legalActions_);
     }
 
@@ -43,33 +37,58 @@ public final class HexdameSimulator extends AdversarialSimulator<HexdameState, H
         if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
             throw new IllegalActionException(action, state_);
         }
-        if (action instanceof HexdameMoveAction) {
-            HexdameMoveAction moveAction = (HexdameMoveAction) action;
-            HexdameAction.Location initial = moveAction.getInitial();
-            HexdameAction.Location move = moveAction.getMove();
-            int piece = state_.getLocation(initial.x, initial.y);
-            state_.setLocation(move.x, move.y, piece);
-            state_.setLocation(initial.x, initial.y, HexdameState.LOCATION_EMPTY);
+        HexdameAction.Location initial = action.getInitial();
+        int piece = state_.getLocation(initial.x, initial.y);
+        HexdameMoveAction moveAction = (HexdameMoveAction) action;
+        HexdameAction.Location move = moveAction.getMove();
+        //promote to king?
+        if ((state_.getAgentTurn() == HexdameState.TURN_BLACK &&
+                (move.x == HexdameState.SIZE - 1 || move.y == HexdameState.SIZE - 1)) ||
+                (state_.getAgentTurn() == HexdameState.TURN_WHITE && (move.x == 0 || move.y == 0))) {
+            piece += 2;
         }
+        state_.setLocation(move.x, move.y, piece);
+        state_.setLocation(initial.x, initial.y, HexdameState.LOCATION_EMPTY);
         if (action instanceof HexdameJumpAction) {
             HexdameJumpAction jumpAction = (HexdameJumpAction) action;
-            HexdameAction.Location initial = jumpAction.getInitial();
-            HexdameAction.Location move = jumpAction.getMove();
-            int piece = state_.getLocation(initial.x, initial.y);
-            state_.setLocation(move.x, move.y, piece);
-            state_.setLocation(initial.x, initial.y, HexdameState.LOCATION_EMPTY);
             for (int i = 0; i < jumpAction.getNJumps(); i += 1) {
                 HexdameAction.Location jump = jumpAction.getJump(i);
                 state_.setLocation(jump.x, jump.y, HexdameState.LOCATION_EMPTY);
             }
         }
         state_.setAgentTurn((state_.getAgentTurn() + 1) % N_AGENTS);
-        computeLegalActions(legalActions_);
+        computeLegalActions();
         rewards_ = computeRewards(legalActions_);
     }
 
-    private void computeLegalActions(List<List<HexdameAction>> actions) {
-        //TODO
+    private void computeLegalActions() {
+        clearLegalActions();
+        List<HexdameAction> actions = legalActions_.get(state_.getAgentTurn());
+        boolean jumps = false;
+        if (jumps) {
+            //TODO
+        } else {
+            //move actions
+            byte[][] locations = state_.getLocations();
+            for (int i = 0; i < locations.length; i += 1) {
+                for (int j = 0; j < locations[0].length; j += 1) {
+                    if (locations[i][j] == state_.getAgentTurn() + 1) {
+                        int nexti = (state_.getAgentTurn() == HexdameState.TURN_BLACK) ? (i + 1) : (i - 1);
+                        int nextj = (state_.getAgentTurn() == HexdameState.TURN_BLACK) ? (j + 1) : (j - 1);
+                        if (nexti >= 0 && nexti < HexdameState.SIZE && locations[nexti][j] == HexdameState.LOCATION_EMPTY) {
+                            actions.add(new HexdameMoveAction(new HexdameAction.Location(i, j), new HexdameAction.Location(nexti, j)));
+                        }
+                        if (nextj >= 0 && nextj < HexdameState.SIZE && locations[i][nextj] == HexdameState.LOCATION_EMPTY) {
+                            actions.add(new HexdameMoveAction(new HexdameAction.Location(i, j), new HexdameAction.Location(i, nextj)));
+                        }
+                        if (nexti >= 0 && nexti < HexdameState.SIZE && nextj >= 0 &&
+                                   nextj < HexdameState.SIZE && locations[nexti][nextj] == HexdameState.LOCATION_EMPTY) {
+                            actions.add(new HexdameMoveAction(new HexdameAction.Location(i, j), new HexdameAction.Location(nexti, nextj)));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -86,29 +105,5 @@ public final class HexdameSimulator extends AdversarialSimulator<HexdameState, H
         } else {
             return REWARDS_NEUTRAL;
         }
-    }
-
-    private int getCornerMask(int x, int y) {
-        for (int i = 0; i < corners_.length; i += 1) {
-            if (corners_[i][0] == x && corners_[i][1] == y) {
-                return 1 << i;
-            }
-        }
-        return 0;
-    }
-
-    private int getSideMask(int x, int y) {
-        for (int i = 0; i < sides_.length; i += 1) {
-            for (int j = 0; j < sides_[i].length; j += 1) {
-                if (sides_[i][j][0] == x && sides_[i][j][1] == y) {
-                    return 1 << (i + 6);
-                }
-            }
-        }
-        return 0;
-    }
-
-    public TurnType getTurnType() {
-        return TURN_TYPE;
     }
 }
