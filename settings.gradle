@@ -1,0 +1,6 @@
+include 'api'
+include 'agents'
+include 'domains'
+include 'domains:test'
+
+rootProject.name = 'agl'
