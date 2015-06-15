@@ -29,7 +29,7 @@ Agents:
 Setup
 -----
 
-1. Install ant
+1. Install gradle
 2. Install java sdk 1.7
 
 Build
@@ -37,14 +37,13 @@ Build
 
 Create a jar file with no main so it can be used as library.
 
-1. clean and build the project `ant clean dist`
+    ./gradlew clean build
 
 Run Domain Test
 ---------------
 
-Build jar with DomainTest.java as main to test software from console.
+Build jar with com.castlefrog.agl.DomainTest.java as main to test software from console.
 
-1. clean the project `ant clean install`
-2. run `java -jar agl.jar <test_filepath> [output_filepath]`
+1. run `java -jar agl.jar <test_filepath> [output_filepath]`
 
-Some example test files are located in res/domainTests/.
+Some example test files are located in domainTests/resources.

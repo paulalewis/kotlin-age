@@ -108,7 +108,7 @@ public final class DomainTest {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Illegal arguments\nusage: java -jar DomainTest.jar test_filename [output_filename]");
+            System.out.println("Illegal arguments\nusage: java -jar com.castlefrog.agl.DomainTest.jar test_filename [output_filename]");
         }
     }
 
@@ -131,7 +131,7 @@ public final class DomainTest {
         List<Map<String, Object>> agentList = (List<Map<String, Object>>)root.get("agents");
         for (Map<String, Object> agentData: agentList) {
             List<String> params = getYamlStringList((List<Object>) agentData.get("params"));
-            agents.add(Agents.getAgent((String)agentData.get("name"), params));
+            agents.add(Agents.getAgent((String) agentData.get("name"), params));
         }
     }
 
