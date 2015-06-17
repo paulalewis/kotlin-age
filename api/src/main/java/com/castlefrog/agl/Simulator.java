@@ -8,11 +8,6 @@ import java.util.List;
  * type. It also generates initial states for the given domain.
  */
 public interface Simulator<S extends State<S>, A extends Action> extends Copyable<Simulator<S, A>> {
-    /**
-     * The simulator can create a deep copy of itself.
-     * @return a copy of this simulator
-     */
-    Simulator<S, A> copy();
 
     /**
      * Sets simulator to an arbitrary state.
