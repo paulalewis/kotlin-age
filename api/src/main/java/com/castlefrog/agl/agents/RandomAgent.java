@@ -12,11 +12,18 @@ import com.castlefrog.agl.State;
  * from the list of possible actions from a given state.
  */
 public final class RandomAgent implements Agent {
-    private static RandomAgent INSTANCE = new RandomAgent();
+    private static RandomAgent INSTANCE;
 
     private RandomAgent() {}
 
     public static RandomAgent getInstance() {
+        if (INSTANCE == null) {
+            synchronized (RandomAgent.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new RandomAgent();
+                }
+            }
+        }
         return INSTANCE;
     }
 
