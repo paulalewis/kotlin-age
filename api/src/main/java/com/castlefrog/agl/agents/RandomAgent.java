@@ -12,20 +12,6 @@ import com.castlefrog.agl.State;
  * from the list of possible actions from a given state.
  */
 public final class RandomAgent implements Agent {
-    private static RandomAgent INSTANCE;
-
-    private RandomAgent() {}
-
-    public static RandomAgent getInstance() {
-        if (INSTANCE == null) {
-            synchronized (RandomAgent.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new RandomAgent();
-                }
-            }
-        }
-        return INSTANCE;
-    }
 
     public <S extends State<S>, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
         simulator.setState(state);

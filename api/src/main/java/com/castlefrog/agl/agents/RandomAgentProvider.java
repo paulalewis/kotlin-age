@@ -23,6 +23,6 @@ public final class RandomAgentProvider implements AgentProvider {
     }
 
     public Agent newAgent(List<String> params) {
-        return RandomAgent.getInstance();
+        return new RandomAgent();
     }
 }
