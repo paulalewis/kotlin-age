@@ -48,7 +48,7 @@ public final class DomainTest {
                     arbiter.reset();
                     try {
                         int count = 0;
-                        while (!arbiter.isTerminalState()) {
+                        while (!arbiter.getWorld().isTerminalState()) {
                             arbiter.step();
                             count += 1;
                             for (int j = 0; j < agents.size(); j += 1) {

@@ -21,8 +21,18 @@ public final class Arbiter<S extends State<S>, A extends Action> {
     private int historyIndex_;
     private final List<Agent> agents_ = new ArrayList<>();
     private long[] decisionTimes_;
+
     private ExecutorService executor_;
     private CountDownLatch actionsReady_;
+    private OnEventListener listener_ = new DummyOnEventListener();
+
+    public interface OnEventListener {
+        void onStep();
+    }
+
+    public class DummyOnEventListener implements OnEventListener {
+        @Override public void onStep() {}
+    }
 
     private class AgentAction implements Runnable {
         private final int agentId_;
@@ -137,6 +147,7 @@ public final class Arbiter<S extends State<S>, A extends Action> {
             history_.add(world_.getState(), actions, historyIndex_);
             historyIndex_ += 1;
         }
+        listener_.onStep();
     }
 
     public void done() {
@@ -163,10 +174,6 @@ public final class Arbiter<S extends State<S>, A extends Action> {
         }
     }
 
-    public boolean isTerminalState() {
-        return world_.isTerminalState();
-    }
-
     public Simulator<S, A> getWorld() {
         return world_;
     }
@@ -185,5 +192,9 @@ public final class Arbiter<S extends State<S>, A extends Action> {
 
     public long getReward(int agentId) {
         return world_.getReward(agentId);
+    }
+
+    public void setOnStateChangeListener(OnEventListener listener) {
+        listener_ = (listener != null) ? listener : new DummyOnEventListener();
     }
 }
