@@ -8,19 +8,16 @@ import com.castlefrog.agl.Simulator;
 import com.castlefrog.agl.State;
 
 /**
- * This agent selects a random action from the list
- * of possible actions from a given state.
+ * This agent selects an action at random (normal distribution)
+ * from the list of possible actions from a given state.
  */
 public final class RandomAgent implements Agent {
-    private static RandomAgent instance = null;
+    private static RandomAgent INSTANCE = new RandomAgent();
 
     private RandomAgent() {}
 
     public static RandomAgent getInstance() {
-        if (instance == null) {
-            instance = new RandomAgent();
-        }
-        return instance;
+        return INSTANCE;
     }
 
     public <S extends State<S>, A extends Action> A selectAction(int agentId, S state, Simulator<S, A> simulator) {
