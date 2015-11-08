@@ -92,7 +92,7 @@ public final class HexState implements State<HexState>, Serializable {
         int nPieces = 0;
         for (int i = 0; i < bitBoards_[0].length; i += 1) {
             int value = bitBoards_[0][i] | bitBoards_[1][i];
-            for (int j = 0; j < Byte.SIZE; i += 1) {
+            for (int j = 0; j < Byte.SIZE; j += 1) {
                 if ((value & 0b1) != 0) {
                     nPieces += 1;
                 }
