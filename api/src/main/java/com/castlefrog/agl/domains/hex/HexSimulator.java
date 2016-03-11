@@ -89,7 +89,7 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
                     for (int j = 0; j < state_.getBoardSize(); j += 1) {
                         if (state_.isLocationEmpty(i, j) ||
                                 state_.getBoardState() == HexState.BoardState.FIRST_MOVE) {
-                            legalActions.add(HexAction.valueOf(i, j));
+                            legalActions.add(HexAction.Companion.valueOf(i, j));
                         }
                     }
                 }
@@ -140,7 +140,7 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
                          boolean[][] visited) {
         int value = 0;
         Stack<HexAction> stack = new Stack<>();
-        stack.push(HexAction.valueOf(x0, y0));
+        stack.push(HexAction.Companion.valueOf(x0, y0));
         visited[x0][y0] = true;
         while (!stack.empty()) {
             HexAction v = stack.pop();
@@ -155,7 +155,7 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
                             xi < state_.getBoardSize() && yi < state_.getBoardSize()) {
                         if (!visited[xi][yi] &&
                                 locations[xi][yi] == locations[x][y]) {
-                            stack.push(HexAction.valueOf(xi, yi));
+                            stack.push(HexAction.Companion.valueOf(xi, yi));
                             visited[xi][yi] = true;
                         }
                     }
@@ -178,7 +178,7 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
                         state.setLocation(i, j, HexState.LOCATION_EMPTY);
                         simulator.setState(state);
                         if (!simulator.isTerminalState()) {
-                            connection.add(HexAction.valueOf(i, j));
+                            connection.add(HexAction.Companion.valueOf(i, j));
                             state.setLocation(i, j, location);
                         }
                     }
