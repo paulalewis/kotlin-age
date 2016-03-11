@@ -8,7 +8,7 @@ import com.castlefrog.agl.Action
 /**
  * Immutable object that represents a hex action.
  */
-data class HexAction private constructor(val x: Int, val y: Int) : Action, Serializable {
+data class HexAction private constructor(val x: Byte, val y: Byte) : Action, Serializable {
 
     override fun copy(): HexAction {
         return this
@@ -24,9 +24,7 @@ data class HexAction private constructor(val x: Int, val y: Int) : Action, Seria
         /**
          * Returns a hex action.
          * @param x x-coordinate
-         * *
          * @param y y-coordinate
-         * *
          * @return
          * *      action corresponding to x and y coordinate
          */
@@ -44,7 +42,7 @@ data class HexAction private constructor(val x: Int, val y: Int) : Action, Seria
                 }
                 var j = actions[i].size
                 while (j < size) {
-                    actions[i].add(HexAction(i, j))
+                    actions[i].add(HexAction(i.toByte(), j.toByte()))
                     j += 1
                 }
             }
