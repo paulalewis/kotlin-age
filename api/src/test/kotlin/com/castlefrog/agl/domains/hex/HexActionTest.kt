@@ -24,4 +24,10 @@ class HexActionTest {
         assertThat(action).isSameAs(action2)
     }
 
+    @Test
+    fun testValueOfNotEqual() {
+        val action = HexAction.valueOf(0, 1)
+        val action2 = HexAction.valueOf(1, 1)
+        assertThat(action).isNotEqualTo(action2)
+    }
 }

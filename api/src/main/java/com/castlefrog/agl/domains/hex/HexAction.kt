@@ -40,10 +40,8 @@ data class HexAction private constructor(val x: Byte, val y: Byte) : Action, Ser
                 if (i >= actions.size) {
                     actions.add(ArrayList<HexAction>())
                 }
-                var j = actions[i].size
-                while (j < size) {
+                for (j in actions[i].size..size - 1) {
                     actions[i].add(HexAction(i.toByte(), j.toByte()))
-                    j += 1
                 }
             }
         }
