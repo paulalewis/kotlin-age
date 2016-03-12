@@ -62,13 +62,13 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
         }
         if (state_.isLocationEmpty(x, y)) {
             state_.setLocation(x, y, state_.getAgentTurn() + 1);
-            state_.setAgentTurn(getNextAgentTurn());
+            state_.setAgentTurn((byte)getNextAgentTurn());
             computeRewards(action);
             computeLegalActions(action);
         } else {
             state_.setLocation(x, y, 0);
             state_.setLocation(y, x, state_.getAgentTurn() + 1);
-            state_.setAgentTurn(getNextAgentTurn());
+            state_.setAgentTurn((byte)getNextAgentTurn());
             computeRewards(action);
             computeLegalActions(null);
         }
@@ -103,13 +103,13 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
         byte[][] locations = state_.getLocations();
         boolean[][] visited = new boolean[state_.getBoardSize()][state_.getBoardSize()];
         for (int i = 0; i < state_.getBoardSize(); i += 1) {
-            if (locations[0][i] == HexState.LOCATION_BLACK && !visited[0][i]) {
+            if (locations[0][i] == HexState.Companion.getLOCATION_BLACK() && !visited[0][i]) {
                 if ((dfsSides(0, i, locations, visited) & 3) == 3) {
                     rewards_ = REWARDS_BLACK_WINS;
                     return;
                 }
             }
-            if (locations[i][0] == HexState.LOCATION_WHITE && !visited[i][0]) {
+            if (locations[i][0] == HexState.Companion.getLOCATION_WHITE() && !visited[i][0]) {
                 if ((dfsSides(i, 0, locations, visited) & 12) == 12) {
                     rewards_ = REWARDS_WHITE_WINS;
                     return;
@@ -125,9 +125,9 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
         int x = action.getX();
         int y = action.getY();
         int value = dfsSides(x, y, locations, visited);
-        if (locations[x][y] == HexState.LOCATION_BLACK && (value & 3) == 3) {
+        if (locations[x][y] == HexState.Companion.getLOCATION_BLACK() && (value & 3) == 3) {
             rewards_ = REWARDS_BLACK_WINS;
-        } else if (locations[x][y] == HexState.LOCATION_WHITE && (value & 12) == 12) {
+        } else if (locations[x][y] == HexState.Companion.getLOCATION_WHITE() && (value & 12) == 12) {
             rewards_ = REWARDS_WHITE_WINS;
         } else {
             rewards_ = REWARDS_NEUTRAL;
@@ -175,7 +175,7 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
                     int location = state.getLocation(i, j);
                     if (!state.isLocationEmpty(i, j) &&
                             location != state.getAgentTurn() + 1) {
-                        state.setLocation(i, j, HexState.LOCATION_EMPTY);
+                        state.setLocation(i, j, HexState.Companion.getLOCATION_EMPTY());
                         simulator.setState(state);
                         if (!simulator.isTerminalState()) {
                             connection.add(HexAction.Companion.valueOf(i, j));
@@ -208,7 +208,7 @@ public final class HexSimulator extends AdversarialSimulator<HexState, HexAction
     }
 
     public static HexState getInitialState(int boardSize) {
-        return new HexState(boardSize, new byte[N_AGENTS][(boardSize * boardSize + Byte.SIZE - 1) / Byte.SIZE], HexState.TURN_BLACK, HexState.BoardState.EMPTY);
+        return new HexState(boardSize, new byte[N_AGENTS][(boardSize * boardSize + Byte.SIZE - 1) / Byte.SIZE], (byte)HexState.Companion.getTURN_BLACK(), HexState.BoardState.EMPTY);
     }
 
     public TurnType getTurnType() {
