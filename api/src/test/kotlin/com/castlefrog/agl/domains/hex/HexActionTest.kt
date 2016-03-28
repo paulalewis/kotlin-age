@@ -2,7 +2,7 @@ package com.castlefrog.agl.domains.hex
 
 import org.junit.Test
 
-import org.assertj.core.api.Assertions.*
+import com.google.common.truth.Truth.assertThat
 
 class HexActionTest {
 
