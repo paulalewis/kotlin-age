@@ -24,6 +24,36 @@ class HexStateTest {
         assertThat(hexState).isEqualTo(hexState.copy())
     }
 
+    @Test(expected = IllegalArgumentException::class)
+    fun testSetLocationOutOfBounds() {
+        hexState.copy().setLocation(-1, -1, HexState.LOCATION_EMPTY)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun testSetLocationOutOfBounds2() {
+        hexState.copy().setLocation(hexState.boardSize, hexState.boardSize, HexState.LOCATION_EMPTY)
+    }
+
+    @Test
+    fun testSetLocation() {
+        hexState.copy().setLocation(hexState.boardSize - 1, hexState.boardSize - 1, HexState.LOCATION_EMPTY)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun testGetLocationOutOfBounds() {
+        hexState.getLocation(-1, -1)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun testGetLocationOutOfBounds2() {
+        hexState.getLocation(hexState.boardSize, hexState.boardSize)
+    }
+
+    @Test
+    fun testGetLocation() {
+        assertThat(hexState.getLocation(hexState.boardSize - 1, hexState.boardSize - 1)).isEqualTo(HexState.LOCATION_EMPTY)
+    }
+
     @Test
     fun testLocationIsEmpty() {
         assertThat(hexState.isLocationEmpty(0, 1)).isTrue()
@@ -32,6 +62,16 @@ class HexStateTest {
     @Test
     fun testLocationIsNotEmpty() {
         assertThat(hexState.isLocationEmpty(1, 1)).isFalse()
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun testIsLocationEmptyOutOfRange() {
+        hexState.isLocationEmpty(-1, -1)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun testIsLocationEmptyOutOfRange2() {
+        hexState.isLocationEmpty(hexState.boardSize, hexState.boardSize)
     }
 
     @Test

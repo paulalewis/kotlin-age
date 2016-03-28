@@ -36,6 +36,7 @@ data class HexState(val boardSize: Int,
         }
 
     fun getLocation(x: Int, y: Int): Int {
+        checkLocationArgs(x, y)
         val bitLocation = y * boardSize + x
         val byteLocation = bitLocation / java.lang.Byte.SIZE
         if (bitBoards[0][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) != 0) {
@@ -48,6 +49,7 @@ data class HexState(val boardSize: Int,
     }
 
     fun isLocationEmpty(x: Int, y: Int): Boolean {
+        checkLocationArgs(x, y)
         val bitLocation = y * boardSize + x
         val byteLocation = bitLocation / java.lang.Byte.SIZE
         return bitBoards[0][byteLocation].toInt() or bitBoards[1][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) == LOCATION_EMPTY
@@ -73,6 +75,7 @@ data class HexState(val boardSize: Int,
         }
 
     fun setLocation(x: Int, y: Int, value: Int) {
+        checkLocationArgs(x, y)
         val bitLocation = y * boardSize + x
         val byteLocation = bitLocation / java.lang.Byte.SIZE
         val byteShift = bitLocation % java.lang.Byte.SIZE
@@ -86,6 +89,11 @@ data class HexState(val boardSize: Int,
             bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
             bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() or (1 shl byteShift)).toByte()
         }
+    }
+
+    private fun checkLocationArgs(x: Int, y: Int) {
+        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize)
+            throw IllegalArgumentException("(x=$x,y=$y) out of bounds")
     }
 
     override fun toString(): String {
