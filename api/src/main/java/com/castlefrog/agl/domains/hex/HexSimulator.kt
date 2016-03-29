@@ -3,8 +3,8 @@ package com.castlefrog.agl.domains.hex
 import com.castlefrog.agl.AdversarialSimulator
 import com.castlefrog.agl.IllegalActionException
 import com.castlefrog.agl.TurnType
-
 import java.util.ArrayList
+import java.util.HashSet
 import java.util.Stack
 
 class HexSimulator : AdversarialSimulator<HexState, HexAction> {
@@ -156,33 +156,6 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
         return value
     }
 
-    val winningConnection: List<HexAction>
-        get() {
-            val connection = ArrayList<HexAction>()
-            if (rewards_ != AdversarialSimulator.REWARDS_NEUTRAL) {
-                val simulator = HexSimulator.create(state_.boardSize, turnType)
-                val state = state_.copy()
-                var i = 0
-                while (i < state_.boardSize) {
-                    var j = 0
-                    while (j < state_.boardSize) {
-                        val location = state.getLocation(i, j)
-                        if (!state.isLocationEmpty(i, j) && location != state.agentTurn + 1) {
-                            state.setLocation(i, j, HexState.LOCATION_EMPTY)
-                            simulator.state = state
-                            if (!simulator.isTerminalState) {
-                                connection.add(HexAction.valueOf(i, j))
-                                state.setLocation(i, j, location)
-                            }
-                        }
-                        j += 1
-                    }
-                    i += 1
-                }
-            }
-            return connection
-        }
-
     private fun getLocationMask(x: Int, y: Int): Int {
         var side = 0
         if (x == 0) {
@@ -214,5 +187,34 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
         fun getInitialState(boardSize: Int): HexState {
             return HexState(boardSize, Array(AdversarialSimulator.N_AGENTS) { ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE) }, HexState.TURN_BLACK.toByte(), HexState.BoardState.EMPTY)
         }
+
+
+        fun winningConnection(hexState: HexState): Set<Pair<Int, Int>> {
+            val connection = HashSet<Pair<Int, Int>>()
+            val simulator = HexSimulator(hexState)
+            if (simulator.rewards[0] != AdversarialSimulator.REWARDS_NEUTRAL[0] &&
+                    simulator.rewards[1] != AdversarialSimulator.REWARDS_NEUTRAL[1]) {
+                val state = hexState.copy()
+                var i = 0
+                while (i < hexState.boardSize) {
+                    var j = 0
+                    while (j < hexState.boardSize) {
+                        val location = state.getLocation(i, j)
+                        if (!state.isLocationEmpty(i, j) && location != state.agentTurn + 1) {
+                            state.setLocation(i, j, HexState.LOCATION_EMPTY)
+                            simulator.state = state
+                            if (!simulator.isTerminalState) {
+                                connection.add(Pair(i, j))
+                                state.setLocation(i, j, location)
+                            }
+                        }
+                        j += 1
+                    }
+                    i += 1
+                }
+            }
+            return connection
+        }
+
     }
 }
