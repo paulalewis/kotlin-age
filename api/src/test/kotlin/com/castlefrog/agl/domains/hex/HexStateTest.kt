@@ -24,6 +24,28 @@ class HexStateTest {
         assertThat(hexState).isEqualTo(hexState.copy())
     }
 
+    @Test
+    fun testEquality() {
+        val otherHexState = emptyState.copy()
+        otherHexState.setLocation(2, 1, HexState.LOCATION_BLACK)
+        otherHexState.setLocation(1, 1, HexState.LOCATION_BLACK)
+        otherHexState.setLocation(1, 0, HexState.LOCATION_BLACK)
+        otherHexState.setLocation(3, 1, HexState.LOCATION_WHITE)
+        otherHexState.setLocation(3, 3, HexState.LOCATION_WHITE)
+        assertThat(otherHexState).isEqualTo(hexState)
+    }
+
+    @Test
+    fun testEqualityNotEqual() {
+        val otherHexState = HexSimulator.getInitialState(4)
+        otherHexState.setLocation(2, 1, HexState.LOCATION_BLACK)
+        otherHexState.setLocation(1, 1, HexState.LOCATION_BLACK)
+        otherHexState.setLocation(1, 0, HexState.LOCATION_BLACK)
+        otherHexState.setLocation(3, 1, HexState.LOCATION_WHITE)
+        otherHexState.setLocation(3, 3, HexState.LOCATION_WHITE)
+        assertThat(otherHexState).isNotEqualTo(hexState)
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun testSetLocationOutOfBounds() {
         hexState.copy().setLocation(-1, -1, HexState.LOCATION_EMPTY)
@@ -86,7 +108,8 @@ class HexStateTest {
 
     @Test
     fun testToString() {
-        assertThat(hexState.toString()).isEqualTo("- - - - - \n - - - O - \n  - - - - - \n   - X X O - \n    - X - - - \n")
+        assertThat(hexState.toString())
+                .isEqualTo("turn = 0\n- - - - - \n - - - O - \n  - - - - - \n   - X X O - \n    - X - - - \n")
     }
 
 }

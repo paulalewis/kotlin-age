@@ -8,6 +8,15 @@ data class HexState(val boardSize: Int,
                val bitBoards: Array<ByteArray>,
                var agentTurn: Byte) : State<HexState>, Serializable {
 
+    companion object {
+        val LOCATION_EMPTY = 0
+        val LOCATION_BLACK = 1
+        val LOCATION_WHITE = 2
+
+        val TURN_BLACK: Byte = 0
+        val TURN_WHITE: Byte = 1
+    }
+
     override fun copy(): HexState {
         return HexState(boardSize, bitBoards, agentTurn)
     }
@@ -104,8 +113,29 @@ data class HexState(val boardSize: Int,
             throw IllegalArgumentException("(x=$x,y=$y) out of bounds")
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other is HexState) {
+            if (bitBoards.size != other.bitBoards.size) {
+                return false
+            }
+            for (i in bitBoards.indices) {
+                if (bitBoards[i].size != other.bitBoards[i].size) {
+                    return false
+                }
+                for (j in bitBoards[i].indices) {
+                    if (other.bitBoards[i][j] != bitBoards[i][j]) {
+                        return false
+                    }
+                }
+            }
+            return other.boardSize == boardSize && other.agentTurn == agentTurn
+        }
+        return false
+    }
+
     override fun toString(): String {
         val output = StringBuilder()
+        output.append("turn = ").append(agentTurn).append("\n")
         var i = boardSize - 1
         while (i >= 0) {
             run {
@@ -131,14 +161,5 @@ data class HexState(val boardSize: Int,
             i -= 1
         }
         return output.toString()
-    }
-
-    companion object {
-        val LOCATION_EMPTY = 0
-        val LOCATION_BLACK = 1
-        val LOCATION_WHITE = 2
-
-        val TURN_BLACK: Byte = 0
-        val TURN_WHITE: Byte = 1
     }
 }

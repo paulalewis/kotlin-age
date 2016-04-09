@@ -1,15 +1,71 @@
 package com.castlefrog.agl.domains.hex
 
+import com.castlefrog.agl.IllegalActionException
 import com.castlefrog.agl.TurnType
-import org.junit.Test
-
 import com.google.common.truth.Truth.assertThat
-import java.util.*
+import org.junit.Test
+import java.util.ArrayList
+import java.util.HashSet
 
 class HexSimulatorTest {
 
     @Test
-    fun stateTransition() {
+    fun stateTransitionMove1() {
+        val simulator = HexSimulator.create(5, TurnType.SEQUENTIAL)
+        val actions = ArrayList<HexAction?>()
+        actions.add(HexAction.valueOf(0, 0))
+        actions.add(null)
+        simulator.stateTransition(actions)
+        val state = HexSimulator.getInitialState(5)
+        state.setLocation(0, 0, HexState.LOCATION_BLACK)
+        state.agentTurn = HexState.TURN_WHITE
+        assertThat(simulator.state.isSecondMove()).isTrue()
+        assertThat(simulator.state).isEqualTo(state)
+    }
+
+    @Test(expected = IllegalActionException::class)
+    fun stateTransitionIllegalMove() {
+        val simulator = HexSimulator.create(5, TurnType.SEQUENTIAL)
+        val actions = ArrayList<HexAction?>()
+        actions.add(HexAction.valueOf(0, 0))
+        actions.add(null)
+        simulator.stateTransition(actions)
+        simulator.stateTransition(actions)
+    }
+
+    @Test
+    fun stateTransitionMove2SameLocation() {
+        val simulator = HexSimulator.create(5, TurnType.SEQUENTIAL)
+        val actions = ArrayList<HexAction?>()
+        actions.add(HexAction.valueOf(0, 0))
+        actions.add(null)
+        simulator.stateTransition(actions)
+        actions.clear()
+        actions.add(null)
+        actions.add(HexAction.valueOf(0, 0))
+        simulator.stateTransition(actions)
+        val state = HexSimulator.getInitialState(5)
+        state.setLocation(0, 0, HexState.LOCATION_WHITE)
+        state.agentTurn = HexState.TURN_BLACK
+        assertThat(simulator.state).isEqualTo(state)
+    }
+
+    @Test
+    fun stateTransitionMove2DifferentLocation() {
+        val simulator = HexSimulator.create(5, TurnType.SEQUENTIAL)
+        val actions = ArrayList<HexAction?>()
+        actions.add(HexAction.valueOf(0, 0))
+        actions.add(null)
+        simulator.stateTransition(actions)
+        actions.clear()
+        actions.add(null)
+        actions.add(HexAction.valueOf(0, 1))
+        simulator.stateTransition(actions)
+        val state = HexSimulator.getInitialState(5)
+        state.setLocation(0, 0, HexState.LOCATION_BLACK)
+        state.setLocation(0, 1, HexState.LOCATION_WHITE)
+        state.agentTurn = HexState.TURN_BLACK
+        assertThat(simulator.state).isEqualTo(state)
     }
 
     @Test
@@ -48,7 +104,7 @@ class HexSimulatorTest {
         state.setLocation(2, 0, HexState.LOCATION_BLACK)
         state.setLocation(3, 0, HexState.LOCATION_BLACK)
         state.setLocation(4, 0, HexState.LOCATION_BLACK)
-        state.agentTurn = HexState.TURN_WHITE.toByte()
+        state.agentTurn = HexState.TURN_WHITE
         val connection = HashSet<Pair<Int, Int>>()
         connection.add(Pair(0, 0))
         connection.add(Pair(1, 0))

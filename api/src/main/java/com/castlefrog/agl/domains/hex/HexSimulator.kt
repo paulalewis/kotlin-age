@@ -67,7 +67,7 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
                 while (i < state_.boardSize) {
                     var j = 0
                     while (j < state_.boardSize) {
-                        if (state_.isLocationEmpty(i, j) || state_.isFirstMove()) {
+                        if (state_.isLocationEmpty(i, j) || state_.isSecondMove()) {
                             legalActions.add(HexAction.valueOf(i, j))
                         }
                         j += 1
