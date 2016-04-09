@@ -6,18 +6,10 @@ import java.io.Serializable
 
 data class HexState(val boardSize: Int,
                val bitBoards: Array<ByteArray>,
-               var agentTurn: Byte,
-               var boardState: HexState.BoardState) : State<HexState>, Serializable {
-
-    enum class BoardState {
-        EMPTY,
-        FIRST_MOVE,
-        SECOND_MOVE,
-        OTHER
-    }
+               var agentTurn: Byte) : State<HexState>, Serializable {
 
     override fun copy(): HexState {
-        return HexState(boardSize, bitBoards, agentTurn, boardState)
+        return HexState(boardSize, bitBoards, agentTurn)
     }
 
     val locations: Array<ByteArray>
@@ -74,6 +66,22 @@ data class HexState(val boardSize: Int,
             return nPieces
         }
 
+    fun isFirstMove(): Boolean {
+        return nPieces == 0
+    }
+
+    fun isSecondMove(): Boolean {
+        return nPieces == 1 && agentTurn == TURN_WHITE
+    }
+
+    fun isThirdMove(): Boolean {
+        return (nPieces == 1 || nPieces == 2) && agentTurn == TURN_BLACK
+    }
+
+    fun isForthMoveOrLater(): Boolean {
+        return nPieces > 2 || (nPieces == 2 && agentTurn == TURN_WHITE)
+    }
+
     fun setLocation(x: Int, y: Int, value: Int) {
         checkLocationArgs(x, y)
         val bitLocation = y * boardSize + x
@@ -126,12 +134,11 @@ data class HexState(val boardSize: Int,
     }
 
     companion object {
-
         val LOCATION_EMPTY = 0
         val LOCATION_BLACK = 1
         val LOCATION_WHITE = 2
 
-        val TURN_BLACK = 0
-        val TURN_WHITE = 1
+        val TURN_BLACK: Byte = 0
+        val TURN_WHITE: Byte = 1
     }
 }

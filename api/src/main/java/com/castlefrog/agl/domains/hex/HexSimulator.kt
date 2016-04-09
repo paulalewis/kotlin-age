@@ -31,18 +31,13 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
         computeLegalActions(null)
     }
 
-    override fun stateTransition(actions: List<HexAction>) {
+    override fun stateTransition(actions: List<HexAction?>) {
         val action = actions[state_.agentTurn.toInt()]
-        if (!legalActions_[state_.agentTurn.toInt()].contains(action)) {
+        if (action == null || !legalActions_[state_.agentTurn.toInt()].contains(action)) {
             throw IllegalActionException(action, state_)
         }
         val x = action.x.toInt()
         val y = action.y.toInt()
-        when (state_.boardState) {
-            HexState.BoardState.EMPTY -> state_.boardState = HexState.BoardState.FIRST_MOVE
-            HexState.BoardState.FIRST_MOVE -> state_.boardState = HexState.BoardState.SECOND_MOVE
-            HexState.BoardState.SECOND_MOVE -> state_.boardState = HexState.BoardState.OTHER
-        }
         if (state_.isLocationEmpty(x, y)) {
             state_.setLocation(x, y, state_.agentTurn + 1)
             state_.agentTurn = nextAgentTurn.toByte()
@@ -64,7 +59,7 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
             legalActions_[agentTurn] = legalActions_[otherTurn]
             legalActions_[otherTurn] = ArrayList<HexAction>()
             val legalActions = legalActions_[agentTurn]
-            if (prevAction != null && state_.boardState === HexState.BoardState.OTHER) {
+            if (prevAction != null && state_.isForthMoveOrLater()) {
                 legalActions.remove(prevAction)
             } else {
                 legalActions.clear()
@@ -72,7 +67,7 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
                 while (i < state_.boardSize) {
                     var j = 0
                     while (j < state_.boardSize) {
-                        if (state_.isLocationEmpty(i, j) || state_.boardState === HexState.BoardState.FIRST_MOVE) {
+                        if (state_.isLocationEmpty(i, j) || state_.isFirstMove()) {
                             legalActions.add(HexAction.valueOf(i, j))
                         }
                         j += 1
@@ -185,7 +180,7 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
         }
 
         fun getInitialState(boardSize: Int): HexState {
-            return HexState(boardSize, Array(AdversarialSimulator.N_AGENTS) { ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE) }, HexState.TURN_BLACK.toByte(), HexState.BoardState.EMPTY)
+            return HexState(boardSize, Array(AdversarialSimulator.N_AGENTS) { ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE) }, HexState.TURN_BLACK.toByte())
         }
 
 
