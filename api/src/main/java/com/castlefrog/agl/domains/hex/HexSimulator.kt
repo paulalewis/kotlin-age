@@ -187,8 +187,7 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
         fun winningConnection(hexState: HexState): Set<Pair<Int, Int>> {
             val connection = HashSet<Pair<Int, Int>>()
             val simulator = HexSimulator(hexState)
-            if (simulator.rewards[0] != AdversarialSimulator.REWARDS_NEUTRAL[0] &&
-                    simulator.rewards[1] != AdversarialSimulator.REWARDS_NEUTRAL[1]) {
+            if (hexState.nPieces > 2 * (hexState.boardSize - 1)) {
                 val state = hexState.copy()
                 var i = 0
                 while (i < hexState.boardSize) {
