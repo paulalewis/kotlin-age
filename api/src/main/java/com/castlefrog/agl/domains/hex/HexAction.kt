@@ -25,8 +25,7 @@ data class HexAction private constructor(val x: Byte, val y: Byte) : Action, Ser
          * Returns a hex action.
          * @param x x-coordinate
          * @param y y-coordinate
-         * @return
-         * *      action corresponding to x and y coordinate
+         * @return action corresponding to x and y coordinate
          */
         fun valueOf(x: Int, y: Int): HexAction {
             if (x >= actions.size || y >= actions[0].size) {
