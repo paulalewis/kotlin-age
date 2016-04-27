@@ -2,16 +2,15 @@ package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.AdversarialSimulator
 import com.castlefrog.agl.IllegalActionException
-import com.castlefrog.agl.TurnType
 import java.util.ArrayList
-import java.util.HashSet
 import java.util.Stack
 
 class HexSimulator : AdversarialSimulator<HexState, HexAction> {
 
-    val turnType: TurnType = TurnType.SEQUENTIAL
+    val pieRule: Boolean
 
-    private constructor(state: HexState) {
+    private constructor(state: HexState, pieRule: Boolean) {
+        this.pieRule = pieRule
         legalActions_ = ArrayList<List<HexAction>>()
         legalActions_.add(ArrayList<HexAction>())
         legalActions_.add(ArrayList<HexAction>())
@@ -19,6 +18,7 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
     }
 
     private constructor(simulator: HexSimulator) : super(simulator) {
+        pieRule = simulator.pieRule
     }
 
     override fun copy(): HexSimulator {
@@ -59,20 +59,16 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
             legalActions_[agentTurn] = legalActions_[otherTurn]
             legalActions_[otherTurn] = ArrayList<HexAction>()
             val legalActions = legalActions_[agentTurn]
-            if (prevAction != null && state_.isForthMoveOrLater()) {
+            if (prevAction != null && isForthMoveOrLater()) {
                 legalActions.remove(prevAction)
             } else {
                 legalActions.clear()
-                var i = 0
-                while (i < state_.boardSize) {
-                    var j = 0
-                    while (j < state_.boardSize) {
-                        if (state_.isLocationEmpty(i, j) || state_.isSecondMove()) {
+                for (i in 0..state_.boardSize - 1) {
+                    for (j in 0..state_.boardSize - 1) {
+                        if (state_.isLocationEmpty(i, j) || (pieRule && isSecondMove())) {
                             legalActions.add(HexAction.valueOf(i, j))
                         }
-                        j += 1
                     }
-                    i += 1
                 }
             }
         } else {
@@ -83,8 +79,7 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
     private fun computeRewards() {
         val locations = state_.locations
         val visited = Array(state_.boardSize) { BooleanArray(state_.boardSize) }
-        var i = 0
-        while (i < state_.boardSize) {
+        for (i in 0..state_.boardSize - 1) {
             if (locations[0][i].toInt() == HexState.LOCATION_BLACK && !visited[0][i]) {
                 if (dfsSides(0, i, locations, visited) and 3 == 3) {
                     rewards_ = AdversarialSimulator.REWARDS_BLACK_WINS
@@ -97,7 +92,6 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
                     return
                 }
             }
-            i += 1
         }
         rewards_ = AdversarialSimulator.REWARDS_NEUTRAL
     }
@@ -166,48 +160,47 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
         return side
     }
 
+    private fun isSecondMove(): Boolean {
+        return state_.nPieces == 1 && state_.agentTurn == HexState.TURN_WHITE
+    }
+
+    private fun isThirdMove(): Boolean {
+        return (state_.nPieces == 1 || state_.nPieces == 2) && state_.agentTurn == HexState.TURN_BLACK
+    }
+
+    private fun isForthMoveOrLater(): Boolean {
+        return state_.nPieces > 2 || (state_.nPieces == 2 && state_.agentTurn == HexState.TURN_WHITE)
+    }
+
     private val nextAgentTurn: Int
         get() = (state_.agentTurn + 1) % AdversarialSimulator.N_AGENTS
 
     companion object {
         private val MIN_BOARD_SIZE = 1
 
-        fun create(boardSize: Int, turnType: TurnType): HexSimulator {
+        /**
+         * @return hex simulator from initial board state
+         */
+        fun create(boardSize: Int, pieRule: Boolean): HexSimulator {
+            return create(getInitialState(boardSize), pieRule)
+        }
+
+        /**
+         * @return hex simulator from arbitrary board state
+         */
+        fun create(hexState: HexState, pieRule: Boolean): HexSimulator {
+            return HexSimulator(hexState, pieRule)
+        }
+
+        /**
+         * @param boardSize must be an int > 0
+         * @return initial board state
+         */
+        fun getInitialState(boardSize: Int): HexState {
             if (boardSize < MIN_BOARD_SIZE) {
                 throw IllegalArgumentException("Invalid board size: " + boardSize)
             }
-            return HexSimulator(getInitialState(boardSize))
-        }
-
-        fun getInitialState(boardSize: Int): HexState {
-            return HexState(boardSize, Array(AdversarialSimulator.N_AGENTS) { ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE) }, HexState.TURN_BLACK.toByte())
-        }
-
-
-        fun winningConnection(hexState: HexState): Set<Pair<Int, Int>> {
-            val connection = HashSet<Pair<Int, Int>>()
-            val simulator = HexSimulator(hexState)
-            if (hexState.nPieces > 2 * (hexState.boardSize - 1)) {
-                val state = hexState.copy()
-                var i = 0
-                while (i < hexState.boardSize) {
-                    var j = 0
-                    while (j < hexState.boardSize) {
-                        val location = state.getLocation(i, j)
-                        if (!state.isLocationEmpty(i, j) && location != state.agentTurn + 1) {
-                            state.setLocation(i, j, HexState.LOCATION_EMPTY)
-                            simulator.state = state
-                            if (!simulator.isTerminalState) {
-                                connection.add(Pair(i, j))
-                                state.setLocation(i, j, location)
-                            }
-                        }
-                        j += 1
-                    }
-                    i += 1
-                }
-            }
-            return connection
+            return HexState(boardSize, Array(AdversarialSimulator.N_AGENTS) { ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE) }, HexState.TURN_BLACK)
         }
 
     }

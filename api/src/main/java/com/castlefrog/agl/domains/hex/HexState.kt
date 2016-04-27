@@ -56,40 +56,24 @@ data class HexState(val boardSize: Int,
         return bitBoards[0][byteLocation].toInt() or bitBoards[1][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) == LOCATION_EMPTY
     }
 
+    fun isLocationOnBoard(x: Int, y: Int): Boolean {
+        return x >= 0 && x < boardSize && y >= 0 && y < boardSize
+    }
+
     val nPieces: Int
         get() {
             var nPieces = 0
-            var i = 0
-            while (i < bitBoards[0].size) {
+            for (i in 0..bitBoards[0].size - 1) {
                 var value = bitBoards[0][i].toInt() or bitBoards[1][i].toInt()
-                var j = 0
-                while (j < java.lang.Byte.SIZE) {
+                for (j in 0..java.lang.Byte.SIZE - 1) {
                     if (value and 1 != 0) {
                         nPieces += 1
                     }
                     value = value.ushr(1)
-                    j += 1
                 }
-                i += 1
             }
             return nPieces
         }
-
-    fun isFirstMove(): Boolean {
-        return nPieces == 0
-    }
-
-    fun isSecondMove(): Boolean {
-        return nPieces == 1 && agentTurn == TURN_WHITE
-    }
-
-    fun isThirdMove(): Boolean {
-        return (nPieces == 1 || nPieces == 2) && agentTurn == TURN_BLACK
-    }
-
-    fun isForthMoveOrLater(): Boolean {
-        return nPieces > 2 || (nPieces == 2 && agentTurn == TURN_WHITE)
-    }
 
     fun setLocation(x: Int, y: Int, value: Int) {
         checkLocationArgs(x, y)
@@ -109,7 +93,7 @@ data class HexState(val boardSize: Int,
     }
 
     private fun checkLocationArgs(x: Int, y: Int) {
-        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize)
+        if (!isLocationOnBoard(x, y))
             throw IllegalArgumentException("(x=$x,y=$y) out of bounds")
     }
 
