@@ -98,23 +98,23 @@ data class HexState(val boardSize: Int,
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other is HexState) {
-            if (bitBoards.size != other.bitBoards.size) {
+        if (other !is HexState) {
+            return false
+        }
+        if (bitBoards.size != other.bitBoards.size) {
+            return false
+        }
+        for (i in bitBoards.indices) {
+            if (bitBoards[i].size != other.bitBoards[i].size) {
                 return false
             }
-            for (i in bitBoards.indices) {
-                if (bitBoards[i].size != other.bitBoards[i].size) {
+            for (j in bitBoards[i].indices) {
+                if (other.bitBoards[i][j] != bitBoards[i][j]) {
                     return false
                 }
-                for (j in bitBoards[i].indices) {
-                    if (other.bitBoards[i][j] != bitBoards[i][j]) {
-                        return false
-                    }
-                }
             }
-            return other.boardSize == boardSize && other.agentTurn == agentTurn
         }
-        return false
+        return other.boardSize == boardSize && other.agentTurn == agentTurn
     }
 
     override fun toString(): String {
