@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.havannah
 
-import com.castlefrog.agl.AdversarialSimulator
 import com.castlefrog.agl.IllegalActionException
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -80,6 +79,43 @@ class HavannahSimulatorTest {
         locations[0][1] = HavannahState.LOCATION_WHITE
         locations[1][0] = HavannahState.LOCATION_WHITE
         locations[1][2] = HavannahState.LOCATION_WHITE
+        val state = HavannahState(5, locations, HavannahState.TURN_WHITE)
+        val simulator = HavannahSimulator.create(state, false)
+        assertThat(simulator.rewards).isEqualTo(intArrayOf(1, -1))
+    }
+
+    @Test
+    fun stateWhiteWinsCorners() {
+        val locations = Array(9) { ByteArray(9) }
+        locations[2][2] = HavannahState.LOCATION_BLACK
+        locations[3][2] = HavannahState.LOCATION_BLACK
+        locations[4][4] = HavannahState.LOCATION_BLACK
+        locations[4][3] = HavannahState.LOCATION_BLACK
+        locations[3][4] = HavannahState.LOCATION_BLACK
+        locations[0][0] = HavannahState.LOCATION_WHITE
+        locations[0][1] = HavannahState.LOCATION_WHITE
+        locations[0][2] = HavannahState.LOCATION_WHITE
+        locations[0][3] = HavannahState.LOCATION_WHITE
+        locations[0][4] = HavannahState.LOCATION_WHITE
+        val state = HavannahState(5, locations, HavannahState.TURN_BLACK)
+        val simulator = HavannahSimulator.create(state, false)
+        assertThat(simulator.rewards).isEqualTo(intArrayOf(-1, 1))
+    }
+
+    @Test
+    fun stateBlackWinsSides() {
+        val locations = Array(9) { ByteArray(9) }
+        locations[0][1] = HavannahState.LOCATION_BLACK
+        locations[1][0] = HavannahState.LOCATION_BLACK
+        locations[1][1] = HavannahState.LOCATION_BLACK
+        locations[1][2] = HavannahState.LOCATION_BLACK
+        locations[1][3] = HavannahState.LOCATION_BLACK
+        locations[1][4] = HavannahState.LOCATION_BLACK
+        locations[1][5] = HavannahState.LOCATION_BLACK
+        locations[4][4] = HavannahState.LOCATION_WHITE
+        locations[0][2] = HavannahState.LOCATION_WHITE
+        locations[0][3] = HavannahState.LOCATION_WHITE
+        locations[3][3] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_WHITE)
         val simulator = HavannahSimulator.create(state, false)
         assertThat(simulator.rewards).isEqualTo(intArrayOf(1, -1))
