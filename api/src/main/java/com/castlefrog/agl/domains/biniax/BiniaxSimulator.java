@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
-import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
 /**
@@ -44,7 +43,7 @@ public final class BiniaxSimulator extends AbstractSimulator<BiniaxState, Biniax
     public void stateTransition(List<BiniaxAction> actions) {
         BiniaxAction action = actions.get(0);
         if (!legalActions_.get(0).contains(action)) {
-            throw new IllegalActionException(action, state_);
+            throw new IllegalArgumentException("Illegal action, " + action + ", from state, " + state_);
         }
 
         byte[][] locations = state_.getLocations();

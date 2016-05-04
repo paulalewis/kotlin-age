@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.AdversarialSimulator
-import com.castlefrog.agl.IllegalActionException
 import java.util.ArrayList
 import java.util.Stack
 
@@ -34,7 +33,7 @@ class HexSimulator : AdversarialSimulator<HexState, HexAction> {
     override fun stateTransition(actions: List<HexAction?>) {
         val action = actions[state_.agentTurn.toInt()]
         if (action == null || !legalActions_[state_.agentTurn.toInt()].contains(action)) {
-            throw IllegalActionException(action, state_)
+            throw IllegalArgumentException("Illegal action, $action, from state, $state_")
         }
         val x = action.x.toInt()
         val y = action.y.toInt()

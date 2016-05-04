@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.draughts;
 
 import com.castlefrog.agl.AdversarialSimulator;
-import com.castlefrog.agl.IllegalActionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public final class DraughtsSimulator extends AdversarialSimulator<DraughtsState,
     public void stateTransition(List<DraughtsAction> actions) {
         DraughtsAction action = actions.get(state_.getAgentTurn());
         if (!legalActions_.contains(action)) {
-            throw new IllegalActionException(action, state_);
+            throw new IllegalArgumentException("Illegal action, " + action + ", from state, " + state_);
         }
         byte[][] locations = state_.getLocations();
         //TODO - code here

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
-import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
 public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAction> {
@@ -116,7 +115,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
         YahtzeeAction action = actions.get(0);
         if (!legalActions_.get(0).contains(action)) {
             System.out.println("nCategories = " + nCategoriesLeft_);
-            throw new IllegalActionException(action, state_);
+            throw new IllegalArgumentException("Illegal action, " + action + ", from state, " + state_);
         }
 
         byte[] diceValues = state_.getDiceValues();

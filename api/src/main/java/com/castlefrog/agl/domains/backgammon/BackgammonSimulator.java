@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.backgammon;
 
 import com.castlefrog.agl.AdversarialSimulator;
-import com.castlefrog.agl.IllegalActionException;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,7 +38,7 @@ public final class BackgammonSimulator extends AdversarialSimulator<BackgammonSt
     public void stateTransition(List<BackgammonAction> actions) {
         BackgammonAction action = actions.get(state_.getAgentTurn());
         if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
-            throw new IllegalActionException(action, state_);
+            throw new IllegalArgumentException("Illegal action, " + action + ", from state, " + state_);
         }
 
         byte[] locations = state_.getLocations();

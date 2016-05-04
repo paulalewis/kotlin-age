@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.connect4;
 
 import com.castlefrog.agl.AdversarialSimulator;
-import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -68,7 +67,7 @@ public final class Connect4Simulator extends AdversarialSimulator<Connect4State,
     public void stateTransition(List<Connect4Action> actions) {
         Connect4Action action = actions.get(state_.getAgentTurn());
         if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
-            throw new IllegalActionException(action, state_);
+            throw new IllegalArgumentException("Illegal action, " + action + ", from state, " + state_);
         }
         long[] bitBoards = state_.getBitBoards();
         bitBoards[state_.getAgentTurn()] ^= (1L << (columnHeights_[action.getLocation()]++));

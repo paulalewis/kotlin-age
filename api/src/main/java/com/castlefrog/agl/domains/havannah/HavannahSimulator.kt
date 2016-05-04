@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.havannah
 
 import com.castlefrog.agl.AdversarialSimulator
-import com.castlefrog.agl.IllegalActionException
 import com.castlefrog.agl.TurnType
 
 import java.util.ArrayList
@@ -56,7 +55,7 @@ class HavannahSimulator : AdversarialSimulator<HavannahState, HavannahAction> {
     override fun stateTransition(actions: List<HavannahAction?>) {
         val action = actions[state_.agentTurn.toInt()]
         if (action == null || !legalActions_[state_.agentTurn.toInt()].contains(action)) {
-            throw IllegalActionException(action, state_)
+            throw IllegalArgumentException("Illegal action, $action, from state, $state_")
         }
         state_.locations[action.x.toInt()][action.y.toInt()] = (state_.agentTurn + 1).toByte()
         state_.agentTurn = ((state_.agentTurn + 1) % AdversarialSimulator.N_AGENTS).toByte()

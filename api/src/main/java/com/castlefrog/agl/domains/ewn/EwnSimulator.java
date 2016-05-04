@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.ewn;
 
 import com.castlefrog.agl.AdversarialSimulator;
-import com.castlefrog.agl.IllegalActionException;
 import com.castlefrog.agl.TurnType;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public final class EwnSimulator extends AdversarialSimulator<EwnState, EwnAction
     public void stateTransition(List<EwnAction> actions) {
         EwnAction action = actions.get(state_.getAgentTurn());
         if (!legalActions_.get(state_.getAgentTurn()).contains(action)) {
-            throw new IllegalActionException(action, state_);
+            throw new IllegalArgumentException("Illegal action, " + action + ", from state, " + state_);
         }
 
         byte[][] locations = state_.getLocations();

@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.havannah
 
-import com.castlefrog.agl.IllegalActionException
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.util.ArrayList
@@ -20,7 +19,7 @@ class HavannahSimulatorTest {
         assertThat(simulator.state).isEqualTo(state)
     }
 
-    @Test(expected = IllegalActionException::class)
+    @Test(expected = IllegalArgumentException::class)
     fun stateTransitionIllegalMove() {
         val simulator = HavannahSimulator.create(5, true)
         val actions = ArrayList<HavannahAction?>()
