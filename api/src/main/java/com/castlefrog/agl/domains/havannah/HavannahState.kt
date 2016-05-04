@@ -18,7 +18,7 @@ data class HavannahState(val base: Int,
     }
 
     override fun copy(): HavannahState {
-        val copyLocations = Array<ByteArray>(locations.size) { ByteArray(locations.size) }
+        val copyLocations = Array(locations.size) { ByteArray(locations.size) }
         for (i in 0..locations.size - 1) {
             copyLocations[i] = locations[i].copyOf()
         }
