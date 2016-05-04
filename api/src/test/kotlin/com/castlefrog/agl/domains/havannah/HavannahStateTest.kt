@@ -12,68 +12,76 @@ class HavannahStateTest {
 
     @Before
     fun setup() {
-        havannahState.setLocation(2, 1, HavannahState.LOCATION_BLACK)
-        havannahState.setLocation(1, 1, HavannahState.LOCATION_BLACK)
-        havannahState.setLocation(1, 0, HavannahState.LOCATION_BLACK)
-        havannahState.setLocation(3, 1, HavannahState.LOCATION_WHITE)
-        havannahState.setLocation(3, 3, HavannahState.LOCATION_WHITE)
+        havannahState.locations[2][1] = HavannahState.LOCATION_BLACK
+        havannahState.locations[1][1] = HavannahState.LOCATION_BLACK
+        havannahState.locations[1][0] = HavannahState.LOCATION_BLACK
+        havannahState.locations[3][1] = HavannahState.LOCATION_WHITE
+        havannahState.locations[3][3] = HavannahState.LOCATION_WHITE
     }
 
     @Test
     fun testCopy() {
         assertThat(havannahState).isEqualTo(havannahState.copy())
+        assertThat(havannahState.locations).isNotSameAs(havannahState.copy().locations)
+    }
+
+    @Test
+    fun testCopyModifyNotEqual() {
+        val stateCopy = havannahState.copy()
+        stateCopy.locations[2][1] = HavannahState.LOCATION_EMPTY
+        assertThat(havannahState).isNotEqualTo(stateCopy)
     }
 
     @Test
     fun testEquality() {
         val otherHavannahState = emptyState.copy()
-        otherHavannahState.setLocation(2, 1, HavannahState.LOCATION_BLACK)
-        otherHavannahState.setLocation(1, 1, HavannahState.LOCATION_BLACK)
-        otherHavannahState.setLocation(1, 0, HavannahState.LOCATION_BLACK)
-        otherHavannahState.setLocation(3, 1, HavannahState.LOCATION_WHITE)
-        otherHavannahState.setLocation(3, 3, HavannahState.LOCATION_WHITE)
+        otherHavannahState.locations[2][1] = HavannahState.LOCATION_BLACK
+        otherHavannahState.locations[1][1] = HavannahState.LOCATION_BLACK
+        otherHavannahState.locations[1][0] = HavannahState.LOCATION_BLACK
+        otherHavannahState.locations[3][1] = HavannahState.LOCATION_WHITE
+        otherHavannahState.locations[3][3] = HavannahState.LOCATION_WHITE
         assertThat(otherHavannahState).isEqualTo(havannahState)
     }
 
     @Test
     fun testEqualityNotEqual() {
         val otherHavannahState = HavannahSimulator.getInitialState(4)
-        otherHavannahState.setLocation(2, 1, HavannahState.LOCATION_BLACK)
-        otherHavannahState.setLocation(1, 1, HavannahState.LOCATION_BLACK)
-        otherHavannahState.setLocation(1, 0, HavannahState.LOCATION_BLACK)
-        otherHavannahState.setLocation(3, 1, HavannahState.LOCATION_WHITE)
-        otherHavannahState.setLocation(3, 3, HavannahState.LOCATION_WHITE)
+        otherHavannahState.locations[2][1] = HavannahState.LOCATION_BLACK
+        otherHavannahState.locations[1][1] = HavannahState.LOCATION_BLACK
+        otherHavannahState.locations[1][0] = HavannahState.LOCATION_BLACK
+        otherHavannahState.locations[3][1] = HavannahState.LOCATION_WHITE
+        otherHavannahState.locations[3][3] = HavannahState.LOCATION_WHITE
         assertThat(otherHavannahState).isNotEqualTo(havannahState)
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException::class)
     fun testSetLocationOutOfBounds() {
-        havannahState.copy().setLocation(-1, -1, HavannahState.LOCATION_EMPTY)
+        havannahState.copy().locations[-1][-1] = HavannahState.LOCATION_EMPTY
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException::class)
     fun testSetLocationOutOfBounds2() {
-        havannahState.copy().setLocation(havannahState.size, havannahState.size, HavannahState.LOCATION_EMPTY)
+        havannahState.copy().locations[havannahState.size][havannahState.size] = HavannahState.LOCATION_EMPTY
     }
 
     @Test
     fun testSetLocation() {
-        havannahState.copy().setLocation(havannahState.base - 1, havannahState.base - 1, HavannahState.LOCATION_EMPTY)
+        havannahState.copy().locations[havannahState.base - 1][havannahState.base - 1] = HavannahState.LOCATION_EMPTY
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException::class)
     fun testGetLocationOutOfBounds() {
-        havannahState.getLocation(-1, -1)
+        havannahState.locations[-1][-1]
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException::class)
     fun testGetLocationOutOfBounds2() {
-        havannahState.getLocation(havannahState.size, havannahState.size)
+        havannahState.locations[havannahState.size][havannahState.size]
     }
 
     @Test
     fun testGetLocation() {
-        assertThat(havannahState.getLocation(havannahState.base - 1, havannahState.base - 1)).isEqualTo(HavannahState.LOCATION_EMPTY)
+        assertThat(havannahState.locations[havannahState.base - 1][havannahState.base - 1]).isEqualTo(HavannahState.LOCATION_EMPTY)
     }
 
     @Test

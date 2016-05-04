@@ -9,24 +9,24 @@ data class HavannahState(val base: Int,
                     var agentTurn: Byte) : State<HavannahState>, Serializable {
 
     companion object {
-        val LOCATION_EMPTY = 0
-        val LOCATION_BLACK = 1
-        val LOCATION_WHITE = 2
+        val LOCATION_EMPTY: Byte = 0
+        val LOCATION_BLACK: Byte = 1
+        val LOCATION_WHITE: Byte = 2
+
+        val TURN_BLACK: Byte = 0
+        val TURN_WHITE: Byte = 1
     }
 
     override fun copy(): HavannahState {
-        return HavannahState(base, locations, agentTurn)
-    }
-
-    /**
-     * Gets a location on board.
-     */
-    fun getLocation(x: Int, y: Int): Byte {
-        return locations[x][y]
+        val copyLocations = Array<ByteArray>(locations.size) { ByteArray(locations.size) }
+        for (i in 0..locations.size - 1) {
+            copyLocations[i] = locations[i].copyOf()
+        }
+        return HavannahState(base, copyLocations, agentTurn)
     }
 
     fun isLocationEmpty(x: Int, y: Int): Boolean {
-        return locations[x][y].toInt() == LOCATION_EMPTY
+        return locations[x][y] == LOCATION_EMPTY
     }
 
     val size: Int
@@ -65,7 +65,7 @@ data class HavannahState(val base: Int,
             var nPieces = 0
             for (i in 0..locations.size - 1) {
                 for (j in 0..locations[0].size - 1) {
-                    if (locations[i][j].toInt() != LOCATION_EMPTY) {
+                    if (locations[i][j] != LOCATION_EMPTY) {
                         nPieces += 1
                     }
                 }
@@ -73,20 +73,13 @@ data class HavannahState(val base: Int,
             return nPieces
         }
 
-    fun setLocation(x: Int,
-                    y: Int,
-                    value: Int) {
-        locations[x][y] = value.toByte()
-    }
-
     override fun equals(other: Any?): Boolean {
         if (other !is HavannahState) {
             return false
         }
-        val locations = other.locations
         for (i in 0..locations.size - 1) {
             for (j in 0..locations.size - 1) {
-                if (locations[i][j] != locations[i][j]) {
+                if (locations[i][j] != other.locations[i][j]) {
                     return false
                 }
             }
@@ -108,9 +101,9 @@ data class HavannahState(val base: Int,
                 xMax = base + i
             }
             for (j in xMin..xMax - 1) {
-                if (locations[j][i].toInt() == LOCATION_BLACK) {
+                if (locations[j][i] == LOCATION_BLACK) {
                     output.append("X ")
-                } else if (locations[j][i].toInt() == LOCATION_WHITE) {
+                } else if (locations[j][i] == LOCATION_WHITE) {
                     output.append("O ")
                 } else {
                     output.append("- ")
