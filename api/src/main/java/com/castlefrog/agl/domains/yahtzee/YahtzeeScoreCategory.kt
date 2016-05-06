@@ -1,6 +1,6 @@
-package com.castlefrog.agl.domains.yahtzee;
+package com.castlefrog.agl.domains.yahtzee
 
-public enum YahtzeeScoreCategory {
+enum class YahtzeeScoreCategory {
     ONES,
     TWOS,
     THREES,
