@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.castlefrog.agl.AbstractSimulator;
-import com.castlefrog.agl.TurnType;
 
 public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, YahtzeeAction> {
     private static final int N_AGENTS = 1;
@@ -41,7 +40,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
     private void computeLegalActions() {
         clearLegalActions();
         if (nCategoriesLeft_ != 0) {
-            if (state_.getRolls() < 3) {
+            if (state_.getNRolls() < 3) {
                 byte[] diceValues = state_.getDiceValues();
                 for (byte i = 0; i <= diceValues[0]; i++) {
                     for (byte j = 0; j <= diceValues[1]; j++) {
@@ -60,7 +59,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
                 int[] scores = state_.getScores();
                 int yahtzee = checkYahtzee(state_.getDiceValues());
                 if (yahtzee == -1 || scores[yahtzee] != -1) {
-                    for (int i = 0; i < YahtzeeState.N_SCORES; i++) {
+                    for (int i = 0; i < YahtzeeState.Companion.getN_SCORES(); i++) {
                         if (scores[i] == -1) {
                             legalActions_.get(0).add(YahtzeeSelectAction.valueOf(i));
                         }
@@ -77,16 +76,16 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
 
     private void computeCategoriesLeft() {
         nCategoriesLeft_ = 0;
-        for (int i = 0; i < YahtzeeState.N_SCORES; i++) {
-            if (state_.getScore(i) == -1) {
+        for (int i = 0; i < YahtzeeState.Companion.getN_SCORES(); i++) {
+            if (state_.getScores()[i] == -1) {
                 nCategoriesLeft_ += 1;
             }
         }
     }
 
     private int checkYahtzee(byte[] diceValues) {
-        for (int i = 0; i < YahtzeeState.N_VALUES; i++) {
-            if (diceValues[i] == YahtzeeState.N_DICE) {
+        for (int i = 0; i < YahtzeeState.Companion.getN_VALUES(); i++) {
+            if (diceValues[i] == YahtzeeState.Companion.getN_DICE()) {
                 return i;
             }
         }
@@ -105,7 +104,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
             if (rewards_[0] >= 63) {
                 rewards_[0] += 35;
             }
-            for (int i = 6; i < YahtzeeState.N_SCORES; i++) {
+            for (int i = 6; i < YahtzeeState.Companion.getN_SCORES(); i++) {
                 rewards_[0] += scores[i];
             }
         }
@@ -119,7 +118,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
         }
 
         byte[] diceValues = state_.getDiceValues();
-        int rolls = state_.getRolls();
+        int rolls = state_.getNRolls();
         int[] scores = state_.getScores();
         int yahtzee = checkYahtzee(diceValues);
         if (yahtzee != -1 && scores[YahtzeeScoreCategory.YAHTZEE.ordinal()] >= 50) {
@@ -133,8 +132,8 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
             for (byte diceValue : diceValues) {
                 numSelected += diceValue;
             }
-            for (int i = numSelected; i < YahtzeeState.N_DICE; i++) {
-                diceValues[(int) (Math.random() * YahtzeeState.N_VALUES)] += 1;
+            for (int i = numSelected; i < YahtzeeState.Companion.getN_DICE(); i++) {
+                diceValues[(int) (Math.random() * YahtzeeState.Companion.getN_VALUES())] += 1;
             }
             rolls += 1;
         } else {
@@ -162,7 +161,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
                 scores[category.ordinal()] = diceValues[5] * 6;
                 break;
             case THREE_OF_KIND:
-                for (int i = 0; i < YahtzeeState.N_VALUES; i++) {
+                for (int i = 0; i < YahtzeeState.Companion.getN_VALUES(); i++) {
                     if (diceValues[i] >= 3) {
                         for (int j = 0; j < diceValues.length; j++) {
                             scores[category.ordinal()] += diceValues[j] * (j + 1);
@@ -172,7 +171,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
                 }
                 break;
             case FOUR_OF_KIND:
-                for (int i = 0; i < YahtzeeState.N_VALUES; i++) {
+                for (int i = 0; i < YahtzeeState.Companion.getN_VALUES(); i++) {
                     if (diceValues[i] >= 4) {
                         for (int j = 0; j < diceValues.length; j++) {
                             scores[category.ordinal()] += diceValues[j] * (j + 1);
@@ -184,7 +183,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
             case FULL_HOUSE:
                 boolean two = false;
                 boolean three = false;
-                for (int i = 0; i < YahtzeeState.N_VALUES; i++) {
+                for (int i = 0; i < YahtzeeState.Companion.getN_VALUES(); i++) {
                     if (diceValues[i] == 2) {
                         two = true;
                     } else if (diceValues[i] == 3) {
@@ -197,7 +196,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
                 break;
             case SMALL_STRAIGHT:
                 int count = 0;
-                for (int i = 0; i < YahtzeeState.N_VALUES; i++) {
+                for (int i = 0; i < YahtzeeState.Companion.getN_VALUES(); i++) {
                     if (diceValues[i] > 0) {
                         count++;
                     } else if (count >= 4) {
@@ -212,7 +211,7 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
                 break;
             case LARGE_STRAIGHT:
                 count = 0;
-                for (int i = 0; i < YahtzeeState.N_VALUES; i++) {
+                for (int i = 0; i < YahtzeeState.Companion.getN_VALUES(); i++) {
                     if (diceValues[i] > 0) {
                         count++;
                     } else if (count >= 5) {
@@ -226,28 +225,28 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
                 }
                 break;
             case YAHTZEE:
-                for (int i = 0; i < YahtzeeState.N_VALUES; i++) {
+                for (int i = 0; i < YahtzeeState.Companion.getN_VALUES(); i++) {
                     if (diceValues[i] == 5) {
                         scores[category.ordinal()] = 50;
                     }
                 }
                 break;
             case CHANCE:
-                for (int i = 0; i < YahtzeeState.N_VALUES; i++) {
+                for (int i = 0; i < YahtzeeState.Companion.getN_VALUES(); i++) {
                     scores[category.ordinal()] += diceValues[i] * (i + 1);
                 }
                 break;
             default:
                 break;
             }
-            diceValues = new byte[YahtzeeState.N_VALUES];
-            for (int i = 0; i < YahtzeeState.N_DICE; i++) {
-                diceValues[(byte) (Math.random() * YahtzeeState.N_VALUES)] += 1;
+            diceValues = new byte[YahtzeeState.Companion.getN_VALUES()];
+            for (int i = 0; i < YahtzeeState.Companion.getN_DICE(); i++) {
+                diceValues[(byte) (Math.random() * YahtzeeState.Companion.getN_VALUES())] += 1;
             }
             rolls = 1;
             nCategoriesLeft_ -= 1;
         }
-        state_ = new YahtzeeState(diceValues, rolls, scores);
+        state_ = new YahtzeeState(diceValues, (byte)rolls, scores);
         computeLegalActions();
         computeRewards();
     }
@@ -256,7 +255,4 @@ public final class YahtzeeSimulator extends AbstractSimulator<YahtzeeState, Yaht
         return N_AGENTS;
     }
 
-    public TurnType getTurnType() {
-        return TurnType.SEQUENTIAL;
-    }
 }
