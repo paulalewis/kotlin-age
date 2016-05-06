@@ -102,14 +102,19 @@ data class HavannahState(val base: Int,
             }
             for (j in xMin..xMax - 1) {
                 if (locations[j][i] == LOCATION_BLACK) {
-                    output.append("X ")
+                    output.append("X")
                 } else if (locations[j][i] == LOCATION_WHITE) {
-                    output.append("O ")
+                    output.append("O")
                 } else {
-                    output.append("- ")
+                    output.append("-")
+                }
+                if (j != xMax - 1) {
+                    output.append(" ")
                 }
             }
-            output.append("\n")
+            if (i != 0) {
+                output.append("\n")
+            }
         }
         return output.toString()
     }

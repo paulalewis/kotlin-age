@@ -120,29 +120,26 @@ data class HexState(val boardSize: Int,
     override fun toString(): String {
         val output = StringBuilder()
         output.append("turn = ").append(agentTurn).append("\n")
-        var i = boardSize - 1
-        while (i >= 0) {
-            run {
-                var j = i
-                while (j < boardSize - 1) {
-                    output.append(" ")
-                    j += 1
-                }
+        for (i in boardSize - 1 downTo 0) {
+            for (j in i..boardSize - 2) {
+                output.append(" ")
             }
-            var j = 0
-            while (j < boardSize) {
+            for (j in 0..boardSize - 1) {
                 val location = getLocation(j, i)
                 if (location == LOCATION_BLACK) {
-                    output.append("X ")
+                    output.append("X")
                 } else if (location == LOCATION_WHITE) {
-                    output.append("O ")
+                    output.append("O")
                 } else {
-                    output.append("- ")
+                    output.append("-")
                 }
-                j += 1
+                if (j != boardSize - 1) {
+                    output.append(" ")
+                }
             }
-            output.append("\n")
-            i -= 1
+            if (i != 0) {
+                output.append("\n")
+            }
         }
         return output.toString()
     }

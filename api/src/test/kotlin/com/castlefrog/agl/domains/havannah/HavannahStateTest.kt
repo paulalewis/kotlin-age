@@ -117,16 +117,17 @@ class HavannahStateTest {
     @Test
     fun testToString() {
         assertThat(havannahState.toString())
-                .isEqualTo(
-                "    - - - - - \n" +
-                "   - - - - - - \n" +
-                "  - - - - - - - \n" +
-                " - - - - - - - - \n" +
-                "- - - - - - - - - \n" +
-                " - - - O - - - - \n" +
-                "  - - - - - - - \n" +
-                "   - X X O - - \n" +
-                "    - X - - - \n");
+                .isEqualTo("""
+                |    - - - - -
+                |   - - - - - -
+                |  - - - - - - -
+                | - - - - - - - -
+                |- - - - - - - - -
+                | - - - O - - - -
+                |  - - - - - - -
+                |   - X X O - -
+                |    - X - - -
+                """.trimMargin());
     }
 
 }

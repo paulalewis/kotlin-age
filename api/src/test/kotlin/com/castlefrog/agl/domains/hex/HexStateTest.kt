@@ -109,7 +109,14 @@ class HexStateTest {
     @Test
     fun testToString() {
         assertThat(hexState.toString())
-                .isEqualTo("turn = 0\n- - - - - \n - - - O - \n  - - - - - \n   - X X O - \n    - X - - - \n")
+                .isEqualTo("""
+                |turn = 0
+                |- - - - -
+                | - - - O -
+                |  - - - - -
+                |   - X X O -
+                |    - X - - -
+                """.trimMargin())
     }
 
 }
