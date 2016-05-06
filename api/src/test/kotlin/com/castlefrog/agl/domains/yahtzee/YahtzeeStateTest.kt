@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import org.junit.Before
 import org.junit.Test
 
 import com.google.common.truth.Truth.assertThat
@@ -24,7 +23,7 @@ class YahtzeeStateTest {
     @Test
     fun testToString() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()},
-                nRolls = 1, scores = IntArray(YahtzeeState.N_SCORES))
+                nRolls = 1, scores = ByteArray(YahtzeeState.N_SCORES))
         assertThat(yahtzeeState.toString())
                 .isEqualTo("""
                     |1 - [ 0 1 2 3 4 ]
