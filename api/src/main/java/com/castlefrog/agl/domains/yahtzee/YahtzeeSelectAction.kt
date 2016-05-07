@@ -2,23 +2,10 @@ package com.castlefrog.agl.domains.yahtzee
 
 import java.util.ArrayList
 
-class YahtzeeSelectAction private constructor(
-        /** Each select action selects a particular score category.  */
-        val scoreCategory: YahtzeeScoreCategory) : YahtzeeAction {
+data class YahtzeeSelectAction private constructor(val scoreCategory: YahtzeeScoreCategory) : YahtzeeAction {
 
     override fun copy(): YahtzeeSelectAction {
         return this
-    }
-
-    override fun hashCode(): Int {
-        return scoreCategory.ordinal
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is YahtzeeSelectAction) {
-            return false
-        }
-        return scoreCategory === other.scoreCategory
     }
 
     override fun toString(): String {
@@ -34,7 +21,7 @@ class YahtzeeSelectAction private constructor(
         }
 
         fun valueOf(scoreCategory: YahtzeeScoreCategory): YahtzeeAction {
-            return selectActions[scoreCategory.ordinal]
+            return valueOf(scoreCategory.ordinal)
         }
 
         private fun generateSelectActions(): List<YahtzeeSelectAction> {

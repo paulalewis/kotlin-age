@@ -4,7 +4,7 @@ import com.castlefrog.agl.State
 
 data class YahtzeeState(val diceValues: ByteArray = ByteArray(N_DICE),
                         var nRolls: Byte = 0,
-                        val scores: ByteArray = ByteArray(N_SCORES) {-1}) : State<YahtzeeState> {
+                        val scores: IntArray = IntArray(N_SCORES) {-1}) : State<YahtzeeState> {
 
     companion object {
         val N_DICE = 5
@@ -26,7 +26,7 @@ data class YahtzeeState(val diceValues: ByteArray = ByteArray(N_DICE),
         val scoreCategories = YahtzeeScoreCategory.values()
         for (i in 0..N_SCORES - 1) {
             output.append(scoreCategories[i].name).append(": ")
-            output.append(if (scores[i].toInt() != -1) scores[i] else "-")
+            output.append(if (scores[i] != -1) scores[i] else "-")
             if (i != N_SCORES - 1) {
                 output.append("\n")
             }
