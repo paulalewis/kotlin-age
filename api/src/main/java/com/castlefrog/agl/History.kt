@@ -8,13 +8,26 @@ import java.util.ArrayList
  */
 class History<S : State<S>, A : Action>(initialState: S) : Serializable {
 
-    private val nodes: MutableList<Node<S, A>>
+    private val nodes: MutableList<Node<S, A>> = ArrayList()
+
+    var index: Int = 0
+        private set
 
     data class Node<S, A>(val state: S, val actions: List<A>) : Serializable
 
     init {
-        nodes = ArrayList<Node<S, A>>()
-        add(initialState, ArrayList<A>())
+        add(initialState)
+    }
+
+    fun clear() {
+        val initialState = nodes[0].state
+        nodes.clear()
+        add(initialState)
+        index = 0
+    }
+
+    private fun add(state: S) {
+        add(state, ArrayList<A>())
     }
 
     /**
@@ -27,29 +40,43 @@ class History<S : State<S>, A : Action>(initialState: S) : Serializable {
      * *      the actions taken by each agent to end up in the current state
      */
     fun add(state: S, actions: List<A>) {
-        nodes.add(Node(state, actions))
-    }
-
-    fun add(state: S, actions: List<A>, index: Int) {
         while (index < nodes.size - 1) {
             removeLast()
         }
         nodes.add(Node(state, actions))
     }
 
-    fun removeLast() {
-        if (nodes.size > 0) {
+    private fun removeLast() {
+        if (hasPrevState()) {
             nodes.removeAt(nodes.size - 1)
         }
     }
 
-    fun getState(index: Int): S {
-        return nodes[index].state
+    fun hasPrevState(): Boolean {
+        return index > 0
     }
 
-    fun getActions(index: Int): List<A> {
-        return nodes[index].actions
+    fun hasNextState(): Boolean {
+        return index < nodes.size - 1
     }
+
+    fun nextState() {
+        if (hasNextState()) {
+            index++
+        }
+    }
+
+    fun prevState() {
+        if (hasPrevState()) {
+            index--
+        }
+    }
+
+    val state: S
+        get() = nodes[index].state
+
+    val actions: List<A>
+        get() = nodes[index].actions
 
     val size: Int
         get() = nodes.size
