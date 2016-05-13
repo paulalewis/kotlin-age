@@ -8,7 +8,7 @@ class Connect4ActionTest {
     @Test
     fun testCopy() {
         val action = Connect4Action.valueOf(2)
-        Truth.assertThat(action).isSameAs(action.copy)
+        Truth.assertThat(action).isSameAs(action.copy())
     }
 
     @Test
@@ -28,7 +28,7 @@ class Connect4ActionTest {
 
     @Test
     fun testValueOfUpperBound() {
-        Connect4Action.valueOf(7)
+        Connect4Action.valueOf(6)
     }
 
     @Test(expected = IndexOutOfBoundsException::class)
@@ -43,7 +43,7 @@ class Connect4ActionTest {
 
     @Test
     fun testToString() {
-        Truth.assertThat(Connect4Action.valueOf(2)).isEqualTo("3")
+        Truth.assertThat(Connect4Action.valueOf(2).toString()).isEqualTo("3")
     }
 
 }
