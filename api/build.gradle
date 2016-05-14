@@ -6,7 +6,6 @@ dependencies {
     compile 'io.reactivex:rxjava:1.0.11'
 
     testCompile "junit:junit:4.11"
-    //testCompile 'org.assertj:assertj-core:3.3.0'
     testCompile 'com.google.truth:truth:0.28'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
