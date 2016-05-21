@@ -2,11 +2,9 @@ package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.State
 
-import java.io.Serializable
-
 data class HexState(val boardSize: Int,
                val bitBoards: Array<ByteArray>,
-               var agentTurn: Byte) : State<HexState>, Serializable {
+               var agentTurn: Byte) : State<HexState> {
 
     companion object {
         val LOCATION_EMPTY = 0

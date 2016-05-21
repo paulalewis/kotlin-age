@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.hex
 
-import java.io.Serializable
 import java.util.ArrayList
 
 import com.castlefrog.agl.Action
@@ -8,7 +7,7 @@ import com.castlefrog.agl.Action
 /**
  * Immutable object that represents a hex action.
  */
-data class HexAction private constructor(val x: Byte, val y: Byte) : Action, Serializable {
+data class HexAction private constructor(val x: Byte, val y: Byte) : Action<HexAction> {
 
     override fun copy(): HexAction {
         return this

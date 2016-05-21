@@ -18,7 +18,7 @@ import java.util.concurrent.Executors
  * It allows each agent to run in its own thread for
  * simultaneous domains and records history and other game data.
  */
-class Arbiter<S : State<S>, A : Action>(private val history: History<S, A>,
+class Arbiter<S : State<S>, A : Action<A>>(private val history: History<S, A>,
                                         private val world: Simulator<S, A>,
                                         private val agents: List<Agent>) {
 

@@ -7,7 +7,7 @@ import com.castlefrog.agl.Action
 /**
  * @param location slot location to place piece
  */
-data class Connect4Action private constructor(val location: Int) : Action {
+data class Connect4Action private constructor(val location: Int) : Action<Connect4Action> {
 
     override fun copy(): Connect4Action {
         return this

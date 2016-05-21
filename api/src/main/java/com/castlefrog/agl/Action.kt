@@ -1,3 +1,3 @@
 package com.castlefrog.agl
 
-interface Action : Copyable<Action>
+interface Action<A : Action<A>> : Copyable<A>

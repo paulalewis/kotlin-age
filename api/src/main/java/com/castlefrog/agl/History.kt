@@ -1,19 +1,18 @@
 package com.castlefrog.agl
 
-import java.io.Serializable
 import java.util.ArrayList
 
 /**
  * Keeps track of state transition history.
  */
-class History<S : State<S>, A : Action>(initialState: S) : Serializable {
+class History<S : State<S>, A : Action<A>>(initialState: S) {
 
     private val nodes: MutableList<Node<S, A>> = ArrayList()
 
     var index: Int = 0
         private set
 
-    data class Node<S, A>(val state: S, val actions: List<A>) : Serializable
+    data class Node<S, A>(val state: S, val actions: List<A>)
 
     init {
         add(initialState)

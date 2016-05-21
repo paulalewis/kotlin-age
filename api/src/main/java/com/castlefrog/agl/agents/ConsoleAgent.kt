@@ -9,9 +9,9 @@ import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.State
 
 class ConsoleAgent : Agent {
-    override fun <S : State<S>, A : Action> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>): A {
+    override fun <S : State<S>, A : Action<A>> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>): A {
         simulator.state = state
-        val legalActions = simulator.getLegalActions(agentId)
+        val legalActions = simulator.legalActions[agentId]
         println(state)
         print("Input Move (" + legalActions.size + ") (")
         for (i in legalActions.indices) {
@@ -29,7 +29,7 @@ class ConsoleAgent : Agent {
         return action
     }
 
-    private fun <A : Action> matchToAction(input: String, actions: List<A>): A? {
+    private fun <A : Action<A>> matchToAction(input: String, actions: List<A>): A? {
         for (action in actions) {
             if (action.toString().equals(input, ignoreCase = true)) {
                 return action

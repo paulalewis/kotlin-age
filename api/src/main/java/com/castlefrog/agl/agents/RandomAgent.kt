@@ -12,9 +12,9 @@ import java.util.Random
  */
 class RandomAgent(val random: Random = Random()) : Agent {
 
-    override fun <S : State<S>, A : Action> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>): A {
+    override fun <S : State<S>, A : Action<A>> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>): A {
         simulator.state = state
-        val actions = simulator.getLegalActions(agentId)
+        val actions = simulator.legalActions[agentId]
         return actions[random.nextInt(31) % actions.size]
     }
 

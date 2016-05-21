@@ -1,67 +1,58 @@
 package com.castlefrog.agl.domains.biniax
 
+import com.castlefrog.agl.Simulator
 import java.util.ArrayList
 
-import com.castlefrog.agl.AbstractSimulator
-
 /**
- * Biniax is a single agent stochastic domain.
+ * Biniax is a single agent stochastic domain
  */
-class BiniaxSimulator : AbstractSimulator<BiniaxState, BiniaxAction> {
+class BiniaxSimulator(state: BiniaxState,
+                      legalActions: List<MutableList<BiniaxAction>>? = null,
+                      private val initialElements: Int,
+                      private val maxElements: Int,
+                      private val elementIncrementInterval: Int,
+                      private val maxFreeMoves: Int) :
+        Simulator<BiniaxState, BiniaxAction> {
 
-    private val initialElements: Int
-    private val maxElements: Int
-    private val elementIncrementInterval: Int
-    private val maxFreeMoves: Int
+    override var state: BiniaxState = state
+        set(value) {
+            field = value
+            _legalActions = null
+        }
 
-    private constructor(state: BiniaxState,
-                        initialElements: Int,
-                        maxElements: Int,
-                        elementIncrementInterval: Int,
-                        maxFreeMoves: Int) {
-        this.initialElements = initialElements
-        this.maxElements = maxElements
-        this.elementIncrementInterval = elementIncrementInterval
-        this.maxFreeMoves = maxFreeMoves
-        legalActions_ = ArrayList<List<BiniaxAction>>()
-        legalActions_.add(ArrayList<BiniaxAction>())
-        setState(state)
-        rewards_ = intArrayOf(1)
-    }
+    private var _legalActions: List<MutableList<BiniaxAction>>? = null
+    override val legalActions: List<MutableList<BiniaxAction>>
+        get() {
+            if (_legalActions == null) {
+                _legalActions = computeLegalActions(state)
+            }
+            return _legalActions ?: computeLegalActions(state)
+        }
 
-    private constructor(simulator: BiniaxSimulator,
-                        initialElements: Int,
-                        maxElements: Int,
-                        elementIncrementInterval: Int,
-                        maxFreeMoves: Int) : super(simulator) {
-        this.initialElements = initialElements
-        this.maxElements = maxElements
-        this.elementIncrementInterval = elementIncrementInterval
-        this.maxFreeMoves = maxFreeMoves
+    override val rewards: IntArray = intArrayOf(1)
+
+    init {
+        _legalActions = legalActions
     }
 
     override fun copy(): BiniaxSimulator {
-        return BiniaxSimulator(this, initialElements, maxElements, elementIncrementInterval, maxFreeMoves)
+        return BiniaxSimulator(state.copy(), _legalActions?.copy(), initialElements, maxElements, elementIncrementInterval, maxFreeMoves)
     }
 
-    override fun setState(state: BiniaxState) {
-        state_ = state
-        computeLegalActions()
-    }
-
-    override fun stateTransition(actions: List<BiniaxAction>) {
+    override fun stateTransition(actions: List<BiniaxAction?>) {
+        assert(actions.size == nAgents)
         val action = actions[0]
-        if (!legalActions_[0].contains(action)) {
-            throw IllegalArgumentException("Illegal action, $action, from state, $state_")
+        if (action == null || !legalActions[0].contains(action)) {
+            throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
 
-        val locations = state_.locations
-        var freeMoves = state_.freeMoves
-        val elementLocation = elementLocation
+        val locations = state.locations
+        var freeMoves = state.freeMoves
+        val elementLocation = state.elementLocation()
         var x = elementLocation[0]
         var y = elementLocation[1]
-        var element = state_.locations[x][y]
-        val nTurns = state_.nTurns
+        var element = state.locations[x][y]
+        val nTurns = state.nTurns
 
         locations[x][y] = 0
         when (action) {
@@ -69,8 +60,6 @@ class BiniaxSimulator : AbstractSimulator<BiniaxState, BiniaxAction> {
             BiniaxAction.EAST -> x++
             BiniaxAction.SOUTH -> y++
             BiniaxAction.WEST -> x--
-            else -> {
-            }
         }
 
         if (locations[x][y] / maxElements == element.toInt()) {
@@ -84,9 +73,9 @@ class BiniaxSimulator : AbstractSimulator<BiniaxState, BiniaxAction> {
         if (freeMoves.toInt() == 0) {
             freeMoves = maxFreeMoves.toByte()
             // Move all elements down
-            val emptyLocation = (Math.random() * state_.width).toInt()
-            for (i in state_.height - 1 downTo 0) {
-                for (j in 0..state_.width - 1) {
+            val emptyLocation = (Math.random() * state.width).toInt()
+            for (i in state.height - 1 downTo 0) {
+                for (j in 0..state.width - 1) {
                     if (i == 0) {
                         if (j != emptyLocation) {
                             if (Math.random() < IMPASSIBLE_CHANCE) {
@@ -106,111 +95,27 @@ class BiniaxSimulator : AbstractSimulator<BiniaxState, BiniaxAction> {
             // Move element back up if possible
             if (locations[x][y].toInt() == 0) {
                 locations[x][y] = element
-                if (y < state_.height - 1) {
+                if (y < state.height - 1) {
                     locations[x][y + 1] = 0
                 }
             } else if (locations[x][y] / maxElements == element.toInt()) {
                 locations[x][y] = (locations[x][y] % maxElements).toByte()
-                if (y < state_.height - 1) {
+                if (y < state.height - 1) {
                     locations[x][y + 1] = 0
                 }
             } else if (locations[x][y] % maxElements == element.toInt()) {
                 locations[x][y] = (locations[x][y] / maxElements).toByte()
-                if (y < state_.height - 1) {
+                if (y < state.height - 1) {
                     locations[x][y + 1] = 0
                 }
             }
         }
-        state_ = BiniaxState(locations, maxElements, freeMoves, nTurns + 1)
-        computeLegalActions()
+        state = BiniaxState(locations, maxElements, freeMoves, nTurns + 1)
     }
 
-    private val elementLocation: IntArray
-        get() {
-            for (i in 0..state_.width - 1) {
-                for (j in 0..state_.height - 1) {
-                    if (state_.locations[i][j] > 0 && state_.locations[i][j] < maxElements) {
-                        return intArrayOf(i, j)
-                    }
-                }
-            }
-            throw IllegalStateException("Element does not exist")
-        }
-
-    /**
-     * A legal action is one that moves the single element to an empty space or
-     * an element pair that contains that element and avoids being pushed off
-     * the board.
-     */
-    private fun computeLegalActions() {
-        legalActions_[0].clear()
-        val elementLocation = elementLocation
-        val x = elementLocation[0]
-        val y = elementLocation[1]
-        val element = state_.locations[x][y].toInt()
-        val locations = state_.locations
-
-        if (y != 0 && (locations[x][y - 1].toInt() == 0 ||
-                locations[x][y - 1] / maxElements == element ||
-                locations[x][y - 1] % maxElements == element)) {
-            legalActions_[0].add(BiniaxAction.NORTH)
-        }
-
-        if (x != state_.width - 1) {
-            var nextElement = 0
-            if (locations[x + 1][y].toInt() == 0) {
-                nextElement = element
-            } else if (locations[x + 1][y] / maxElements == element) {
-                nextElement = locations[x + 1][y] % maxElements
-            } else if (locations[x + 1][y] % 10 == element) {
-                nextElement = locations[x + 1][y] / maxElements
-            }
-
-            if (nextElement != 0) {
-                if (state_.freeMoves > 1 ||
-                        y < state_.height - 1 ||
-                        locations[x + 1][y - 1].toInt() == 0 ||
-                        locations[x + 1][y - 1] / maxElements == nextElement ||
-                        locations[x + 1][y - 1] % maxElements == nextElement) {
-                    legalActions_[0].add(BiniaxAction.EAST)
-                }
-            }
-        }
-
-        if (y != state_.height - 1 && (locations[x][y + 1].toInt() == 0 ||
-                locations[x][y + 1] / maxElements == element ||
-                locations[x][y + 1] % maxElements == element)) {
-            legalActions_[0].add(BiniaxAction.SOUTH)
-        }
-
-        if (x != 0) {
-            var nextElement = 0
-            if (locations[x - 1][y].toInt() == 0) {
-                nextElement = element
-            } else if (locations[x - 1][y] / maxElements == element) {
-                nextElement = locations[x - 1][y] % maxElements
-            } else if (locations[x - 1][y] % maxElements == element) {
-                nextElement = locations[x - 1][y] / maxElements
-            }
-
-            if (nextElement != 0) {
-                if (state_.freeMoves > 1 ||
-                        y < state_.height - 1 ||
-                        locations[x - 1][y - 1].toInt() == 0 ||
-                        locations[x - 1][y - 1] / maxElements == nextElement ||
-                        locations[x - 1][y - 1] % maxElements == nextElement) {
-                    legalActions_[0].add(BiniaxAction.WEST)
-                }
-            }
-        }
-    }
-
-    override fun getNAgents(): Int {
-        return N_AGENTS
-    }
+    override val nAgents: Int = 1
 
     companion object {
-        private val N_AGENTS = 1
         private val IMPASSIBLE_CHANCE = 0.0
         private val DEFAULT_WIDTH = 5
         private val DEFAULT_HEIGHT = 7
@@ -227,17 +132,12 @@ class BiniaxSimulator : AbstractSimulator<BiniaxState, BiniaxAction> {
                    elementIncrementInterval: Int = DEFAULT_ELEMENT_INCREMENT_INTERVAL,
                    maxFreeMoves: Int = DEFAULT_MAX_FREE_MOVES,
                    buffer: Int = DEFAULT_BUFFER): BiniaxSimulator {
-            return BiniaxSimulator(getInitialState(width, height, initialElements, maxElements,
+            return BiniaxSimulator(state = getInitialState(width, height, initialElements, maxElements,
                     elementIncrementInterval, maxFreeMoves, buffer),
-                    initialElements, maxElements, elementIncrementInterval, maxFreeMoves)
-        }
-
-        fun create(state: BiniaxState,
-                   initialElements: Int,
-                   maxElements: Int,
-                   elementIncrementInterval: Int,
-                   maxFreeMoves: Int): BiniaxSimulator {
-            return BiniaxSimulator(state, initialElements, maxElements, elementIncrementInterval, maxFreeMoves)
+                    initialElements = initialElements,
+                    maxElements = maxElements,
+                    elementIncrementInterval = elementIncrementInterval,
+                    maxFreeMoves = maxFreeMoves)
         }
 
         fun getInitialState(width: Int = DEFAULT_WIDTH,
@@ -261,6 +161,87 @@ class BiniaxSimulator : AbstractSimulator<BiniaxState, BiniaxAction> {
             }
             locations[width / 2][height - 1] = 1
             return BiniaxState(locations = locations, maxElements = maxElements, freeMoves = maxFreeMoves.toByte())
+        }
+
+        private fun BiniaxState.elementLocation(): IntArray {
+            for (i in 0..width - 1) {
+                for (j in 0..height - 1) {
+                    if (locations[i][j] > 0 && locations[i][j] < maxElements) {
+                        return intArrayOf(i, j)
+                    }
+                }
+            }
+            throw IllegalStateException("Element does not exist")
+        }
+
+        /**
+         * A legal action is one that moves the single element to an empty space or
+         * an element pair that contains that element and avoids being pushed off
+         * the board.
+         */
+        private fun computeLegalActions(state: BiniaxState): List<MutableList<BiniaxAction>> {
+            val legalActions = ArrayList<MutableList<BiniaxAction>>()
+            legalActions.add(ArrayList<BiniaxAction>())
+            val elementLocation = state.elementLocation()
+            val x = elementLocation[0]
+            val y = elementLocation[1]
+            val element = state.locations[x][y].toInt()
+            val locations = state.locations
+
+            if (y != 0 && (locations[x][y - 1].toInt() == 0 ||
+                    locations[x][y - 1] / state.maxElements == element ||
+                    locations[x][y - 1] % state.maxElements == element)) {
+                legalActions[0].add(BiniaxAction.NORTH)
+            }
+
+            if (x != state.width - 1) {
+                var nextElement = 0
+                if (locations[x + 1][y].toInt() == 0) {
+                    nextElement = element
+                } else if (locations[x + 1][y] / state.maxElements == element) {
+                    nextElement = locations[x + 1][y] % state.maxElements
+                } else if (locations[x + 1][y] % 10 == element) {
+                    nextElement = locations[x + 1][y] / state.maxElements
+                }
+
+                if (nextElement != 0) {
+                    if (state.freeMoves > 1 ||
+                            y < state.height - 1 ||
+                            locations[x + 1][y - 1].toInt() == 0 ||
+                            locations[x + 1][y - 1] / state.maxElements == nextElement ||
+                            locations[x + 1][y - 1] % state.maxElements == nextElement) {
+                        legalActions[0].add(BiniaxAction.EAST)
+                    }
+                }
+            }
+
+            if (y != state.height - 1 && (locations[x][y + 1].toInt() == 0 ||
+                    locations[x][y + 1] / state.maxElements == element ||
+                    locations[x][y + 1] % state.maxElements == element)) {
+                legalActions[0].add(BiniaxAction.SOUTH)
+            }
+
+            if (x != 0) {
+                var nextElement = 0
+                if (locations[x - 1][y].toInt() == 0) {
+                    nextElement = element
+                } else if (locations[x - 1][y] / state.maxElements == element) {
+                    nextElement = locations[x - 1][y] % state.maxElements
+                } else if (locations[x - 1][y] % state.maxElements == element) {
+                    nextElement = locations[x - 1][y] / state.maxElements
+                }
+
+                if (nextElement != 0) {
+                    if (state.freeMoves > 1 ||
+                            y < state.height - 1 ||
+                            locations[x - 1][y - 1].toInt() == 0 ||
+                            locations[x - 1][y - 1] / state.maxElements == nextElement ||
+                            locations[x - 1][y - 1] % state.maxElements == nextElement) {
+                        legalActions[0].add(BiniaxAction.WEST)
+                    }
+                }
+            }
+            return legalActions
         }
 
         /**

@@ -1,119 +1,55 @@
 package com.castlefrog.agl.domains.yahtzee
 
+import com.castlefrog.agl.Simulator
 import java.util.ArrayList
 
-import com.castlefrog.agl.AbstractSimulator
+class YahtzeeSimulator(state: YahtzeeState,
+                       legalActions: List<MutableList<YahtzeeAction>>? = null,
+                       rewards: IntArray? = null) : Simulator<YahtzeeState, YahtzeeAction> {
 
-class YahtzeeSimulator : AbstractSimulator<YahtzeeState, YahtzeeAction> {
+    override var state: YahtzeeState = state
+        set(value) {
+            field = value
+            _legalActions = null
+            _rewards = null
+        }
 
-    private var nCategoriesLeft: Int = 0
+    private var _legalActions: List<MutableList<YahtzeeAction>>? = null
+    override val legalActions: List<MutableList<YahtzeeAction>>
+        get() {
+            if (_legalActions == null) {
+                _legalActions = computeLegalActions(state)
+            }
+            return _legalActions ?: computeLegalActions(state)
+        }
 
-    private constructor(state: YahtzeeState) {
-        legalActions_ = ArrayList<List<YahtzeeAction>>()
-        legalActions_.add(ArrayList<YahtzeeAction>())
-        setState(state)
-    }
+    private var _rewards: IntArray? = null
+    override val rewards: IntArray
+        get() {
+            if (_rewards == null) {
+                _rewards = intArrayOf(computeReward(state))
+            }
+            return _rewards ?: intArrayOf(computeReward(state))
+        }
 
-    private constructor(simulator: YahtzeeSimulator,
-                        nCategoriesLeft: Int) : super(simulator) {
-        this.nCategoriesLeft = nCategoriesLeft
+    init {
+        _legalActions = legalActions
+        _rewards = rewards
     }
 
     override fun copy(): YahtzeeSimulator {
-        return YahtzeeSimulator(this, nCategoriesLeft)
+        return YahtzeeSimulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf())
     }
 
-    override fun setState(state: YahtzeeState) {
-        state_ = state
-        rewards_ = IntArray(N_AGENTS)
-        nCategoriesLeft = computeCategoriesLeft(state.scores)
-        computeLegalActions()
-        computeRewards()
-    }
-
-    private fun computeLegalActions() {
-        clearLegalActions()
-        if (nCategoriesLeft != 0) {
-            if (state_.nRolls < 3) {
-                val diceValues = state_.diceValues
-                for (i in 0..diceValues[0]) {
-                    for (j in 0..diceValues[1]) {
-                        for (k in 0..diceValues[2]) {
-                            for (l in 0..diceValues[3]) {
-                                for (m in 0..diceValues[4]) {
-                                    for (n in 0..diceValues[5]) {
-                                        legalActions_[0].add(YahtzeeRollAction(byteArrayOf(i.toByte(), j.toByte(), k.toByte(), l.toByte(), m.toByte(), n.toByte())))
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                val yahtzee = checkYahtzee(state_.diceValues)
-                if (yahtzee == -1 || state_.scores[yahtzee] != -1) {
-                    for (i in 0..YahtzeeState.N_SCORES - 1) {
-                        if (state_.scores[i] == -1) {
-                            legalActions_[0].add(YahtzeeSelectAction.valueOf(i))
-                        }
-                    }
-                } else {
-                    legalActions_[0].add(YahtzeeSelectAction.valueOf(yahtzee))
-                    if (state_.scores[YahtzeeScoreCategory.YAHTZEE.ordinal] == -1) {
-                        legalActions_[0].add(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.YAHTZEE))
-                    }
-                }
-            }
-        }
-    }
-
-    private fun computeCategoriesLeft(scores: IntArray): Int {
-        var nCategoriesLeft = 0
-        for (i in 0..scores.size - 1) {
-            if (scores[i] == -1) {
-                nCategoriesLeft += 1
-            }
-        }
-        return nCategoriesLeft
-    }
-
-    /**
-     * @return die number corresponding to yahtzee or -1 if no yahtzee
-     */
-    private fun checkYahtzee(diceValues: ByteArray): Int {
-        for (i in 0..YahtzeeState.N_VALUES - 1) {
-            if (diceValues[i].toInt() == YahtzeeState.N_DICE) {
-                return i
-            }
-        }
-        return -1
-    }
-
-    private fun computeRewards() {
-        if (isTerminalState) {
-            val scores = state_.scores
-            for (i in 0..5) {
-                rewards_[0] += scores[i]
-            }
-            if (rewards_[0] >= 63) {
-                rewards_[0] += 35
-            }
-            for (i in 6..YahtzeeState.N_SCORES - 1) {
-                rewards_[0] += scores[i]
-            }
-        }
-    }
-
-    override fun stateTransition(actions: List<YahtzeeAction>) {
+    override fun stateTransition(actions: List<YahtzeeAction?>) {
         val action = actions[0]
-        if (!legalActions_[0].contains(action)) {
-            println("nCategories = " + nCategoriesLeft)
-            throw IllegalArgumentException("Illegal action, $action, from state, $state_")
+        if (action == null || !legalActions[0].contains(action)) {
+            throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
 
-        var diceValues = state_.diceValues
-        var rolls = state_.nRolls.toInt()
-        val scores = state_.scores
+        var diceValues = state.diceValues
+        var rolls = state.nRolls.toInt()
+        val scores = state.scores
         val yahtzee = checkYahtzee(diceValues)
         if (yahtzee != -1 && scores[YahtzeeScoreCategory.YAHTZEE.ordinal] >= 50) {
             scores[YahtzeeScoreCategory.YAHTZEE.ordinal] += 100
@@ -217,23 +153,95 @@ class YahtzeeSimulator : AbstractSimulator<YahtzeeState, YahtzeeAction> {
                 diceValues[(Math.random() * YahtzeeState.N_VALUES).toInt()].inc()
             }
             rolls = 1
-            nCategoriesLeft -= 1
         }
-        state_ = YahtzeeState(diceValues, rolls.toByte(), scores)
-        computeLegalActions()
-        computeRewards()
+        state = YahtzeeState(diceValues, rolls.toByte(), scores)
     }
 
-    override fun getNAgents(): Int {
-        return N_AGENTS
-    }
+    override val nAgents: Int = 1
 
     companion object {
-        private val N_AGENTS = 1
 
         fun create(state: YahtzeeState): YahtzeeSimulator {
             return YahtzeeSimulator(state)
         }
+
+        private fun computeLegalActions(state: YahtzeeState): List<MutableList<YahtzeeAction>> {
+            val legalActions = ArrayList<MutableList<YahtzeeAction>>()
+            legalActions.add(ArrayList<YahtzeeAction>())
+            if (state.hasCategoriesLeft()) {
+                if (state.nRolls < 3) {
+                    val diceValues = state.diceValues
+                    for (i in 0..diceValues[0]) {
+                        for (j in 0..diceValues[1]) {
+                            for (k in 0..diceValues[2]) {
+                                for (l in 0..diceValues[3]) {
+                                    for (m in 0..diceValues[4]) {
+                                        for (n in 0..diceValues[5]) {
+                                            legalActions[0].add(YahtzeeRollAction(byteArrayOf(i.toByte(), j.toByte(),
+                                                    k.toByte(), l.toByte(), m.toByte(), n.toByte())))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    val yahtzee = checkYahtzee(state.diceValues)
+                    if (yahtzee == -1 || state.scores[yahtzee] != -1) {
+                        for (i in 0..YahtzeeState.N_SCORES - 1) {
+                            if (state.scores[i] == -1) {
+                                legalActions[0].add(YahtzeeSelectAction.valueOf(i))
+                            }
+                        }
+                    } else {
+                        legalActions[0].add(YahtzeeSelectAction.valueOf(yahtzee))
+                        if (state.scores[YahtzeeScoreCategory.YAHTZEE.ordinal] == -1) {
+                            legalActions[0].add(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.YAHTZEE))
+                        }
+                    }
+                }
+            }
+            return legalActions
+        }
+
+        private fun computeReward(state: YahtzeeState): Int {
+            var rewards = 0
+            if (!state.hasCategoriesLeft()) {
+                val scores = state.scores
+                for (i in 0..5) {
+                    rewards += scores[i]
+                }
+                if (rewards >= 63) {
+                    rewards += 35
+                }
+                for (i in 6..YahtzeeState.N_SCORES - 1) {
+                    rewards += scores[i]
+                }
+            }
+            return rewards
+        }
+
+        /**
+         * @return die number corresponding to yahtzee or -1 if no yahtzee
+         */
+        private fun checkYahtzee(diceValues: ByteArray): Int {
+            for (i in 0..YahtzeeState.N_VALUES - 1) {
+                if (diceValues[i].toInt() == YahtzeeState.N_DICE) {
+                    return i
+                }
+            }
+            return -1
+        }
+
+        fun YahtzeeState.hasCategoriesLeft(): Boolean {
+            for (i in 0..scores.size - 1) {
+                if (scores[i] == -1) {
+                    return true
+                }
+            }
+            return false
+        }
+
     }
 
 }

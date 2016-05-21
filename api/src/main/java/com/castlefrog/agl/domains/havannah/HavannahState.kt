@@ -2,11 +2,9 @@ package com.castlefrog.agl.domains.havannah
 
 import com.castlefrog.agl.State
 
-import java.io.Serializable
-
 data class HavannahState(val base: Int,
                     val locations: Array<ByteArray>,
-                    var agentTurn: Byte) : State<HavannahState>, Serializable {
+                    var agentTurn: Byte) : State<HavannahState> {
 
     companion object {
         val LOCATION_EMPTY: Byte = 0
@@ -33,10 +31,11 @@ data class HavannahState(val base: Int,
         get() = locations.size
 
     val nLocations: Int
-        get() = 3 * base.toInt() * base.toInt() - 3 * base + 1
+        get() = 3 * base * base - 3 * base + 1
 
     val corners: Array<IntArray>
-        get() = arrayOf(intArrayOf(0, 0), intArrayOf(0, base - 1), intArrayOf(base - 1, 0), intArrayOf(base - 1, size - 1), intArrayOf(size - 1, base - 1), intArrayOf(size - 1, size - 1))
+        get() = arrayOf(intArrayOf(0, 0), intArrayOf(0, base - 1), intArrayOf(base - 1, 0),
+                intArrayOf(base - 1, size - 1), intArrayOf(size - 1, base - 1), intArrayOf(size - 1, size - 1))
 
     val sides: Array<Array<IntArray>>
         get() {
@@ -72,6 +71,17 @@ data class HavannahState(val base: Int,
             }
             return nPieces
         }
+
+    override fun hashCode(): Int {
+        var hashCode = 17 + agentTurn
+        hashCode = hashCode * 31 + base
+        for (i in 0..locations.size - 1) {
+            for (j in 0..locations.size - 1) {
+                hashCode = hashCode * 31 + locations[i][j]
+            }
+        }
+        return hashCode
+    }
 
     override fun equals(other: Any?): Boolean {
         if (other !is HavannahState) {

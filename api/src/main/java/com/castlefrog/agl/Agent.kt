@@ -13,5 +13,5 @@ interface Agent {
      * @param simulator simulator that determines action outcomes in domain.
      * @return selected action from the current state.
      */
-    fun <S : State<S>, A : Action> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>): A
+    fun <S : State<S>, A : Action<A>> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>): A
 }

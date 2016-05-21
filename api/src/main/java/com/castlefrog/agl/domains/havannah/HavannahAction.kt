@@ -1,11 +1,10 @@
 package com.castlefrog.agl.domains.havannah
 
-import java.io.Serializable
 import java.util.Vector
 
 import com.castlefrog.agl.Action
 
-data class HavannahAction private constructor(val x: Byte, val y: Byte) : Action, Serializable {
+data class HavannahAction private constructor(val x: Byte, val y: Byte) : Action<HavannahAction> {
 
     override fun copy(): HavannahAction {
         return this

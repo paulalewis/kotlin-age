@@ -79,7 +79,7 @@ class HavannahSimulatorTest {
         locations[1][0] = HavannahState.LOCATION_WHITE
         locations[1][2] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_WHITE)
-        val simulator = HavannahSimulator.create(state, false)
+        val simulator = HavannahSimulator(state = state, pieRule = false)
         assertThat(simulator.rewards).isEqualTo(intArrayOf(1, -1))
     }
 
@@ -97,7 +97,7 @@ class HavannahSimulatorTest {
         locations[0][3] = HavannahState.LOCATION_WHITE
         locations[0][4] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_BLACK)
-        val simulator = HavannahSimulator.create(state, false)
+        val simulator = HavannahSimulator(state = state, pieRule = false)
         assertThat(simulator.rewards).isEqualTo(intArrayOf(-1, 1))
     }
 
@@ -116,7 +116,7 @@ class HavannahSimulatorTest {
         locations[0][3] = HavannahState.LOCATION_WHITE
         locations[3][3] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_WHITE)
-        val simulator = HavannahSimulator.create(state, false)
+        val simulator = HavannahSimulator(state = state, pieRule = false)
         assertThat(simulator.rewards).isEqualTo(intArrayOf(1, -1))
     }
 

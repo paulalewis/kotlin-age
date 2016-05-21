@@ -3,7 +3,7 @@ package com.castlefrog.agl.domains.backgammon
 import com.castlefrog.agl.Action
 import java.util.HashSet
 
-data class BackgammonAction(val moves: Set<BackgammonMove>) : Action {
+data class BackgammonAction(val moves: Set<BackgammonMove>) : Action<BackgammonAction> {
 
     override fun copy(): BackgammonAction {
         return copy(HashSet<BackgammonMove>(this.moves))
