@@ -3,14 +3,13 @@ apply plugin: 'kotlin'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'io.reactivex:rxjava:1.0.11'
+    compile 'io.reactivex:rxjava:1.1.5'
 
     testCompile "junit:junit:4.11"
     testCompile 'com.google.truth:truth:0.28'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 buildscript {
-    ext.kotlin_version = '1.0.1'
     repositories {
         jcenter()
     }
