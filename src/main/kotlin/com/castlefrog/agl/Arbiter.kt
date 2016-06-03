@@ -18,20 +18,12 @@ import java.util.concurrent.Executors
  * It allows each agent to run in its own thread for
  * simultaneous domains and records history and other game data.
  */
-class Arbiter<S : State<S>, A : Action<A>>(private val history: History<S, A>,
-                                        private val world: Simulator<S, A>,
-                                        private val agents: List<Agent>) {
+class Arbiter<S : State<S>, A : Action<A>>(val history: History<S, A>,
+                                        val world: Simulator<S, A>,
+                                        val agents: List<Agent>) {
 
-    private val decisionTimes: LongArray
-    private var listener: OnEventListener = DummyOnEventListener()
-
-    interface OnEventListener {
-        fun onStep()
-    }
-
-    inner class DummyOnEventListener : OnEventListener {
-        override fun onStep() {}
-    }
+    val decisionTimes: LongArray
+    var listener = {}
 
     init {
         if (world.nAgents != agents.size) {
@@ -82,7 +74,7 @@ class Arbiter<S : State<S>, A : Action<A>>(private val history: History<S, A>,
                     .subscribe { actions ->
                         world.stateTransition(actions)
                         history.add(world.state, actions)
-                        listener.onStep()
+                        listener
                     }
         }
     }
@@ -107,10 +99,6 @@ class Arbiter<S : State<S>, A : Action<A>>(private val history: History<S, A>,
         }
     }
 
-    fun getDecisionTimes(): LongArray {
-        return decisionTimes
-    }
-
     fun getRewards(): IntArray {
         return world.rewards
     }
@@ -119,7 +107,4 @@ class Arbiter<S : State<S>, A : Action<A>>(private val history: History<S, A>,
         return world.isTerminalState
     }
 
-    fun setOnStateChangeListener(listener: OnEventListener) {
-        this.listener = listener
-    }
 }
