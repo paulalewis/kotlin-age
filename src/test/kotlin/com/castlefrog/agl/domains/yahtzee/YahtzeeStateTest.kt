@@ -1,30 +1,29 @@
 package com.castlefrog.agl.domains.yahtzee
 
+import com.google.common.truth.Truth
 import org.junit.Test
-
-import com.google.common.truth.Truth.assertThat
 
 class YahtzeeStateTest {
 
     @Test
     fun testCopy() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()})
-        assertThat(yahtzeeState).isEqualTo(yahtzeeState.copy())
-        assertThat(yahtzeeState).isNotSameAs(yahtzeeState.copy())
+        Truth.assertThat(yahtzeeState).isEqualTo(yahtzeeState.copy())
+        Truth.assertThat(yahtzeeState).isNotSameAs(yahtzeeState.copy())
     }
 
     @Test
     fun testEqualityNotEqual() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()})
         val otherYahtzeeState = YahtzeeState()
-        assertThat(yahtzeeState).isNotEqualTo(otherYahtzeeState)
+        Truth.assertThat(yahtzeeState).isNotEqualTo(otherYahtzeeState)
     }
 
     @Test
     fun testToString() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()},
                 nRolls = 1, scores = IntArray(YahtzeeState.N_SCORES))
-        assertThat(yahtzeeState.toString())
+        Truth.assertThat(yahtzeeState.toString())
                 .isEqualTo("""
                     |1 - [ 0 1 2 3 4 ]
                     |ONES: 0
@@ -46,7 +45,7 @@ class YahtzeeStateTest {
     @Test
     fun testToString2() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()}, nRolls = 1)
-        assertThat(yahtzeeState.toString())
+        Truth.assertThat(yahtzeeState.toString())
                 .isEqualTo("""
                     |1 - [ 0 1 2 3 4 ]
                     |ONES: -

@@ -8,20 +8,14 @@ class BackgammonActionTest {
 
     @Test
     fun testCopy() {
-        val moves = HashSet<BackgammonMove>()
-        moves.add(BackgammonMove.valueOf(1, 2))
-        moves.add(BackgammonMove.valueOf(2, 1))
-        val action = BackgammonAction(moves)
+        val action = BackgammonAction(hashSetOf(BackgammonMove.valueOf(1, 2), BackgammonMove.valueOf(2, 1)))
         Truth.assertThat(action).isEqualTo(action.copy())
         Truth.assertThat(action).isNotSameAs(action.copy())
     }
 
     @Test
     fun testToString() {
-        val moves = HashSet<BackgammonMove>()
-        moves.add(BackgammonMove.valueOf(1, 2))
-        moves.add(BackgammonMove.valueOf(2, 1))
-        val action = BackgammonAction(moves)
+        val action = BackgammonAction(hashSetOf(BackgammonMove.valueOf(1, 2), BackgammonMove.valueOf(2, 1)))
         Truth.assertThat(action.toString()).isEqualTo("[ 1/2 2/1 ]")
     }
 

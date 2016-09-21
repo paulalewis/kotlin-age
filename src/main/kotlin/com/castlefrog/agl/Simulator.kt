@@ -28,6 +28,9 @@ interface Simulator<S : State<S>, A : Action<A>> : Copyable<Simulator<S, A>> {
      * The number of agents in the given domain.
      */
     val nAgents: Int
+        get() {
+            return rewards.size
+        }
 
     /**
      * A simulator takes a list of actions to transition from
@@ -43,7 +46,7 @@ interface Simulator<S : State<S>, A : Action<A>> : Copyable<Simulator<S, A>> {
     val isTerminalState: Boolean
         get() {
             for (i in 0..legalActions.size - 1) {
-                if (legalActions[i].size != 0) {
+                if (!legalActions[i].isEmpty()) {
                     return false
                 }
             }

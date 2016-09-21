@@ -1,9 +1,8 @@
 package com.castlefrog.agl.domains.havannah
 
+import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Test
-
-import com.google.common.truth.Truth.assertThat
 
 class HavannahStateTest {
 
@@ -21,15 +20,15 @@ class HavannahStateTest {
 
     @Test
     fun testCopy() {
-        assertThat(havannahState).isEqualTo(havannahState.copy())
-        assertThat(havannahState.locations).isNotSameAs(havannahState.copy().locations)
+        Truth.assertThat(havannahState).isEqualTo(havannahState.copy())
+        Truth.assertThat(havannahState.locations).isNotSameAs(havannahState.copy().locations)
     }
 
     @Test
     fun testCopyModifyNotEqual() {
         val stateCopy = havannahState.copy()
         stateCopy.locations[2][1] = HavannahState.LOCATION_EMPTY
-        assertThat(havannahState).isNotEqualTo(stateCopy)
+        Truth.assertThat(havannahState).isNotEqualTo(stateCopy)
     }
 
     @Test
@@ -40,7 +39,7 @@ class HavannahStateTest {
         otherHavannahState.locations[1][0] = HavannahState.LOCATION_BLACK
         otherHavannahState.locations[3][1] = HavannahState.LOCATION_WHITE
         otherHavannahState.locations[3][3] = HavannahState.LOCATION_WHITE
-        assertThat(otherHavannahState).isEqualTo(havannahState)
+        Truth.assertThat(otherHavannahState).isEqualTo(havannahState)
     }
 
     @Test
@@ -51,7 +50,7 @@ class HavannahStateTest {
         otherHavannahState.locations[1][0] = HavannahState.LOCATION_BLACK
         otherHavannahState.locations[3][1] = HavannahState.LOCATION_WHITE
         otherHavannahState.locations[3][3] = HavannahState.LOCATION_WHITE
-        assertThat(otherHavannahState).isNotEqualTo(havannahState)
+        Truth.assertThat(otherHavannahState).isNotEqualTo(havannahState)
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException::class)
@@ -81,17 +80,18 @@ class HavannahStateTest {
 
     @Test
     fun testGetLocation() {
-        assertThat(havannahState.locations[havannahState.base - 1][havannahState.base - 1]).isEqualTo(HavannahState.LOCATION_EMPTY)
+        Truth.assertThat(havannahState.locations[havannahState.base - 1][havannahState.base - 1])
+                .isEqualTo(HavannahState.LOCATION_EMPTY)
     }
 
     @Test
     fun testLocationIsEmpty() {
-        assertThat(havannahState.isLocationEmpty(0, 1)).isTrue()
+        Truth.assertThat(havannahState.isLocationEmpty(0, 1)).isTrue()
     }
 
     @Test
     fun testLocationIsNotEmpty() {
-        assertThat(havannahState.isLocationEmpty(1, 1)).isFalse()
+        Truth.assertThat(havannahState.isLocationEmpty(1, 1)).isFalse()
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException::class)
@@ -106,17 +106,17 @@ class HavannahStateTest {
 
     @Test
     fun testGetNPiecesEmpty() {
-        assertThat(emptyState.nPieces).isEqualTo(0)
+        Truth.assertThat(emptyState.nPieces).isEqualTo(0)
     }
 
     @Test
     fun testGetNPieces() {
-        assertThat(havannahState.nPieces).isEqualTo(5)
+        Truth.assertThat(havannahState.nPieces).isEqualTo(5)
     }
 
     @Test
     fun testToString() {
-        assertThat(havannahState.toString())
+        Truth.assertThat(havannahState.toString())
                 .isEqualTo("""
                 |    - - - - -
                 |   - - - - - -
