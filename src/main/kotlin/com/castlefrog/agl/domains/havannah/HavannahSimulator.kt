@@ -39,6 +39,11 @@ class HavannahSimulator(state: HavannahState,
             return _rewards ?: computeRewards(state, corners, sides)
         }
 
+    init {
+        _legalActions = legalActions
+        _rewards = rewards
+    }
+
     override fun copy(): HavannahSimulator {
         return HavannahSimulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf(), pieRule, corners, sides)
     }

@@ -42,7 +42,7 @@ interface Simulator<S : State<S>, A : Action<A>> : Copyable<Simulator<S, A>> {
      */
     val isTerminalState: Boolean
         get() {
-            for (i in 0..nAgents - 1) {
+            for (i in 0..legalActions.size - 1) {
                 if (legalActions[i].size != 0) {
                     return false
                 }
