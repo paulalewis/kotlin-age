@@ -12,7 +12,7 @@ class History<S : State<S>, A : Action<A>>(initialState: S) {
     var index: Int = 0
         private set
 
-    data class Node<S, A>(val state: S, val actions: List<A>)
+    data class Node<out S, out A>(val state: S, val actions: List<A>)
 
     init {
         add(initialState)
