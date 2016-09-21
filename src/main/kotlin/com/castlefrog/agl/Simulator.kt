@@ -25,19 +25,19 @@ interface Simulator<S : State<S>, A : Action<A>> : Copyable<Simulator<S, A>> {
     val rewards: IntArray
 
     /**
+     * A simulator takes a list of actions to transition from
+     * one state to another.
+     * @param actions list of actions to be performed by each agent.
+     */
+    fun stateTransition(actions: List<A?>)
+
+    /**
      * The number of agents in the given domain.
      */
     val nAgents: Int
         get() {
             return rewards.size
         }
-
-    /**
-     * A simulator takes a list of actions to transition from
-     * one state to another.
-     * @param actions list of actions to be performed by each agent.
-     */
-    fun stateTransition(actions: List<A?>)
 
     /**
      * A state is terminal if no agent has any

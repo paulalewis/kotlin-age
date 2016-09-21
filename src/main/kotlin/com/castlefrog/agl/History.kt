@@ -1,13 +1,13 @@
 package com.castlefrog.agl
 
-import java.util.ArrayList
+import java.util.LinkedList
 
 /**
  * Keeps track of state transition history.
  */
 class History<S : State<S>, A : Action<A>>(initialState: S) {
 
-    private val nodes: MutableList<Node<S, A>> = ArrayList()
+    private val nodes: MutableList<Node<S, A>> = LinkedList()
 
     var index: Int = 0
         private set
@@ -15,18 +15,14 @@ class History<S : State<S>, A : Action<A>>(initialState: S) {
     data class Node<out S, out A>(val state: S, val actions: List<A>)
 
     init {
-        add(initialState)
+        add(initialState, emptyList())
     }
 
     fun clear() {
         val initialState = nodes[0].state
         nodes.clear()
-        add(initialState)
+        add(initialState, emptyList())
         index = 0
-    }
-
-    private fun add(state: S) {
-        add(state, ArrayList<A>())
     }
 
     /**
