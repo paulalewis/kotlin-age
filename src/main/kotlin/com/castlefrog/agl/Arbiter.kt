@@ -58,7 +58,7 @@ class Arbiter<S : State<S>, A : Action<A>>(val history: History<S, A>,
                 val agentId = i
                 selectActionObservables.add(
                         Observable.defer {
-                            Observable.just(agents[agentId].selectAction(agentId, world.state, world.copy()))
+                            Observable.just(agents[agentId].selectAction(agentId, world.state, world.copy()).get())
                         })
             }
 
