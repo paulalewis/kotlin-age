@@ -1,40 +1,11 @@
 package com.castlefrog.agl.agents
 
-import com.castlefrog.agl.Action
-import com.castlefrog.agl.Simulator
-import com.castlefrog.agl.State
 import com.google.common.truth.Truth
 import org.junit.Test
 import java.util.ArrayList
 import java.util.Random
 
 class RandomAgentTest {
-
-    data class TestState(val value: Int = 0): State<TestState> {
-        override fun copy(): TestState {
-            return TestState(value)
-        }
-    }
-
-    data class TestAction(val value: Int = 0): Action<TestAction> {
-        override fun copy(): TestAction {
-            return TestAction(value)
-        }
-    }
-
-    class TestSimulator(override var state: TestState,
-                        override val legalActions: List<MutableList<TestAction>>,
-                        override val rewards: IntArray) : Simulator<TestState, TestAction> {
-
-        override fun copy(): Simulator<TestState, TestAction> {
-            return TestSimulator(state.copy(), legalActions.copy(), rewards.copyOf())
-        }
-
-        override fun stateTransition(actions: List<TestAction?>) {
-            throw UnsupportedOperationException("not implemented")
-        }
-
-    }
 
     @Test
     fun testSelectActionInvalidLegalActionsArray() {

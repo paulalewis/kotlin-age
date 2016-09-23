@@ -7,9 +7,11 @@ import com.castlefrog.agl.Action
 import com.castlefrog.agl.Agent
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.State
+import java.util.Optional
 
 class ConsoleAgent : Agent {
-    override fun <S : State<S>, A : Action<A>> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>): A {
+    override fun <S : State<S>, A : Action<A>> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>):
+            Optional<A> {
         simulator.state = state
         val legalActions = simulator.legalActions[agentId]
         println(state)
@@ -26,7 +28,7 @@ class ConsoleAgent : Agent {
             val input = input
             action = matchToAction(input, legalActions)
         } while (action == null)
-        return action
+        return Optional.of(action)
     }
 
     private fun <A : Action<A>> matchToAction(input: String, actions: List<A>): A? {
