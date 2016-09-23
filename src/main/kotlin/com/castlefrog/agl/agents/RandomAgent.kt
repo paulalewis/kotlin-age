@@ -4,6 +4,7 @@ import com.castlefrog.agl.Action
 import com.castlefrog.agl.Agent
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.State
+import java.util.Optional
 import java.util.Random
 
 /**
@@ -12,10 +13,18 @@ import java.util.Random
  */
 class RandomAgent(val random: Random = Random()) : Agent {
 
-    override fun <S : State<S>, A : Action<A>> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>): A {
+    override fun <S : State<S>, A : Action<A>> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>):
+            Optional<A> {
         simulator.state = state
+        val legalActions = simulator.legalActions
+        if (agentId >= legalActions.size) {
+            return Optional.empty()
+        }
         val actions = simulator.legalActions[agentId]
-        return actions[random.nextInt(31) % actions.size]
+        if (actions.isEmpty()) {
+            return Optional.empty()
+        }
+        return Optional.of(actions[random.nextInt(31) % actions.size])
     }
 
     override fun toString(): String {
