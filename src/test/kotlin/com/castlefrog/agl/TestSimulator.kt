@@ -1,4 +1,4 @@
-package com.castlefrog.agl.agents
+package com.castlefrog.agl
 
 import com.castlefrog.agl.Simulator
 

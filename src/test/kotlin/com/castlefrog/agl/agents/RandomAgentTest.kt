@@ -1,5 +1,8 @@
 package com.castlefrog.agl.agents
 
+import com.castlefrog.agl.TestAction
+import com.castlefrog.agl.TestSimulator
+import com.castlefrog.agl.TestState
 import com.google.common.truth.Truth
 import org.junit.Test
 import java.util.ArrayList
