@@ -1,12 +1,7 @@
 package com.castlefrog.agl
 
-import rx.Observable
-import rx.Scheduler
-import rx.functions.Action1
-import rx.functions.Func0
-import rx.functions.FuncN
-import rx.schedulers.Schedulers
-
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import java.util.ArrayList
 import java.util.Vector
 import java.util.concurrent.CountDownLatch
@@ -70,7 +65,7 @@ class Arbiter<S : State<S>, A : Action<A>>(val history: History<S, A>,
                 actions
             }
                     .subscribeOn(Schedulers.computation())
-                    .observeOn(Schedulers.immediate())
+                    .observeOn(Schedulers.trampoline())
                     .subscribe { actions ->
                         world.stateTransition(actions)
                         history.add(world.state, actions)
