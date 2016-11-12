@@ -10,10 +10,6 @@ enum class TurnType {
     SEQUENTIAL,
     /** player move order randomized  */
     RANDOM_ORDER,
-    /** next player to move decided by bidding  */
-    BIDDING,
     /** players move at same time  */
-    SIMULTANEOUS,
-    /** players move at same time, conflicts resolved with priority  */
-    SIMULTANEOUS_PRIORITY
+    SIMULTANEOUS
 }

@@ -35,23 +35,14 @@ interface Simulator<S : State<S>, A : Action<A>> : Copyable<Simulator<S, A>> {
      * The number of agents in the given domain.
      */
     val nAgents: Int
-        get() {
-            return rewards.size
-        }
+        get() = rewards.size
 
     /**
      * A state is terminal if no agent has any
      * legal actions from the current state.
      */
     val isTerminalState: Boolean
-        get() {
-            for (i in 0..legalActions.size - 1) {
-                if (!legalActions[i].isEmpty()) {
-                    return false
-                }
-            }
-            return true
-        }
+        get() = (0..legalActions.size - 1).all { legalActions[it].isEmpty() }
 
     fun <A : Action<A>> List<MutableList<A>>.copy(): List<MutableList<A>> {
         val legalActions = ArrayList<MutableList<A>>()
