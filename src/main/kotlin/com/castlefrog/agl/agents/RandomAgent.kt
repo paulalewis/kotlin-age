@@ -28,7 +28,7 @@ class RandomAgent(val random: Random = Random()) : Agent {
     }
 
     override fun toString(): String {
-        return javaClass.simpleName
+        return "RandomAgent(random=$random)"
     }
 
 }
