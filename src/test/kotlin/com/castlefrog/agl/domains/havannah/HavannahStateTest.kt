@@ -127,7 +127,7 @@ class HavannahStateTest {
                 |  - - - - - - -
                 |   - X X O - -
                 |    - X - - -
-                """.trimMargin());
+                """.trimMargin())
     }
 
 }

@@ -3,7 +3,6 @@ package com.castlefrog.agl.domains.connect4
 import com.castlefrog.agl.TurnType
 import com.google.common.truth.Truth
 import org.junit.Test
-import java.util.ArrayList
 
 
 class Connect4SimulatorTest {

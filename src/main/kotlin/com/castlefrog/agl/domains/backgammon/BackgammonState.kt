@@ -32,9 +32,9 @@ data class BackgammonState(val locations: ByteArray = byteArrayOf(0, 2, 0, 0, 0,
     }
 
     override fun hashCode(): Int {
-        var code = 11 * (7 + dice[0]) + dice[1];
+        var code = 11 * (7 + dice[0]) + dice[1]
         for (i in 0..N_LOCATIONS - 1) {
-            code = 11 * code + locations[i];
+            code = 11 * code + locations[i]
         }
         code = 11 * code + agentTurn
         return code

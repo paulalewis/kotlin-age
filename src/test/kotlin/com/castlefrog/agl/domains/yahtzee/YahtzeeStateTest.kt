@@ -7,21 +7,21 @@ class YahtzeeStateTest {
 
     @Test
     fun testCopy() {
-        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()})
+        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte))
         Truth.assertThat(yahtzeeState).isEqualTo(yahtzeeState.copy())
         Truth.assertThat(yahtzeeState).isNotSameAs(yahtzeeState.copy())
     }
 
     @Test
     fun testEqualityNotEqual() {
-        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()})
+        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte))
         val otherYahtzeeState = YahtzeeState()
         Truth.assertThat(yahtzeeState).isNotEqualTo(otherYahtzeeState)
     }
 
     @Test
     fun testToString() {
-        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()},
+        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte),
                 nRolls = 1, scores = IntArray(YahtzeeState.N_SCORES))
         Truth.assertThat(yahtzeeState.toString())
                 .isEqualTo("""
@@ -44,7 +44,7 @@ class YahtzeeStateTest {
 
     @Test
     fun testToString2() {
-        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE){index -> index.toByte()}, nRolls = 1)
+        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte), nRolls = 1)
         Truth.assertThat(yahtzeeState.toString())
                 .isEqualTo("""
                     |1 - [ 0 1 2 3 4 ]

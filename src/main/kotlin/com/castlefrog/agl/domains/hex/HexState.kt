@@ -95,6 +95,14 @@ data class HexState(val boardSize: Int,
             throw IllegalArgumentException("(x=$x,y=$y) out of bounds")
     }
 
+    override fun hashCode(): Int {
+        var hashCode = 17 + boardSize
+        hashCode = hashCode * 19 + bitBoards[0].hashCode()
+        hashCode = hashCode * 29 + bitBoards[1].hashCode()
+        hashCode = hashCode * 31 + agentTurn
+        return hashCode
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other !is HexState) {
             return false
@@ -106,11 +114,9 @@ data class HexState(val boardSize: Int,
             if (bitBoards[i].size != other.bitBoards[i].size) {
                 return false
             }
-            for (j in bitBoards[i].indices) {
-                if (other.bitBoards[i][j] != bitBoards[i][j]) {
-                    return false
-                }
-            }
+            bitBoards[i].indices
+                    .filter { other.bitBoards[i][it] != bitBoards[i][it] }
+                    .forEach { return false }
         }
         return other.boardSize == boardSize && other.agentTurn == agentTurn
     }

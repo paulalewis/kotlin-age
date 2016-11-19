@@ -2,6 +2,7 @@ package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.AdversarialSimulator
 import java.util.ArrayList
+import java.util.Arrays
 import java.util.Stack
 
 class HexSimulator(state: HexState,
@@ -92,7 +93,7 @@ class HexSimulator(state: HexState,
             val legalActions = ArrayList<MutableList<HexAction>>()
             legalActions.add(ArrayList<HexAction>())
             legalActions.add(ArrayList<HexAction>())
-            if (rewards == AdversarialSimulator.REWARDS_NEUTRAL) {
+            if (Arrays.equals(rewards, AdversarialSimulator.REWARDS_NEUTRAL)) {
                 for (i in 0..state.boardSize - 1) {
                     for (j in 0..state.boardSize - 1) {
                         if (state.isLocationEmpty(i, j) || (pieRule && isSecondMove(state))) {

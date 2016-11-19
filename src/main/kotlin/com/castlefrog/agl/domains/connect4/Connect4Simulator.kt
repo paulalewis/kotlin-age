@@ -5,6 +5,7 @@ import com.castlefrog.agl.TurnType
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 import java.util.ArrayList
+import java.util.Arrays
 
 class Connect4Simulator(state: Connect4State,
                         legalActions: List<MutableList<Connect4Action>>? = null,
@@ -110,7 +111,7 @@ class Connect4Simulator(state: Connect4State,
                                         columnHeights: IntArray) {
             legalActions[state.agentTurn].addAll(legalActions[(state.agentTurn + 1) % 2])
             legalActions[(state.agentTurn + 1) % 2].clear()
-            if (rewards == AdversarialSimulator.REWARDS_NEUTRAL) {
+            if (Arrays.equals(rewards, AdversarialSimulator.REWARDS_NEUTRAL)) {
                 if (1L shl columnHeights[action.location] and ABOVE_TOP_ROW != 0L) {
                     legalActions[state.agentTurn].remove(action)
                 }
@@ -127,7 +128,7 @@ class Connect4Simulator(state: Connect4State,
             legalActions.add(ArrayList<Connect4Action>())
             legalActions.add(ArrayList<Connect4Action>())
             computeHeights(state, columnHeights)
-            if (rewards == AdversarialSimulator.REWARDS_NEUTRAL) {
+            if (Arrays.equals(rewards, AdversarialSimulator.REWARDS_NEUTRAL)) {
                 for (i in 0..Connect4State.WIDTH - 1) {
                     if (1L shl columnHeights[i] and ABOVE_TOP_ROW == 0L) {
                         legalActions[state.agentTurn].add(Connect4Action.valueOf(i))

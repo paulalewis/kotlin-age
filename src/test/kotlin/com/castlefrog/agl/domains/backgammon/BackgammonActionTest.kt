@@ -2,7 +2,6 @@ package com.castlefrog.agl.domains.backgammon
 
 import com.google.common.truth.Truth
 import org.junit.Test
-import java.util.HashSet
 
 class BackgammonActionTest {
 

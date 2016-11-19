@@ -1,9 +1,8 @@
 package com.castlefrog.agl.domains.havannah
 
 import com.castlefrog.agl.AdversarialSimulator
-import com.castlefrog.agl.TurnType
-
 import java.util.ArrayList
+import java.util.Arrays
 import java.util.Stack
 
 class HavannahSimulator(state: HavannahState,
@@ -78,7 +77,7 @@ class HavannahSimulator(state: HavannahState,
             val legalActions = ArrayList<MutableList<HavannahAction>>()
             legalActions.add(ArrayList<HavannahAction>())
             legalActions.add(ArrayList<HavannahAction>())
-            if (rewards == AdversarialSimulator.REWARDS_NEUTRAL) {
+            if (Arrays.equals(rewards, AdversarialSimulator.REWARDS_NEUTRAL)) {
                 var count = 0
                 var tempAction: HavannahAction? = null
                 for (y in 0..state.size - 1) {

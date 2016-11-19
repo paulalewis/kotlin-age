@@ -1,7 +1,5 @@
 package com.castlefrog.agl
 
-import com.castlefrog.agl.Simulator
-
 class TestSimulator(override var state: TestState,
                     override val legalActions: List<MutableList<TestAction>>,
                     override val rewards: IntArray) : Simulator<TestState, TestAction> {
