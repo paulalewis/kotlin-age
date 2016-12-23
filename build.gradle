@@ -2,7 +2,7 @@ apply plugin: 'kotlin'
 
 buildscript {
     ext {
-        kotlin_version = '1.0.5-2'
+        kotlin_version = '1.0.5-3'
     }
 
     repositories {
@@ -28,5 +28,5 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "2.14"
+    gradleVersion = "3.2.1"
 }
