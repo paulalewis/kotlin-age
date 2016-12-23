@@ -115,6 +115,60 @@ class HavannahStateTest {
     }
 
     @Test
+    fun testCorners() {
+        val state = HavannahSimulator.getInitialState(6)
+        Truth.assertThat(state.corners).isEqualTo(
+                arrayOf(intArrayOf(0, 0), intArrayOf(0, 5), intArrayOf(5, 0),
+                        intArrayOf(5, 10), intArrayOf(10, 5), intArrayOf(10, 10))
+        )
+    }
+
+    @Test
+    fun testSides() {
+        val state = HavannahSimulator.getInitialState(6)
+        Truth.assertThat(state.sides).isEqualTo(
+                arrayOf(
+                        arrayOf(
+                                intArrayOf(0, 1),
+                                intArrayOf(0, 2),
+                                intArrayOf(0, 3),
+                                intArrayOf(0, 4)
+                        ),
+                        arrayOf(
+                                intArrayOf(1, 0),
+                                intArrayOf(2, 0),
+                                intArrayOf(3, 0),
+                                intArrayOf(4, 0)
+                        ),
+                        arrayOf(
+                                intArrayOf(1, 6),
+                                intArrayOf(2, 7),
+                                intArrayOf(3, 8),
+                                intArrayOf(4, 9)
+                        ),
+                        arrayOf(
+                                intArrayOf(6, 10),
+                                intArrayOf(7, 10),
+                                intArrayOf(8, 10),
+                                intArrayOf(9, 10)
+                        ),
+                        arrayOf(
+                                intArrayOf(10, 6),
+                                intArrayOf(10, 7),
+                                intArrayOf(10, 8),
+                                intArrayOf(10, 9)
+                        ),
+                        arrayOf(
+                                intArrayOf(6, 1),
+                                intArrayOf(7, 2),
+                                intArrayOf(8, 3),
+                                intArrayOf(9, 4)
+                        )
+                )
+        )
+    }
+
+    @Test
     fun testToString() {
         Truth.assertThat(havannahState.toString())
                 .isEqualTo("""
