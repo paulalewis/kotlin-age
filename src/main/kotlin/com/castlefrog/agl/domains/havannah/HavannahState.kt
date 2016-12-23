@@ -40,8 +40,7 @@ data class HavannahState(val base: Int,
     val sides: Array<Array<IntArray>>
         get() {
             val sides = Array(6) { Array(base - 2) { IntArray(2) } }
-            var i = 0
-            while (i < base - 2) {
+            for (i in 0..base - 3) {
                 sides[0][i][0] = 0
                 sides[0][i][1] = i + 1
                 sides[1][i][0] = i + 1
@@ -54,7 +53,6 @@ data class HavannahState(val base: Int,
                 sides[4][i][1] = base + i
                 sides[5][i][0] = base + i
                 sides[5][i][1] = i + 1
-                i += 1
             }
             return sides
         }
