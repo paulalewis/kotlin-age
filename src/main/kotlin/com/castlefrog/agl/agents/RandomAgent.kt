@@ -13,14 +13,14 @@ import java.util.Random
  */
 class RandomAgent(val random: Random = Random()) : Agent {
 
-    override fun <S : State<S>, A : Action<A>> selectAction(agentId: Int, state: S, simulator: Simulator<S, A>):
+    override fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>):
             Optional<A> {
         simulator.state = state
         val legalActions = simulator.legalActions
-        if (agentId >= legalActions.size) {
+        if (playerId >= legalActions.size) {
             return Optional.empty()
         }
-        val actions = simulator.legalActions[agentId]
+        val actions = simulator.legalActions[playerId]
         if (actions.isEmpty()) {
             return Optional.empty()
         }
