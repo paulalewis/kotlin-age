@@ -8,7 +8,7 @@ class TestSimulator(override var state: TestState,
         return TestSimulator(state.copy(), legalActions.copy(), rewards.copyOf())
     }
 
-    override fun stateTransition(actions: List<TestAction?>) {
+    override fun stateTransition(actions: Map<Int, TestAction>) {
         throw UnsupportedOperationException("not implemented")
     }
 

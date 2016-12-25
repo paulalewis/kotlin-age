@@ -48,10 +48,9 @@ class Connect4Simulator(state: Connect4State,
         return Connect4Simulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf(), turnType, columnHeights.copyOf())
     }
 
-    override fun stateTransition(actions: List<Connect4Action?>) {
-        assert(actions.size == nAgents)
+    override fun stateTransition(actions: Map<Int, Connect4Action>) {
         val action = actions[state.agentTurn]
-        if (action == null || !legalActions[state.agentTurn].contains(action)) {
+        if (action === null || !legalActions[state.agentTurn].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
         if (state.agentTurn == 0) {

@@ -41,9 +41,9 @@ class YahtzeeSimulator(state: YahtzeeState,
         return YahtzeeSimulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf())
     }
 
-    override fun stateTransition(actions: List<YahtzeeAction?>) {
+    override fun stateTransition(actions: Map<Int, YahtzeeAction>) {
         val action = actions[0]
-        if (action == null || !legalActions[0].contains(action)) {
+        if (action === null || !legalActions[0].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
 

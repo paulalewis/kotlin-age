@@ -8,7 +8,7 @@ class HavannahSimulatorTest {
     @Test
     fun stateTransitionMove1() {
         val simulator = HavannahSimulator.create(5, true)
-        simulator.stateTransition(arrayListOf(HavannahAction.valueOf(0, 0), null))
+        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
         val state = HavannahSimulator.getInitialState(5)
         state.locations[0][0] = HavannahState.LOCATION_BLACK
         state.agentTurn = HavannahState.TURN_WHITE
@@ -18,15 +18,15 @@ class HavannahSimulatorTest {
     @Test(expected = IllegalArgumentException::class)
     fun stateTransitionIllegalMove() {
         val simulator = HavannahSimulator.create(5, true)
-        simulator.stateTransition(arrayListOf(HavannahAction.valueOf(0, 0), null))
-        simulator.stateTransition(arrayListOf(HavannahAction.valueOf(0, 0), null))
+        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
     }
 
     @Test
     fun stateTransitionMove2SameLocation() {
         val simulator = HavannahSimulator.create(5, true)
-        simulator.stateTransition(arrayListOf(HavannahAction.valueOf(0, 0), null))
-        simulator.stateTransition(arrayListOf(null, HavannahAction.valueOf(0, 0)))
+        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        simulator.stateTransition(mapOf(Pair(1, HavannahAction.valueOf(0, 0))))
         val state = HavannahSimulator.getInitialState(5)
         state.locations[0][0] = HavannahState.LOCATION_WHITE
         state.agentTurn = HavannahState.TURN_BLACK
@@ -36,8 +36,8 @@ class HavannahSimulatorTest {
     @Test
     fun stateTransitionMove2DifferentLocation() {
         val simulator = HavannahSimulator.create(5, true)
-        simulator.stateTransition(arrayListOf(HavannahAction.valueOf(0, 0), null))
-        simulator.stateTransition(arrayListOf(null, HavannahAction.valueOf(0, 1)))
+        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        simulator.stateTransition(mapOf(Pair(1, HavannahAction.valueOf(0, 1))))
         val state = HavannahSimulator.getInitialState(5)
         state.locations[0][0] = HavannahState.LOCATION_BLACK
         state.locations[0][1] = HavannahState.LOCATION_WHITE

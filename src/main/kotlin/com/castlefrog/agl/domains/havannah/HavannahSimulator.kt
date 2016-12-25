@@ -47,9 +47,9 @@ class HavannahSimulator(state: HavannahState,
         return HavannahSimulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf(), pieRule, corners, sides)
     }
 
-    override fun stateTransition(actions: List<HavannahAction?>) {
+    override fun stateTransition(actions: Map<Int, HavannahAction>) {
         val action = actions[state.agentTurn.toInt()]
-        if (action == null || !legalActions[state.agentTurn.toInt()].contains(action)) {
+        if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
         state.locations[action.x.toInt()][action.y.toInt()] = (state.agentTurn + 1).toByte()

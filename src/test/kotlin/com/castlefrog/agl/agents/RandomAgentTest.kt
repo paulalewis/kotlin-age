@@ -17,7 +17,7 @@ class RandomAgentTest {
         while (!simulator.isTerminalState) {
             val action = agent.selectAction(0, simulator.state, simulator.copy())
             action.ifPresent {
-                simulator.stateTransition(arrayListOf(action.get()))
+                simulator.stateTransition(mapOf(Pair(0, action.get())))
             }
         }
         Truth.assertThat(agent.selectAction(0, simulator.state, simulator.copy()).isPresent).isFalse()
@@ -30,7 +30,7 @@ class RandomAgentTest {
         while (!simulator.isTerminalState) {
             val action = agent.selectAction(0, simulator.state, simulator.copy())
             action.ifPresent {
-                simulator.stateTransition(arrayListOf(action.get()))
+                simulator.stateTransition(mapOf(Pair(0, action.get())))
             }
         }
         Truth.assertThat(agent.selectAction(0, simulator.state, simulator.copy()).isPresent).isFalse()

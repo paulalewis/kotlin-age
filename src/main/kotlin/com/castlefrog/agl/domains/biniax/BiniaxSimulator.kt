@@ -39,10 +39,9 @@ class BiniaxSimulator(state: BiniaxState,
         return BiniaxSimulator(state.copy(), _legalActions?.copy(), initialElements, maxElements, elementIncrementInterval, maxFreeMoves)
     }
 
-    override fun stateTransition(actions: List<BiniaxAction?>) {
-        assert(actions.size == nAgents)
+    override fun stateTransition(actions: Map<Int, BiniaxAction>) {
         val action = actions[0]
-        if (action == null || !legalActions[0].contains(action)) {
+        if (action === null || !legalActions[0].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
 

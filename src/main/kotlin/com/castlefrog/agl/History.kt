@@ -5,25 +5,17 @@ import java.util.LinkedList
 /**
  * Keeps track of state transition history.
  */
-class History<S : State<S>, A : Action<A>>(initialState: S) {
+data class History<S : State<S>, A : Action<A>>(val nodes: MutableList<Node<S, A>>) {
 
-    private val nodes: MutableList<Node<S, A>> = LinkedList()
-
-    var index: Int = 0
-        private set
-
-    data class Node<out S, out A>(val state: S, val actions: List<A>)
-
-    init {
-        add(initialState, emptyList())
+    companion object {
+        fun <S : State<S>, A : Action<A>> create(initialState: S): History<S, A> {
+            val nodes = LinkedList<Node<S, A>>()
+            nodes.add(Node(initialState, emptyMap()))
+            return History(nodes)
+        }
     }
 
-    fun clear() {
-        val initialState = nodes[0].state
-        nodes.clear()
-        add(initialState, emptyList())
-        index = 0
-    }
+    data class Node<out S, out A>(val state: S, val actions: Map<Int, A>)
 
     /**
      * Add the next state and the actions taken by each agent
@@ -34,47 +26,9 @@ class History<S : State<S>, A : Action<A>>(initialState: S) {
      * @param actions
      * *      the actions taken by each agent to end up in the current state
      */
-    fun add(state: S, actions: List<A>) {
-        while (index < nodes.size - 1) {
-            removeLast()
-        }
+    fun add(state: S, actions: Map<Int, A>) {
         nodes.add(Node(state, actions))
     }
-
-    private fun removeLast() {
-        if (hasPrevState()) {
-            nodes.removeAt(nodes.size - 1)
-        }
-    }
-
-    fun hasPrevState(): Boolean {
-        return index > 0
-    }
-
-    fun hasNextState(): Boolean {
-        return index < nodes.size - 1
-    }
-
-    fun nextState() {
-        if (hasNextState()) {
-            index++
-        }
-    }
-
-    fun prevState() {
-        if (hasPrevState()) {
-            index--
-        }
-    }
-
-    val state: S
-        get() = nodes[index].state
-
-    val actions: List<A>
-        get() = nodes[index].actions
-
-    val size: Int
-        get() = nodes.size
 
     override fun toString(): String {
         val output = StringBuilder()

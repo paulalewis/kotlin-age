@@ -44,9 +44,9 @@ class HexSimulator(state: HexState,
         return HexSimulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf(), pieRule)
     }
 
-    override fun stateTransition(actions: List<HexAction?>) {
+    override fun stateTransition(actions: Map<Int, HexAction>) {
         val action = actions[state.agentTurn.toInt()]
-        if (action == null || !legalActions[state.agentTurn.toInt()].contains(action)) {
+        if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
         val x = action.x.toInt()

@@ -47,10 +47,9 @@ class BackgammonSimulator(state: BackgammonState,
         return BackgammonSimulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf())
     }
 
-    override fun stateTransition(actions: List<BackgammonAction?>) {
-        assert(actions.size == nAgents)
+    override fun stateTransition(actions: Map<Int, BackgammonAction>) {
         val action = actions[state.agentTurn]
-        if (action == null || !legalActions[state.agentTurn].contains(action)) {
+        if (action === null || !legalActions[state.agentTurn].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
 
