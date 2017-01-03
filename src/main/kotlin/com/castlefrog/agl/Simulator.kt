@@ -15,12 +15,12 @@ interface Simulator<S : State<S>, A : Action<A>> : Copyable<Simulator<S, A>> {
     var state: S
 
     /**
-     * List of legal actions for each agent.
+     * List of legal actions for each player.
      */
     val legalActions: List<MutableList<A>>
 
     /**
-     * Rewards for each agent that may be indexed by that agent's id.
+     * Rewards for each player that may be indexed by that player's id.
      */
     val rewards: IntArray
 
@@ -32,16 +32,16 @@ interface Simulator<S : State<S>, A : Action<A>> : Copyable<Simulator<S, A>> {
     fun stateTransition(actions: Map<Int, A>)
 
     /**
-     * The number of agents in the given domain.
+     * The number of players in the given domain.
      */
-    val nAgents: Int
+    val nPlayers: Int
         get() = rewards.size
 
     /**
-     * A state is terminal if no agent has any
+     * A state is terminal if no player has any
      * legal actions from the current state.
      */
-    val isTerminalState: Boolean
+    val terminalState: Boolean
         get() = (0..legalActions.size - 1).all { legalActions[it].isEmpty() }
 
     fun <A : Action<A>> List<MutableList<A>>.copy(): List<MutableList<A>> {

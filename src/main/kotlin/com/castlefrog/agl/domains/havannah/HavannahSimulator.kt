@@ -53,7 +53,7 @@ class HavannahSimulator(state: HavannahState,
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
         state.locations[action.x.toInt()][action.y.toInt()] = (state.agentTurn + 1).toByte()
-        state.agentTurn = ((state.agentTurn + 1) % AdversarialSimulator.N_AGENTS).toByte()
+        state.agentTurn = ((state.agentTurn + 1) % AdversarialSimulator.N_PLAYERS).toByte()
         _legalActions = null
         _rewards = null
     }

@@ -157,7 +157,7 @@ class YahtzeeSimulator(state: YahtzeeState,
         state = YahtzeeState(diceValues, rolls.toByte(), scores)
     }
 
-    override val nAgents: Int = 1
+    override val nPlayers: Int = 1
 
     companion object {
 

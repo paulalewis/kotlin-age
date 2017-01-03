@@ -10,7 +10,7 @@ class SimulatorTest {
         val simulator = TestSimulator(state = TestState(),
                 legalActions = arrayListOf(arrayListOf(), arrayListOf()),
                 rewards = intArrayOf(0, 0))
-        Truth.assertThat(simulator.nAgents).isEqualTo(2)
+        Truth.assertThat(simulator.nPlayers).isEqualTo(2)
     }
 
     @Test
@@ -18,7 +18,7 @@ class SimulatorTest {
         val simulator = TestSimulator(state = TestState(),
                 legalActions = arrayListOf(arrayListOf(TestAction()), arrayListOf()),
                 rewards = intArrayOf(0, 0))
-        Truth.assertThat(simulator.isTerminalState).isFalse()
+        Truth.assertThat(simulator.terminalState).isFalse()
     }
 
     @Test
@@ -26,7 +26,7 @@ class SimulatorTest {
         val simulator = TestSimulator(state = TestState(),
                 legalActions = arrayListOf(arrayListOf(), arrayListOf()),
                 rewards = intArrayOf(0, 0))
-        Truth.assertThat(simulator.isTerminalState).isTrue()
+        Truth.assertThat(simulator.terminalState).isTrue()
     }
 
 }

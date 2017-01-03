@@ -14,7 +14,7 @@ class RandomAgentTest {
     fun testSelectActionInvalidLegalActionsArray() {
         val agent = RandomAgent(Random(5555))
         val simulator = TestSimulator(state = TestState(), legalActions = ArrayList(), rewards = intArrayOf(0))
-        while (!simulator.isTerminalState) {
+        while (!simulator.terminalState) {
             val action = agent.selectAction(0, simulator.state, simulator.copy())
             action.ifPresent {
                 simulator.stateTransition(mapOf(Pair(0, action.get())))
@@ -27,7 +27,7 @@ class RandomAgentTest {
     fun testSelectActionNoActions() {
         val agent = RandomAgent(Random(5555))
         val simulator = TestSimulator(state = TestState(), legalActions = arrayListOf(ArrayList()), rewards = intArrayOf(0))
-        while (!simulator.isTerminalState) {
+        while (!simulator.terminalState) {
             val action = agent.selectAction(0, simulator.state, simulator.copy())
             action.ifPresent {
                 simulator.stateTransition(mapOf(Pair(0, action.get())))

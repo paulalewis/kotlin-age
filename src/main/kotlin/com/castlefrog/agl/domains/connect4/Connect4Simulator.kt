@@ -83,7 +83,7 @@ class Connect4Simulator(state: Connect4State,
 
         private fun computeRewards(state: Connect4State): IntArray {
             val height = Connect4State.HEIGHT
-            for (i in 0..N_AGENTS - 1) {
+            for (i in 0..N_PLAYERS - 1) {
                 val bitBoard = if (i == 0) state.bitBoardBlack else state.bitBoardWhite
                 val diagonal1 = bitBoard and (bitBoard shr height)
                 val horizontal = bitBoard and (bitBoard shr height + 1)
@@ -149,8 +149,8 @@ class Connect4Simulator(state: Connect4State,
 
         private fun getNextAgentTurn(agentTurn: Int, turnType: TurnType): Int {
             when (turnType) {
-                TurnType.RANDOM -> return (Math.random() * AdversarialSimulator.N_AGENTS).toInt()
-                TurnType.SEQUENTIAL -> return (agentTurn + 1) % AdversarialSimulator.N_AGENTS
+                TurnType.RANDOM -> return (Math.random() * AdversarialSimulator.N_PLAYERS).toInt()
+                TurnType.SEQUENTIAL -> return (agentTurn + 1) % AdversarialSimulator.N_PLAYERS
                 else -> throw NotImplementedException()
             }
         }

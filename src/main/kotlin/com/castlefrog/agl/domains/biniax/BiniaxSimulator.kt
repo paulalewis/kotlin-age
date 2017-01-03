@@ -112,7 +112,7 @@ class BiniaxSimulator(state: BiniaxState,
         state = BiniaxState(locations, maxElements, freeMoves, nTurns + 1)
     }
 
-    override val nAgents: Int = 1
+    override val nPlayers: Int = 1
 
     companion object {
         private val IMPASSIBLE_CHANCE = 0.0

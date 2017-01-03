@@ -83,7 +83,7 @@ class HexSimulator(state: HexState,
             if (boardSize < MIN_BOARD_SIZE) {
                 throw IllegalArgumentException("Invalid board size: " + boardSize)
             }
-            return HexState(boardSize,Array(AdversarialSimulator.N_AGENTS) {
+            return HexState(boardSize,Array(AdversarialSimulator.N_PLAYERS) {
                 ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE) },
                     HexState.TURN_BLACK)
         }
@@ -106,7 +106,7 @@ class HexSimulator(state: HexState,
         }
 
         fun HexState.nextAgentTurn(): Int {
-            return (agentTurn + 1) % AdversarialSimulator.N_AGENTS
+            return (agentTurn + 1) % AdversarialSimulator.N_PLAYERS
         }
 
         private fun computeRewards(state: HexState): IntArray {
