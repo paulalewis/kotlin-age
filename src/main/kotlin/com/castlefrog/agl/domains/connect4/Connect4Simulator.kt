@@ -1,7 +1,13 @@
 package com.castlefrog.agl.domains.connect4
 
-import com.castlefrog.agl.AdversarialSimulator
+import com.castlefrog.agl.ADVERSARIAL_N_PLAYERS
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_BLACK_WINS
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_NEUTRAL
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_WHITE_WINS
+import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.TurnType
+import com.castlefrog.agl.nextPlayerTurnRandom
+import com.castlefrog.agl.nextPlayerTurnSequential
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 import java.util.ArrayList
@@ -12,7 +18,7 @@ class Connect4Simulator(state: Connect4State,
                         rewards: IntArray? = null,
                         val turnType: TurnType = TurnType.SEQUENTIAL,
                         private val columnHeights: IntArray = IntArray(Connect4State.WIDTH)) :
-        AdversarialSimulator<Connect4State, Connect4Action>() {
+        Simulator<Connect4State, Connect4Action> {
 
     override var state: Connect4State = state
         set(value) {
@@ -58,7 +64,7 @@ class Connect4Simulator(state: Connect4State,
         } else {
             state.bitBoardWhite = state.bitBoardWhite xor (1L shl columnHeights[action.location]++)
         }
-        state.agentTurn = getNextAgentTurn(state.agentTurn, turnType)
+        state.agentTurn = if (turnType === TurnType.SEQUENTIAL) nextPlayerTurnSequential(state.agentTurn, nPlayers) else nextPlayerTurnRandom(nPlayers)
         _rewards = computeRewards(state)
         computeLegalActions(action, state, rewards, legalActions, columnHeights)
     }
@@ -75,7 +81,7 @@ class Connect4Simulator(state: Connect4State,
 
         fun getInitialState(turnType: TurnType): Connect4State {
             when (turnType) {
-                TurnType.RANDOM -> return Connect4State(agentTurn = getNextAgentTurn(0, turnType))
+                TurnType.RANDOM -> return Connect4State(agentTurn = nextPlayerTurnRandom(ADVERSARIAL_N_PLAYERS))
                 TurnType.SEQUENTIAL -> return Connect4State()
                 else -> throw NotImplementedException()
             }
@@ -83,7 +89,7 @@ class Connect4Simulator(state: Connect4State,
 
         private fun computeRewards(state: Connect4State): IntArray {
             val height = Connect4State.HEIGHT
-            for (i in 0..N_PLAYERS - 1) {
+            for (i in 0..ADVERSARIAL_N_PLAYERS - 1) {
                 val bitBoard = if (i == 0) state.bitBoardBlack else state.bitBoardWhite
                 val diagonal1 = bitBoard and (bitBoard shr height)
                 val horizontal = bitBoard and (bitBoard shr height + 1)
@@ -94,13 +100,13 @@ class Connect4Simulator(state: Connect4State,
                         (diagonal2 and (diagonal2 shr 2 * (height + 2))) or
                         (vertical and (vertical shr 2)) != 0L) {
                     if (i == 0) {
-                        return AdversarialSimulator.REWARDS_BLACK_WINS
+                        return ADVERSARIAL_REWARDS_BLACK_WINS
                     } else {
-                        return AdversarialSimulator.REWARDS_WHITE_WINS
+                        return ADVERSARIAL_REWARDS_WHITE_WINS
                     }
                 }
             }
-            return AdversarialSimulator.REWARDS_NEUTRAL
+            return ADVERSARIAL_REWARDS_NEUTRAL
         }
 
         private fun computeLegalActions(action: Connect4Action,
@@ -110,7 +116,7 @@ class Connect4Simulator(state: Connect4State,
                                         columnHeights: IntArray) {
             legalActions[state.agentTurn].addAll(legalActions[(state.agentTurn + 1) % 2])
             legalActions[(state.agentTurn + 1) % 2].clear()
-            if (Arrays.equals(rewards, AdversarialSimulator.REWARDS_NEUTRAL)) {
+            if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
                 if (1L shl columnHeights[action.location] and ABOVE_TOP_ROW != 0L) {
                     legalActions[state.agentTurn].remove(action)
                 }
@@ -127,7 +133,7 @@ class Connect4Simulator(state: Connect4State,
             legalActions.add(ArrayList<Connect4Action>())
             legalActions.add(ArrayList<Connect4Action>())
             computeHeights(state, columnHeights)
-            if (Arrays.equals(rewards, AdversarialSimulator.REWARDS_NEUTRAL)) {
+            if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
                 for (i in 0..Connect4State.WIDTH - 1) {
                     if (1L shl columnHeights[i] and ABOVE_TOP_ROW == 0L) {
                         legalActions[state.agentTurn].add(Connect4Action.valueOf(i))
@@ -144,14 +150,6 @@ class Connect4Simulator(state: Connect4State,
                 while (bitBoard and (1L shl columnHeights[i]) != 0L) {
                     columnHeights[i] += 1
                 }
-            }
-        }
-
-        private fun getNextAgentTurn(agentTurn: Int, turnType: TurnType): Int {
-            when (turnType) {
-                TurnType.RANDOM -> return (Math.random() * AdversarialSimulator.N_PLAYERS).toInt()
-                TurnType.SEQUENTIAL -> return (agentTurn + 1) % AdversarialSimulator.N_PLAYERS
-                else -> throw NotImplementedException()
             }
         }
 

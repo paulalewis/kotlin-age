@@ -4,13 +4,13 @@ import java.util.Optional
 
 /**
  * An agent interacts in a domain by selecting
- * an action from a list of legal actions from
- * the current state.
+ * an action from a list of legal actions for
+ * a player from the current state.
  */
 interface Agent {
 
     /**
-     * An agent selects an action given a state and simulator.
+     * An agent selects an action given a state, simulator and player ID.
      * @param playerId player ID that this agent is selecting the action for
      * @param state current domain state.
      * @param simulator simulator that determines action outcomes in domain.

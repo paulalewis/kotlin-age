@@ -1,6 +1,11 @@
 package com.castlefrog.agl.domains.havannah
 
-import com.castlefrog.agl.AdversarialSimulator
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_BLACK_WINS
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_NEUTRAL
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_WHITE_WINS
+import com.castlefrog.agl.Simulator
+import com.castlefrog.agl.TurnType
+import com.castlefrog.agl.nextPlayerTurnSequential
 import java.util.ArrayList
 import java.util.Arrays
 import java.util.Stack
@@ -11,7 +16,7 @@ class HavannahSimulator(state: HavannahState,
                         val pieRule: Boolean,
                         private val corners: Array<IntArray> = state.corners,
                         private val sides: Array<Array<IntArray>> = state.sides) :
-        AdversarialSimulator<HavannahState, HavannahAction>() {
+        Simulator<HavannahState, HavannahAction> {
 
     override var state: HavannahState = state
         set(value) {
@@ -53,7 +58,7 @@ class HavannahSimulator(state: HavannahState,
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
         state.locations[action.x.toInt()][action.y.toInt()] = (state.agentTurn + 1).toByte()
-        state.agentTurn = ((state.agentTurn + 1) % AdversarialSimulator.N_PLAYERS).toByte()
+        state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), nPlayers).toByte()
         _legalActions = null
         _rewards = null
     }
@@ -77,7 +82,7 @@ class HavannahSimulator(state: HavannahState,
             val legalActions = ArrayList<MutableList<HavannahAction>>()
             legalActions.add(ArrayList<HavannahAction>())
             legalActions.add(ArrayList<HavannahAction>())
-            if (Arrays.equals(rewards, AdversarialSimulator.REWARDS_NEUTRAL)) {
+            if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
                 var count = 0
                 var tempAction: HavannahAction? = null
                 for (y in 0..state.size - 1) {
@@ -146,9 +151,9 @@ class HavannahSimulator(state: HavannahState,
                         }
                         if (nCorners >= 2 || nSides >= 3) {
                             if (state.locations[x][y] == HavannahState.LOCATION_BLACK) {
-                                return AdversarialSimulator.REWARDS_BLACK_WINS
+                                return ADVERSARIAL_REWARDS_BLACK_WINS
                             } else {
-                                return AdversarialSimulator.REWARDS_WHITE_WINS
+                                return ADVERSARIAL_REWARDS_WHITE_WINS
                             }
                         }
                     }
@@ -190,15 +195,15 @@ class HavannahSimulator(state: HavannahState,
                     if (!otherState.isLocationEmpty(x, y) && !visited[x][y]) {
                         if (dfsCornersSides(x, y, otherState, visited, corners, sides) == 0) {
                             if (otherState.agentTurn == HavannahState.TURN_BLACK) {
-                                return AdversarialSimulator.REWARDS_WHITE_WINS
+                                return ADVERSARIAL_REWARDS_WHITE_WINS
                             } else {
-                                return AdversarialSimulator.REWARDS_BLACK_WINS
+                                return ADVERSARIAL_REWARDS_BLACK_WINS
                             }
                         }
                     }
                 }
             }
-            return AdversarialSimulator.REWARDS_NEUTRAL
+            return ADVERSARIAL_REWARDS_NEUTRAL
         }
 
         private fun dfsCornersSides(x0: Int,

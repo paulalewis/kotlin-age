@@ -1,7 +1,11 @@
 package com.castlefrog.agl.domains.backgammon
 
-import com.castlefrog.agl.AdversarialSimulator
-
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_BLACK_WINS
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_NEUTRAL
+import com.castlefrog.agl.ADVERSARIAL_REWARDS_WHITE_WINS
+import com.castlefrog.agl.Simulator
+import com.castlefrog.agl.TurnType
+import com.castlefrog.agl.nextPlayerTurnSequential
 import java.util.ArrayList
 import java.util.LinkedList
 
@@ -10,8 +14,7 @@ import java.util.LinkedList
  */
 class BackgammonSimulator(state: BackgammonState,
                           legalActions: List<MutableList<BackgammonAction>>? = null,
-                          rewards: IntArray? = null) :
-        AdversarialSimulator<BackgammonState, BackgammonAction>() {
+                          rewards: IntArray? = null) : Simulator<BackgammonState, BackgammonAction> {
 
     override var state: BackgammonState = state
         set(value) {
@@ -74,7 +77,7 @@ class BackgammonSimulator(state: BackgammonState,
         }
         val dice = byteArrayOf((Math.random() * BackgammonState.N_DIE_FACES + 1).toByte(),
                 (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte())
-        state = BackgammonState(locations, dice, (state.agentTurn + 1) % 2)
+        state = BackgammonState(locations, dice, nextPlayerTurnSequential(state.agentTurn, nPlayers))
     }
 
     companion object {
@@ -111,11 +114,11 @@ class BackgammonSimulator(state: BackgammonState,
                 }
             }
             if (!pos) {
-                return AdversarialSimulator.REWARDS_BLACK_WINS
+                return ADVERSARIAL_REWARDS_BLACK_WINS
             } else if (!neg) {
-                return AdversarialSimulator.REWARDS_WHITE_WINS
+                return ADVERSARIAL_REWARDS_WHITE_WINS
             } else {
-                return AdversarialSimulator.REWARDS_NEUTRAL
+                return ADVERSARIAL_REWARDS_NEUTRAL
             }
         }
 
