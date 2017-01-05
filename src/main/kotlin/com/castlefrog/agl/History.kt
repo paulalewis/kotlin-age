@@ -24,7 +24,7 @@ data class History<S : State<S>, A : Action<A>>(val nodes: MutableList<Node<S, A
      * *      the current state
      * *
      * @param actions
-     * *      the actions taken by each agent to end up in the current state
+     * *      the actions taken by each player to end up in the current state
      */
     fun add(state: S, actions: Map<Int, A>) {
         nodes.add(Node(state, actions))
