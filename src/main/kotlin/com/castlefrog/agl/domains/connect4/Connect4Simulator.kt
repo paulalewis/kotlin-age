@@ -5,7 +5,6 @@ import com.castlefrog.agl.ADVERSARIAL_REWARDS_BLACK_WINS
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_NEUTRAL
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
-import com.castlefrog.agl.TurnType
 import com.castlefrog.agl.nextPlayerTurnRandom
 import com.castlefrog.agl.nextPlayerTurnSequential
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
@@ -16,7 +15,6 @@ import java.util.Arrays
 class Connect4Simulator(state: Connect4State,
                         legalActions: List<MutableList<Connect4Action>>? = null,
                         rewards: IntArray? = null,
-                        val turnType: TurnType = TurnType.SEQUENTIAL,
                         private val columnHeights: IntArray = IntArray(Connect4State.WIDTH)) :
         Simulator<Connect4State, Connect4Action> {
 
@@ -51,7 +49,7 @@ class Connect4Simulator(state: Connect4State,
     }
 
     override fun copy(): Connect4Simulator {
-        return Connect4Simulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf(), turnType, columnHeights.copyOf())
+        return Connect4Simulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf(), columnHeights.copyOf())
     }
 
     override fun stateTransition(actions: Map<Int, Connect4Action>) {
@@ -64,7 +62,7 @@ class Connect4Simulator(state: Connect4State,
         } else {
             state.bitBoardWhite = state.bitBoardWhite xor (1L shl columnHeights[action.location]++)
         }
-        state.agentTurn = if (turnType === TurnType.SEQUENTIAL) nextPlayerTurnSequential(state.agentTurn, nPlayers) else nextPlayerTurnRandom(nPlayers)
+        state.agentTurn = nextPlayerTurnSequential(state.agentTurn, nPlayers)
         _rewards = computeRewards(state)
         computeLegalActions(action, state, rewards, legalActions, columnHeights)
     }
@@ -75,16 +73,12 @@ class Connect4Simulator(state: Connect4State,
         private val BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN
         private val ABOVE_TOP_ROW = BOTTOM_ROW shl Connect4State.HEIGHT
 
-        fun create(turnType: TurnType): Connect4Simulator {
-            return Connect4Simulator(state = getInitialState(turnType), turnType = turnType)
+        fun create(): Connect4Simulator {
+            return Connect4Simulator(state = getInitialState())
         }
 
-        fun getInitialState(turnType: TurnType): Connect4State {
-            when (turnType) {
-                TurnType.RANDOM -> return Connect4State(agentTurn = nextPlayerTurnRandom(ADVERSARIAL_N_PLAYERS))
-                TurnType.SEQUENTIAL -> return Connect4State()
-                else -> throw NotImplementedException()
-            }
+        fun getInitialState(): Connect4State {
+            return Connect4State()
         }
 
         private fun computeRewards(state: Connect4State): IntArray {

@@ -4,7 +4,6 @@ import com.castlefrog.agl.ADVERSARIAL_REWARDS_BLACK_WINS
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_NEUTRAL
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
-import com.castlefrog.agl.TurnType
 import com.castlefrog.agl.nextPlayerTurnSequential
 import java.util.ArrayList
 import java.util.LinkedList
