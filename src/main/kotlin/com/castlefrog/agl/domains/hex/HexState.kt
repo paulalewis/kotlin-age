@@ -60,17 +60,9 @@ data class HexState(val boardSize: Int,
 
     val nPieces: Int
         get() {
-            var nPieces = 0
-            for (i in 0..bitBoards[0].size - 1) {
-                var value = bitBoards[0][i].toInt() or bitBoards[1][i].toInt()
-                for (j in 0..java.lang.Byte.SIZE - 1) {
-                    if (value and 1 != 0) {
-                        nPieces += 1
-                    }
-                    value = value.ushr(1)
-                }
+            return (0..bitBoards[0].size - 1).sumBy {
+                Integer.bitCount((bitBoards[0][it].toInt() or bitBoards[1][it].toInt()) and 0xff)
             }
-            return nPieces
         }
 
     fun setLocation(x: Int, y: Int, value: Int) {
