@@ -1,13 +1,10 @@
 package com.castlefrog.agl.domains.connect4
 
-import com.castlefrog.agl.ADVERSARIAL_N_PLAYERS
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_BLACK_WINS
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_NEUTRAL
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
-import com.castlefrog.agl.nextPlayerTurnRandom
 import com.castlefrog.agl.nextPlayerTurnSequential
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 import java.util.ArrayList
 import java.util.Arrays
@@ -83,7 +80,7 @@ class Connect4Simulator(state: Connect4State,
 
         private fun computeRewards(state: Connect4State): IntArray {
             val height = Connect4State.HEIGHT
-            for (i in 0..ADVERSARIAL_N_PLAYERS - 1) {
+            for (i in 0..1) {
                 val bitBoard = if (i == 0) state.bitBoardBlack else state.bitBoardWhite
                 val diagonal1 = bitBoard and (bitBoard shr height)
                 val horizontal = bitBoard and (bitBoard shr height + 1)
