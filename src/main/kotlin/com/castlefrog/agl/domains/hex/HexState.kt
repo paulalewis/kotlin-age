@@ -123,7 +123,6 @@ data class HexState(val boardSize: Int,
 
     override fun toString(): String {
         val output = StringBuilder()
-        output.append("turn = ").append(agentTurn).append("\n")
         for (i in boardSize - 1 downTo 0) {
             for (j in i..boardSize - 2) {
                 output.append(" ")

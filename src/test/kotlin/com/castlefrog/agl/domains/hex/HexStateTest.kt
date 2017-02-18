@@ -109,7 +109,6 @@ class HexStateTest {
     fun testToString() {
         Truth.assertThat(hexState.toString())
                 .isEqualTo("""
-                |turn = 0
                 |- - - - -
                 | - - - O -
                 |  - - - - -
