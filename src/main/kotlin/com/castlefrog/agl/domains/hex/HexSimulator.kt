@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.hex
 
-import com.castlefrog.agl.ADVERSARIAL_N_PLAYERS
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_BLACK_WINS
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_NEUTRAL
 import com.castlefrog.agl.ADVERSARIAL_REWARDS_WHITE_WINS
@@ -88,9 +87,7 @@ class HexSimulator(state: HexState,
             if (boardSize < MIN_BOARD_SIZE) {
                 throw IllegalArgumentException("Invalid board size: " + boardSize)
             }
-            return HexState(boardSize,Array(ADVERSARIAL_N_PLAYERS) {
-                ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE) },
-                    HexState.TURN_BLACK)
+            return HexState(boardSize = boardSize)
         }
 
         private fun computeLegalActions(state: HexState, rewards: IntArray, pieRule: Boolean):

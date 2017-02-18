@@ -2,9 +2,12 @@ package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.State
 
-data class HexState(val boardSize: Int,
-               val bitBoards: Array<ByteArray>,
-               var agentTurn: Byte) : State<HexState> {
+data class HexState(
+        val boardSize: Int,
+        val bitBoards: Array<ByteArray> = Array(2) {
+            ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE)
+        },
+        var agentTurn: Byte = TURN_BLACK) : State<HexState> {
 
     companion object {
         val LOCATION_EMPTY = 0
