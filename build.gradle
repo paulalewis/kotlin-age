@@ -2,7 +2,7 @@ apply plugin: 'kotlin'
 
 buildscript {
     ext {
-        kotlin_version = '1.0.5-3'
+        kotlin_version = '1.0.6'
     }
 
     repositories {
@@ -24,7 +24,7 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxjava:2.0.1'
 
     testCompile "junit:junit:4.11"
-    testCompile 'com.google.truth:truth:0.30'
+    testCompile 'com.google.truth:truth:0.32'
 }
 
 task wrapper(type: Wrapper) {
