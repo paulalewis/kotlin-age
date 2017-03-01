@@ -3,7 +3,6 @@ package com.castlefrog.agl.domains.biniax
 import com.google.common.truth.Truth
 import org.junit.Test
 
-
 class BiniaxStateTest {
 
     @Test
@@ -22,7 +21,7 @@ class BiniaxStateTest {
 
     @Test
     fun testToString() {
-        val locations = Array(5) { index -> byteArrayOf(0, 0, -1, 4, 18, 0, 11)}
+        val locations = Array(5) { byteArrayOf(0, 0, -1, 4, 18, 0, 11)}
         val state = BiniaxState(locations, 10, 2, 0)
         Truth.assertThat(state.toString()).isEqualTo("""
         |Turns: 0
