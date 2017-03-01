@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.yahtzee
 
 import com.castlefrog.agl.State
+import java.util.Arrays
 
 data class YahtzeeState(val diceValues: ByteArray = ByteArray(N_DICE),
                         var nRolls: Byte = 0,
@@ -10,6 +11,19 @@ data class YahtzeeState(val diceValues: ByteArray = ByteArray(N_DICE),
         val N_DICE = 5
         val N_VALUES = 6
         val N_SCORES = YahtzeeScoreCategory.values().size
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+        other as YahtzeeState
+        return nRolls == other.nRolls &&
+                Arrays.equals(diceValues, other.diceValues) &&
+                Arrays.equals(scores, other.scores)
+    }
+
+    override fun hashCode(): Int {
+        return (nRolls.toInt() * 17 + Arrays.hashCode(diceValues)) * 19 + Arrays.hashCode(scores)
     }
 
     override fun copy(): YahtzeeState {

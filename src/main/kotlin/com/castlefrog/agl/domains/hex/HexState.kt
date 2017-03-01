@@ -58,7 +58,7 @@ data class HexState(
     }
 
     fun isLocationOnBoard(x: Int, y: Int): Boolean {
-        return x >= 0 && x < boardSize && y >= 0 && y < boardSize
+        return x in 0..(boardSize - 1) && y in 0..(boardSize - 1)
     }
 
     val nPieces: Int

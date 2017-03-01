@@ -163,7 +163,7 @@ class BiniaxSimulator(state: BiniaxState,
         private fun BiniaxState.elementLocation(): IntArray {
             for (i in 0..width - 1) {
                 for (j in 0..height - 1) {
-                    if (locations[i][j] > 0 && locations[i][j] < maxElements) {
+                    if (locations[i][j] in 1..(maxElements - 1)) {
                         return intArrayOf(i, j)
                     }
                 }

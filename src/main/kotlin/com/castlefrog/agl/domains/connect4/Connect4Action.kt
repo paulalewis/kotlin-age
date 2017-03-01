@@ -1,16 +1,24 @@
 package com.castlefrog.agl.domains.connect4
 
-import java.util.ArrayList
-
 import com.castlefrog.agl.Action
 
 /**
  * @param location slot location to place piece
  */
-data class Connect4Action private constructor(val location: Int) : Action<Connect4Action> {
+class Connect4Action private constructor(val location: Int) : Action<Connect4Action> {
 
     override fun copy(): Connect4Action {
         return this
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+        return location == (other as Connect4Action).location
+    }
+
+    override fun hashCode(): Int {
+        return location
     }
 
     override fun toString(): String {
@@ -18,16 +26,8 @@ data class Connect4Action private constructor(val location: Int) : Action<Connec
     }
 
     companion object {
-        /** Holds list of all possible actions.  */
-        private val actions = generateActions()
-
-        private fun generateActions(): List<Connect4Action> {
-            val actions = ArrayList<Connect4Action>()
-            for (i in 0..Connect4State.WIDTH - 1) {
-                actions.add(Connect4Action(i))
-            }
-            return actions
-        }
+        /** Holds list of all possible actions. */
+        private val actions = (0..Connect4State.WIDTH - 1).map(::Connect4Action)
 
         /**
          * Returns the Connect 4 action representation of the slot location.

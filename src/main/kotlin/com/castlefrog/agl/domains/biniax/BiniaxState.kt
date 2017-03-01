@@ -75,7 +75,7 @@ data class BiniaxState(val locations: Array<ByteArray>,
                     output.append("   ")
                 } else if (locations[i][j].toInt() == -1) {
                     output.append("<X>")
-                } else if (locations[i][j] > 0 && locations[i][j] < maxElements) {
+                } else if (locations[i][j] in 1..(maxElements - 1)) {
                     output.append("[")
                     output.append((0x40 + locations[i][j]).toChar())
                     output.append("]")
