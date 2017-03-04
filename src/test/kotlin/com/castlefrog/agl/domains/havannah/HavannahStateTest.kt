@@ -45,7 +45,7 @@ class HavannahStateTest {
 
     @Test
     fun testEqualityNotEqual() {
-        val otherHavannahState = HavannahSimulator(4).getInitialState()
+        val otherHavannahState = HavannahSimulator(4).initialState
         otherHavannahState.locations[2][1] = HavannahState.LOCATION_BLACK
         otherHavannahState.locations[1][1] = HavannahState.LOCATION_BLACK
         otherHavannahState.locations[1][0] = HavannahState.LOCATION_BLACK

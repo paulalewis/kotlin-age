@@ -15,22 +15,23 @@ class BackgammonSimulator : Simulator<BackgammonState, BackgammonAction> {
 
     override val nPlayers: Int = 2
 
-    override fun getInitialState(): BackgammonState {
-        val dice = ByteArray(BackgammonState.N_DICE)
-        val agentTurn: Int
-        do {
-            dice[0] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
-            dice[1] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
-        } while (dice[0] == dice[1])
-        if (dice[0] > dice[1]) {
-            dice[1] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
-            agentTurn = BackgammonState.TURN_BLACK
-        } else {
-            dice[0] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
-            agentTurn = BackgammonState.TURN_WHITE
+    override val initialState: BackgammonState
+        get() {
+            val dice = ByteArray(BackgammonState.N_DICE)
+            val agentTurn: Int
+            do {
+                dice[0] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
+                dice[1] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
+            } while (dice[0] == dice[1])
+            if (dice[0] > dice[1]) {
+                dice[1] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
+                agentTurn = BackgammonState.TURN_BLACK
+            } else {
+                dice[0] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
+                agentTurn = BackgammonState.TURN_WHITE
+            }
+            return BackgammonState(dice = dice, agentTurn = agentTurn)
         }
-        return BackgammonState(dice = dice, agentTurn = agentTurn)
-    }
 
     override fun calculateRewards(state: BackgammonState): IntArray {
         var pos = false

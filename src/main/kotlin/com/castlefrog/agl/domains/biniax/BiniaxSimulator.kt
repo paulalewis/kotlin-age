@@ -17,22 +17,23 @@ class BiniaxSimulator(
 
     override val nPlayers: Int = N_PLAYERS
 
-    override fun getInitialState(): BiniaxState {
-        val locations = Array(width) { ByteArray(height) }
-        for (i in 0..height - 1) {
-            val emptyLocation = (Math.random() * width).toInt()
-            for (j in 0..width - 1) {
-                if (j != emptyLocation && i < height - buffer) {
-                    locations[j][i] = BiniaxSimulator.generateRandomElementPair(initialElements, 0, maxElements, elementIncrementInterval).toByte()
-                    if (i == height - buffer - 1) {
-                        locations[j][i] = (locations[j][i] % maxElements + maxElements).toByte()
+    override val initialState: BiniaxState
+        get() {
+            val locations = Array(width) { ByteArray(height) }
+            for (i in 0..height - 1) {
+                val emptyLocation = (Math.random() * width).toInt()
+                for (j in 0..width - 1) {
+                    if (j != emptyLocation && i < height - buffer) {
+                        locations[j][i] = BiniaxSimulator.generateRandomElementPair(initialElements, 0, maxElements, elementIncrementInterval).toByte()
+                        if (i == height - buffer - 1) {
+                            locations[j][i] = (locations[j][i] % maxElements + maxElements).toByte()
+                        }
                     }
                 }
             }
+            locations[width / 2][height - 1] = 1
+            return BiniaxState(locations = locations, maxElements = maxElements, freeMoves = maxFreeMoves.toByte())
         }
-        locations[width / 2][height - 1] = 1
-        return BiniaxState(locations = locations, maxElements = maxElements, freeMoves = maxFreeMoves.toByte())
-    }
 
     override fun calculateRewards(state: BiniaxState): IntArray {
         return REWARDS

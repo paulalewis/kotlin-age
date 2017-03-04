@@ -51,7 +51,7 @@ class RandomAgentTest {
                 legalActions = arrayListOf(arrayListOf(TestAction(1), TestAction(2), TestAction(3))),
                 rewards = intArrayOf(0))
         for (i in 0..expectedActions.size - 1) {
-            actualActions.add(agent.selectAction(0, simulator.getInitialState(), simulator).orElse(null))
+            actualActions.add(agent.selectAction(0, simulator.initialState, simulator).orElse(null))
         }
         Truth.assertThat(actualActions).isEqualTo(expectedActions)
     }

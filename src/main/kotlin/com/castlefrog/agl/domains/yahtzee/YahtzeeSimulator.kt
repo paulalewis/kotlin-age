@@ -7,9 +7,7 @@ class YahtzeeSimulator : Simulator<YahtzeeState, YahtzeeAction> {
 
     override val nPlayers: Int = 2
 
-    override fun getInitialState(): YahtzeeState {
-        return YahtzeeState()
-    }
+    override val initialState: YahtzeeState = YahtzeeState()
 
     override fun calculateRewards(state: YahtzeeState): IntArray {
         val rewards = intArrayOf(0)

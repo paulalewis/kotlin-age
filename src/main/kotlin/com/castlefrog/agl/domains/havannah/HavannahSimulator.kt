@@ -47,9 +47,7 @@ class HavannahSimulator(
 
     override val nPlayers: Int = N_PLAYERS
 
-    override fun getInitialState(): HavannahState {
-        return HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
-    }
+    override val initialState: HavannahState = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
 
     override fun calculateRewards(state: HavannahState
                                /*prevAction: HavannahAction? = null*/): IntArray {

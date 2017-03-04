@@ -8,8 +8,8 @@ class HavannahSimulatorTest {
     @Test
     fun stateTransitionMove1() {
         val simulator = HavannahSimulator(5)
-        val state2 = simulator.stateTransition(simulator.getInitialState(), mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
-        val expectedState = simulator.getInitialState()
+        val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_BLACK
         expectedState.agentTurn = HavannahState.TURN_WHITE
         Truth.assertThat(state2).isEqualTo(expectedState)
@@ -18,16 +18,16 @@ class HavannahSimulatorTest {
     @Test(expected = IllegalArgumentException::class)
     fun stateTransitionIllegalMove() {
         val simulator = HavannahSimulator(5)
-        val state2 = simulator.stateTransition(simulator.getInitialState(), mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
         simulator.stateTransition(state2, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
     }
 
     @Test
     fun stateTransitionMove2SameLocation() {
         val simulator = HavannahSimulator(5)
-        val state2 = simulator.stateTransition(simulator.getInitialState(), mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
         val state3 = simulator.stateTransition(state2, mapOf(Pair(1, HavannahAction.valueOf(0, 0))))
-        val expectedState = simulator.getInitialState()
+        val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_WHITE
         expectedState.agentTurn = HavannahState.TURN_BLACK
         Truth.assertThat(state3).isEqualTo(expectedState)
@@ -36,9 +36,9 @@ class HavannahSimulatorTest {
     @Test
     fun stateTransitionMove2DifferentLocation() {
         val simulator = HavannahSimulator(5)
-        val state2 = simulator.stateTransition(simulator.getInitialState(), mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
         val state3 = simulator.stateTransition(state2, mapOf(Pair(1, HavannahAction.valueOf(0, 1))))
-        val expectedState = simulator.getInitialState()
+        val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_BLACK
         expectedState.locations[0][1] = HavannahState.LOCATION_WHITE
         expectedState.agentTurn = HavannahState.TURN_BLACK

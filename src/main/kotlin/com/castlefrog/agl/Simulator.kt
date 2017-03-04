@@ -15,7 +15,7 @@ interface Simulator<S : State<S>, A : Action<A>> {
     /**
      * @return an initial state in the domain
      */
-    fun getInitialState(): S
+    val initialState: S
 
     /**
      * @param state the state from which to calculate rewards

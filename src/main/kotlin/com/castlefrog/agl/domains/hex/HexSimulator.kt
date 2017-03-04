@@ -13,14 +13,15 @@ class HexSimulator(
         val boardSize: Int = 11,
         val pieRule: Boolean = true) : Simulator<HexState, HexAction> {
 
-    override val nPlayers: Int = 2
-
-    override fun getInitialState(): HexState {
+    init {
         if (boardSize !in MIN_BOARD_SIZE..MAX_BOARD_SIZE - 1) {
             throw IllegalArgumentException("Invalid board size: " + boardSize)
         }
-        return HexState(boardSize = boardSize)
     }
+
+    override val nPlayers: Int = 2
+
+    override val initialState: HexState = HexState(boardSize = boardSize)
 
     override fun calculateRewards(state: HexState): IntArray {
         val locations = state.locations
