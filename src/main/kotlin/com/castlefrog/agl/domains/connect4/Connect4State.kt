@@ -39,7 +39,7 @@ class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4Sta
     }
 
     override fun toString(): String {
-        val output = StringBuilder()
+        val output = StringBuilder(144)
         for (i in 0..2 * WIDTH + 2) {
             output.append("-")
         }
