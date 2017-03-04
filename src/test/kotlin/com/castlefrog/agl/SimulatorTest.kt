@@ -6,27 +6,19 @@ import org.junit.Test
 class SimulatorTest {
 
     @Test
-    fun nAgents() {
-        val simulator = TestSimulator(state = TestState(),
-                legalActions = arrayListOf(arrayListOf(), arrayListOf()),
-                rewards = intArrayOf(0, 0))
-        Truth.assertThat(simulator.nPlayers).isEqualTo(2)
-    }
-
-    @Test
     fun isTerminalStateFalse() {
-        val simulator = TestSimulator(state = TestState(),
+        val simulator = TestSimulator(initialState = TestState(),
                 legalActions = arrayListOf(arrayListOf(TestAction()), arrayListOf()),
                 rewards = intArrayOf(0, 0))
-        Truth.assertThat(simulator.terminalState).isFalse()
+        Truth.assertThat(simulator.isTerminalState(TestState())).isFalse()
     }
 
     @Test
     fun isTerminalStateTrue() {
-        val simulator = TestSimulator(state = TestState(),
+        val simulator = TestSimulator(initialState = TestState(),
                 legalActions = arrayListOf(arrayListOf(), arrayListOf()),
                 rewards = intArrayOf(0, 0))
-        Truth.assertThat(simulator.terminalState).isTrue()
+        Truth.assertThat(simulator.isTerminalState(TestState())).isTrue()
     }
 
 }

@@ -1,59 +1,51 @@
 package com.castlefrog.agl
 
-import java.util.ArrayList
-
 /**
  * A simulator controls the state transitions of a given domain.
  * A simulator is associated with a domain specific state and action
  * type.
  */
-interface Simulator<S : State<S>, A : Action<A>> : Copyable<Simulator<S, A>> {
+interface Simulator<S : State<S>, A : Action<A>> {
 
     /**
-     * Current state of the simulator.
+     * @return the number of players in the domain
      */
-    var state: S
+    val nPlayers: Int
 
     /**
-     * List of legal actions for each player.
+     * @return an initial state in the domain
      */
-    val legalActions: List<MutableList<A>>
+    fun getInitialState(): S
 
     /**
-     * Rewards for each player that may be indexed by that player's id.
+     * @param state the state from which to calculate rewards
+     * @return list of rewards for each player
      */
-    val rewards: IntArray
+    fun calculateRewards(state: S): IntArray
+
+    /**
+     * @param state the state from which to calculate rewards
+     * @return list of legal actions for each player
+     */
+    fun calculateLegalActions(state: S): List<List<A>>
 
     /**
      * Transition from the current state to the next state
      * given a set of player actions.
      * @param actions map of actions to be performed by each player
      */
-    fun stateTransition(actions: Map<Int, A>)
-
-    /**
-     * The number of players in the given domain.
-     */
-    val nPlayers: Int
-        get() = rewards.size
+    fun stateTransition(state: S, actions: Map<Int, A>): S
 
     /**
      * A state is terminal if no player has any
      * legal actions from the current state.
+     * @param state check if this state is terminal
+     * @return true if no player has any legal actions
+     *         from the state
      */
-    val terminalState: Boolean
-        get() = (0..legalActions.size - 1).all { legalActions[it].isEmpty() }
-
-    fun <A : Action<A>> List<MutableList<A>>.copy(): List<MutableList<A>> {
-        val legalActions = ArrayList<MutableList<A>>()
-        for (agentActions in this) {
-            val tempActions = ArrayList<A>()
-            for (action in agentActions) {
-                tempActions.add(action.copy())
-            }
-            legalActions.add(tempActions)
-        }
-        return legalActions
+    fun isTerminalState(state: S): Boolean {
+        val legalActions = calculateLegalActions(state)
+        return (0..legalActions.size - 1).all { legalActions[it].isEmpty() }
     }
 
 }

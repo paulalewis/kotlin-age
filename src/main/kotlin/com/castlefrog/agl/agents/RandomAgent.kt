@@ -15,12 +15,11 @@ class RandomAgent(val random: Random = Random()) : Agent {
 
     override fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>):
             Optional<A> {
-        simulator.state = state
-        val legalActions = simulator.legalActions
+        val legalActions = simulator.calculateLegalActions(state)
         if (playerId >= legalActions.size) {
             return Optional.empty()
         }
-        val actions = simulator.legalActions[playerId]
+        val actions = legalActions[playerId]
         if (actions.isEmpty()) {
             return Optional.empty()
         }

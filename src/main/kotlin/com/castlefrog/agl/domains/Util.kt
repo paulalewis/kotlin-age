@@ -1,4 +1,6 @@
-package com.castlefrog.agl
+package com.castlefrog.agl.domains
+
+import java.util.Random
 
 val ADVERSARIAL_REWARDS_NEUTRAL = intArrayOf(0, 0)
 val ADVERSARIAL_REWARDS_BLACK_WINS = intArrayOf(1, -1)
@@ -8,6 +10,6 @@ fun nextPlayerTurnSequential(playerTurn: Int, nPlayers: Int): Int {
     return (playerTurn + 1) % nPlayers
 }
 
-fun nextPlayerTurnRandom(nPlayers: Int): Int {
-    return (Math.random() * nPlayers).toInt()
+fun nextPlayerTurnRandom(random: Random, nPlayers: Int): Int {
+    return random.nextInt(nPlayers)
 }

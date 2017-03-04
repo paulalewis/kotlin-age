@@ -1,15 +1,27 @@
 package com.castlefrog.agl
 
-class TestSimulator(override var state: TestState,
-                    override val legalActions: List<MutableList<TestAction>>,
-                    override val rewards: IntArray) : Simulator<TestState, TestAction> {
+class TestSimulator(
+        private val initialState: TestState,
+        private val legalActions: List<List<TestAction>>,
+        private val rewards: IntArray,
+        private val testStateTransition: (TestState, Map<Int, TestAction>) -> TestState = { _, _ -> initialState }) : Simulator<TestState, TestAction> {
 
-    override fun copy(): Simulator<TestState, TestAction> {
-        return TestSimulator(state.copy(), legalActions.copy(), rewards.copyOf())
+    override val nPlayers: Int = 2
+
+    override fun getInitialState(): TestState {
+        return initialState
     }
 
-    override fun stateTransition(actions: Map<Int, TestAction>) {
-        throw UnsupportedOperationException("not implemented")
+    override fun calculateRewards(state: TestState): IntArray {
+        return rewards
+    }
+
+    override fun calculateLegalActions(state: TestState): List<List<TestAction>> {
+        return legalActions
+    }
+
+    override fun stateTransition(state: TestState, actions: Map<Int, TestAction>): TestState {
+        return testStateTransition(state, actions)
     }
 
 }

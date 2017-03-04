@@ -7,13 +7,13 @@ class BiniaxStateTest {
 
     @Test
     fun testCopy() {
-        val state = BiniaxSimulator.getInitialState()
+        val state = BiniaxSimulator().getInitialState()
         Truth.assertThat(state).isEqualTo(state.copy())
     }
 
     @Test
     fun testCopyModification() {
-        val state = BiniaxSimulator.getInitialState()
+        val state = BiniaxSimulator().getInitialState()
         val copyState = state.copy()
         state.locations[0][0] = -8
         Truth.assertThat(copyState.locations[0][0]).isNotEqualTo(-8)

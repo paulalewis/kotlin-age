@@ -6,8 +6,8 @@ import org.junit.Test
 
 class HexStateTest {
 
-    val emptyState: HexState = HexSimulator.getInitialState(5)
-    val hexState: HexState = HexSimulator.getInitialState(5)
+    val emptyState: HexState = HexState(boardSize = 5)
+    val hexState: HexState = HexState(boardSize = 5)
 
     @Before
     fun setup() {
@@ -36,7 +36,7 @@ class HexStateTest {
 
     @Test
     fun testEqualityNotEqual() {
-        val otherHexState = HexSimulator.getInitialState(4)
+        val otherHexState = HexState(boardSize = 4)
         otherHexState.setLocation(2, 1, HexState.LOCATION_BLACK)
         otherHexState.setLocation(1, 1, HexState.LOCATION_BLACK)
         otherHexState.setLocation(1, 0, HexState.LOCATION_BLACK)

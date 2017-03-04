@@ -27,36 +27,6 @@ data class HavannahState(val base: Int,
         return locations[x][y] == LOCATION_EMPTY
     }
 
-    val size: Int
-        get() = locations.size
-
-    val nLocations: Int
-        get() = 3 * base * base - 3 * base + 1
-
-    val corners: Array<IntArray>
-        get() = arrayOf(intArrayOf(0, 0), intArrayOf(0, base - 1), intArrayOf(base - 1, 0),
-                intArrayOf(base - 1, size - 1), intArrayOf(size - 1, base - 1), intArrayOf(size - 1, size - 1))
-
-    val sides: Array<Array<IntArray>>
-        get() {
-            val sides = Array(6) { Array(base - 2) { IntArray(2) } }
-            for (i in 0..base - 3) {
-                sides[0][i][0] = 0
-                sides[0][i][1] = i + 1
-                sides[1][i][0] = i + 1
-                sides[1][i][1] = 0
-                sides[2][i][0] = i + 1
-                sides[2][i][1] = base + i
-                sides[3][i][0] = base + i
-                sides[3][i][1] = size - 1
-                sides[4][i][0] = size - 1
-                sides[4][i][1] = base + i
-                sides[5][i][0] = base + i
-                sides[5][i][1] = i + 1
-            }
-            return sides
-        }
-
     val nPieces: Int
         get() {
             var nPieces = 0

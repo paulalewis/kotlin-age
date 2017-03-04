@@ -1,55 +1,65 @@
 package com.castlefrog.agl.domains.hex
 
-import com.castlefrog.agl.ADVERSARIAL_REWARDS_BLACK_WINS
-import com.castlefrog.agl.ADVERSARIAL_REWARDS_NEUTRAL
-import com.castlefrog.agl.ADVERSARIAL_REWARDS_WHITE_WINS
+import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_BLACK_WINS
+import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_NEUTRAL
+import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
-import com.castlefrog.agl.nextPlayerTurnSequential
+import com.castlefrog.agl.domains.nextPlayerTurnSequential
 import java.util.ArrayList
 import java.util.Arrays
 import java.util.Stack
 
-class HexSimulator(state: HexState,
-                   legalActions: List<MutableList<HexAction>>? = null,
-                   rewards: IntArray? = null,
-                   val pieRule: Boolean = true) : Simulator<HexState, HexAction> {
+class HexSimulator(
+        val boardSize: Int = 11,
+        val pieRule: Boolean = true) : Simulator<HexState, HexAction> {
 
-    override var state: HexState = state
-        set(value) {
-            field = value
-            _legalActions = null
-            _rewards = null
+    override val nPlayers: Int = 2
+
+    override fun getInitialState(): HexState {
+        if (boardSize !in MIN_BOARD_SIZE..MAX_BOARD_SIZE - 1) {
+            throw IllegalArgumentException("Invalid board size: " + boardSize)
         }
-
-    private var _legalActions: List<MutableList<HexAction>>? = null
-    override val legalActions: List<MutableList<HexAction>>
-        get() {
-            if (_legalActions == null) {
-                _legalActions = computeLegalActions(state, rewards, pieRule)
-            }
-            return _legalActions ?: computeLegalActions(state, rewards, pieRule)
-        }
-
-    private var _rewards: IntArray? = null
-    override val rewards: IntArray
-        get() {
-            if (_rewards == null) {
-                _rewards = computeRewards(state)
-            }
-            return _rewards ?: computeRewards(state)
-        }
-
-    init {
-        _legalActions = legalActions
-        _rewards = rewards
+        return HexState(boardSize = boardSize)
     }
 
-    override fun copy(): HexSimulator {
-        return HexSimulator(state.copy(), _legalActions?.copy(), _rewards?.copyOf(), pieRule)
+    override fun calculateRewards(state: HexState): IntArray {
+        val locations = state.locations
+        val visited = Array(state.boardSize) { BooleanArray(state.boardSize) }
+        for (i in 0..state.boardSize - 1) {
+            if (locations[0][i].toInt() == HexState.LOCATION_BLACK && !visited[0][i]) {
+                if (dfsSides(0, i, locations, visited, state.boardSize) and 3 == 3) {
+                    return ADVERSARIAL_REWARDS_BLACK_WINS
+                }
+            }
+            if (locations[i][0].toInt() == HexState.LOCATION_WHITE && !visited[i][0]) {
+                if (dfsSides(i, 0, locations, visited, state.boardSize) and 12 == 12) {
+                    return ADVERSARIAL_REWARDS_WHITE_WINS
+                }
+            }
+        }
+        return ADVERSARIAL_REWARDS_NEUTRAL
     }
 
-    override fun stateTransition(actions: Map<Int, HexAction>) {
+    override fun calculateLegalActions(state: HexState): List<MutableList<HexAction>> {
+        val legalActions = ArrayList<MutableList<HexAction>>()
+        legalActions.add(ArrayList<HexAction>())
+        legalActions.add(ArrayList<HexAction>())
+        val rewards = calculateRewards(state)
+        if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
+            for (i in 0..state.boardSize - 1) {
+                for (j in 0..state.boardSize - 1) {
+                    if (state.isLocationEmpty(i, j) || (pieRule && isSecondMove(state))) {
+                        legalActions[state.agentTurn.toInt()].add(HexAction.valueOf(i, j))
+                    }
+                }
+            }
+        }
+        return legalActions
+    }
+
+    override fun stateTransition(state: HexState, actions: Map<Int, HexAction>): HexState {
         val action = actions[state.agentTurn.toInt()]
+        val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
@@ -58,74 +68,19 @@ class HexSimulator(state: HexState,
         if (state.isLocationEmpty(x, y)) {
             state.setLocation(x, y, state.agentTurn + 1)
             state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), nPlayers).toByte()
-            _rewards = computeRewards(action, state)
-            _legalActions = null
         } else {
             state.setLocation(x, y, 0)
             state.setLocation(y, x, state.agentTurn + 1)
             state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), nPlayers).toByte()
-            _rewards = computeRewards(action, state)
-            _legalActions = null
         }
+        return state
     }
 
     companion object {
         private val MIN_BOARD_SIZE = 1
+        private val MAX_BOARD_SIZE = 256
 
-        /**
-         * @return hex simulator from initial board state
-         */
-        fun create(boardSize: Int, pieRule: Boolean): HexSimulator {
-            return HexSimulator(state = getInitialState(boardSize), pieRule = pieRule)
-        }
-
-        /**
-         * @param boardSize must be an int > 0
-         * @return initial board state
-         */
-        fun getInitialState(boardSize: Int): HexState {
-            if (boardSize < MIN_BOARD_SIZE) {
-                throw IllegalArgumentException("Invalid board size: " + boardSize)
-            }
-            return HexState(boardSize = boardSize)
-        }
-
-        private fun computeLegalActions(state: HexState, rewards: IntArray, pieRule: Boolean):
-                List<MutableList<HexAction>> {
-            val legalActions = ArrayList<MutableList<HexAction>>()
-            legalActions.add(ArrayList<HexAction>())
-            legalActions.add(ArrayList<HexAction>())
-            if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
-                for (i in 0..state.boardSize - 1) {
-                    for (j in 0..state.boardSize - 1) {
-                        if (state.isLocationEmpty(i, j) || (pieRule && isSecondMove(state))) {
-                            legalActions[state.agentTurn.toInt()].add(HexAction.valueOf(i, j))
-                        }
-                    }
-                }
-            }
-            return legalActions
-        }
-
-        private fun computeRewards(state: HexState): IntArray {
-            val locations = state.locations
-            val visited = Array(state.boardSize) { BooleanArray(state.boardSize) }
-            for (i in 0..state.boardSize - 1) {
-                if (locations[0][i].toInt() == HexState.LOCATION_BLACK && !visited[0][i]) {
-                    if (dfsSides(0, i, locations, visited, state.boardSize) and 3 == 3) {
-                        return ADVERSARIAL_REWARDS_BLACK_WINS
-                    }
-                }
-                if (locations[i][0].toInt() == HexState.LOCATION_WHITE && !visited[i][0]) {
-                    if (dfsSides(i, 0, locations, visited, state.boardSize) and 12 == 12) {
-                        return ADVERSARIAL_REWARDS_WHITE_WINS
-                    }
-                }
-            }
-            return ADVERSARIAL_REWARDS_NEUTRAL
-        }
-
-        private fun computeRewards(action: HexAction, state: HexState): IntArray {
+        /*private fun computeRewards(action: HexAction, state: HexState): IntArray {
             val locations = state.locations
             val visited = Array(state.boardSize) { BooleanArray(state.boardSize) }
             val x = action.x.toInt()
@@ -138,7 +93,7 @@ class HexSimulator(state: HexState,
             } else {
                 return ADVERSARIAL_REWARDS_NEUTRAL
             }
-        }
+        }*/
 
         private fun dfsSides(x0: Int,
                              y0: Int,

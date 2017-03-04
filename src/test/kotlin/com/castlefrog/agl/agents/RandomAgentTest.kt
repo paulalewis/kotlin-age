@@ -13,27 +13,29 @@ class RandomAgentTest {
     @Test
     fun testSelectActionInvalidLegalActionsArray() {
         val agent = RandomAgent(Random(5555))
-        val simulator = TestSimulator(state = TestState(), legalActions = ArrayList(), rewards = intArrayOf(0))
-        while (!simulator.terminalState) {
-            val action = agent.selectAction(0, simulator.state, simulator.copy())
+        var state = TestState()
+        val simulator = TestSimulator(initialState = state, legalActions = ArrayList(), rewards = intArrayOf(0))
+        while (!simulator.isTerminalState(state)) {
+            val action = agent.selectAction(0, state, simulator)
             action.ifPresent {
-                simulator.stateTransition(mapOf(Pair(0, action.get())))
+                state = simulator.stateTransition(state, mapOf(Pair(0, action.get())))
             }
         }
-        Truth.assertThat(agent.selectAction(0, simulator.state, simulator.copy()).isPresent).isFalse()
+        Truth.assertThat(agent.selectAction(0, state, simulator).isPresent).isFalse()
     }
 
     @Test
     fun testSelectActionNoActions() {
         val agent = RandomAgent(Random(5555))
-        val simulator = TestSimulator(state = TestState(), legalActions = arrayListOf(ArrayList()), rewards = intArrayOf(0))
-        while (!simulator.terminalState) {
-            val action = agent.selectAction(0, simulator.state, simulator.copy())
+        var state = TestState()
+        val simulator = TestSimulator(initialState = state, legalActions = arrayListOf(ArrayList()), rewards = intArrayOf(0))
+        while (!simulator.isTerminalState(state)) {
+            val action = agent.selectAction(0, state, simulator)
             action.ifPresent {
-                simulator.stateTransition(mapOf(Pair(0, action.get())))
+                state = simulator.stateTransition(state, mapOf(Pair(0, action.get())))
             }
         }
-        Truth.assertThat(agent.selectAction(0, simulator.state, simulator.copy()).isPresent).isFalse()
+        Truth.assertThat(agent.selectAction(0, state, simulator).isPresent).isFalse()
     }
 
     @Test
@@ -45,11 +47,11 @@ class RandomAgentTest {
                 TestAction(2))
         val actualActions = ArrayList<TestAction>()
         val agent = RandomAgent(Random(6345))
-        val simulator = TestSimulator(state = TestState(0),
+        val simulator = TestSimulator(initialState = TestState(0),
                 legalActions = arrayListOf(arrayListOf(TestAction(1), TestAction(2), TestAction(3))),
                 rewards = intArrayOf(0))
         for (i in 0..expectedActions.size - 1) {
-            actualActions.add(agent.selectAction(0, simulator.state, simulator).orElse(null))
+            actualActions.add(agent.selectAction(0, simulator.getInitialState(), simulator).orElse(null))
         }
         Truth.assertThat(actualActions).isEqualTo(expectedActions)
     }

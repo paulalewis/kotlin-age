@@ -14,7 +14,6 @@ Domains:
 - [biniax](https://en.wikipedia.org/wiki/Biniax)
 - [connect4](https://en.wikipedia.org/wiki/Connect4)
 - [draughts](https://en.wikipedia.org/wiki/Draughts)
-- [EinStein würfelt nicht!](https://en.wikipedia.org/wiki/EinStein_w%C3%BCrfelt_nicht!)
 - [havannah](https://en.wikipedia.org/wiki/Havannah)
 - [hex](https://en.wikipedia.org/wiki/Hex_%28board_game%29)
 - [hexdame](https://en.wikipedia.org/wiki/Hexdame)

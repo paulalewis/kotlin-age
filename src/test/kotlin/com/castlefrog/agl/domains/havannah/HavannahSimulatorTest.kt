@@ -7,42 +7,42 @@ class HavannahSimulatorTest {
 
     @Test
     fun stateTransitionMove1() {
-        val simulator = HavannahSimulator.create(5, true)
-        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
-        val state = HavannahSimulator.getInitialState(5)
-        state.locations[0][0] = HavannahState.LOCATION_BLACK
-        state.agentTurn = HavannahState.TURN_WHITE
-        Truth.assertThat(simulator.state).isEqualTo(state)
+        val simulator = HavannahSimulator(5)
+        val state2 = simulator.stateTransition(simulator.getInitialState(), mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        val expectedState = simulator.getInitialState()
+        expectedState.locations[0][0] = HavannahState.LOCATION_BLACK
+        expectedState.agentTurn = HavannahState.TURN_WHITE
+        Truth.assertThat(state2).isEqualTo(expectedState)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun stateTransitionIllegalMove() {
-        val simulator = HavannahSimulator.create(5, true)
-        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
-        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        val simulator = HavannahSimulator(5)
+        val state2 = simulator.stateTransition(simulator.getInitialState(), mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        simulator.stateTransition(state2, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
     }
 
     @Test
     fun stateTransitionMove2SameLocation() {
-        val simulator = HavannahSimulator.create(5, true)
-        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
-        simulator.stateTransition(mapOf(Pair(1, HavannahAction.valueOf(0, 0))))
-        val state = HavannahSimulator.getInitialState(5)
-        state.locations[0][0] = HavannahState.LOCATION_WHITE
-        state.agentTurn = HavannahState.TURN_BLACK
-        Truth.assertThat(simulator.state).isEqualTo(state)
+        val simulator = HavannahSimulator(5)
+        val state2 = simulator.stateTransition(simulator.getInitialState(), mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        val state3 = simulator.stateTransition(state2, mapOf(Pair(1, HavannahAction.valueOf(0, 0))))
+        val expectedState = simulator.getInitialState()
+        expectedState.locations[0][0] = HavannahState.LOCATION_WHITE
+        expectedState.agentTurn = HavannahState.TURN_BLACK
+        Truth.assertThat(state3).isEqualTo(expectedState)
     }
 
     @Test
     fun stateTransitionMove2DifferentLocation() {
-        val simulator = HavannahSimulator.create(5, true)
-        simulator.stateTransition(mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
-        simulator.stateTransition(mapOf(Pair(1, HavannahAction.valueOf(0, 1))))
-        val state = HavannahSimulator.getInitialState(5)
-        state.locations[0][0] = HavannahState.LOCATION_BLACK
-        state.locations[0][1] = HavannahState.LOCATION_WHITE
-        state.agentTurn = HavannahState.TURN_BLACK
-        Truth.assertThat(simulator.state).isEqualTo(state)
+        val simulator = HavannahSimulator(5)
+        val state2 = simulator.stateTransition(simulator.getInitialState(), mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        val state3 = simulator.stateTransition(state2, mapOf(Pair(1, HavannahAction.valueOf(0, 1))))
+        val expectedState = simulator.getInitialState()
+        expectedState.locations[0][0] = HavannahState.LOCATION_BLACK
+        expectedState.locations[0][1] = HavannahState.LOCATION_WHITE
+        expectedState.agentTurn = HavannahState.TURN_BLACK
+        Truth.assertThat(state3).isEqualTo(expectedState)
     }
 
     @Test
@@ -60,8 +60,8 @@ class HavannahSimulatorTest {
         locations[1][0] = HavannahState.LOCATION_WHITE
         locations[1][2] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_WHITE)
-        val simulator = HavannahSimulator(state = state, pieRule = false)
-        Truth.assertThat(simulator.rewards).isEqualTo(intArrayOf(1, -1))
+        val simulator = HavannahSimulator(base = 5, pieRule = false)
+        Truth.assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
     }
 
     @Test
@@ -78,8 +78,8 @@ class HavannahSimulatorTest {
         locations[0][3] = HavannahState.LOCATION_WHITE
         locations[0][4] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_BLACK)
-        val simulator = HavannahSimulator(state = state, pieRule = false)
-        Truth.assertThat(simulator.rewards).isEqualTo(intArrayOf(-1, 1))
+        val simulator = HavannahSimulator(base = 5, pieRule = false)
+        Truth.assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(-1, 1))
     }
 
     @Test
@@ -97,8 +97,8 @@ class HavannahSimulatorTest {
         locations[0][3] = HavannahState.LOCATION_WHITE
         locations[3][3] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_WHITE)
-        val simulator = HavannahSimulator(state = state, pieRule = false)
-        Truth.assertThat(simulator.rewards).isEqualTo(intArrayOf(1, -1))
+        val simulator = HavannahSimulator(base = 5, pieRule = false)
+        Truth.assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
     }
 
 }

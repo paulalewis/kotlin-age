@@ -7,14 +7,14 @@ class BackgammonStateTest {
 
     @Test
     fun testCopy() {
-        val state = BackgammonSimulator.getInitialState()
+        val state = BackgammonSimulator().getInitialState()
         Truth.assertThat(state).isEqualTo(state.copy())
         Truth.assertThat(state).isNotSameAs(state.copy())
     }
 
     @Test
     fun testCopyModification() {
-        val state = BackgammonSimulator.getInitialState()
+        val state = BackgammonSimulator().getInitialState()
         val stateCopy = state.copy()
         state.locations[0] = -1
         Truth.assertThat(stateCopy.locations[0]).isNotEqualTo(state.locations[0])
