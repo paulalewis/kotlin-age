@@ -148,12 +148,8 @@ class BiniaxSimulator(
                 for (j in 0..state.width - 1) {
                     if (i == 0) {
                         if (j != emptyLocation) {
-                            if (Math.random() < IMPASSIBLE_CHANCE) {
-                                locations[j][i] = -1
-                            } else {
-                                locations[j][i] = generateRandomElementPair(initialElements, nTurns, maxElements,
-                                        elementIncrementInterval).toByte()
-                            }
+                            locations[j][i] = generateRandomElementPair(initialElements, nTurns, maxElements,
+                                    elementIncrementInterval).toByte()
                         } else {
                             locations[j][i] = 0
                         }
@@ -184,7 +180,6 @@ class BiniaxSimulator(
     }
 
     companion object {
-        private val IMPASSIBLE_CHANCE = 0.0
         private val REWARDS = intArrayOf(1)
         private val N_PLAYERS = 1
 

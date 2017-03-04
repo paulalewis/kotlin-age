@@ -5,7 +5,6 @@ import com.castlefrog.agl.State
 /**
  * Defines a Biniax state.
  * Location value representation:
- * -1: impassable
  * 0: empty
  * x: single element 0 < x <= MAX_ELEMENTS
  * xy: element pair 0 < x <= MAX_ELEMENTS and 0 < y <= MAX_ELEMENTS and x < y
@@ -73,8 +72,6 @@ data class BiniaxState(val locations: Array<ByteArray>,
                 }
                 if (locations[i][j].toInt() == 0) {
                     output.append("   ")
-                } else if (locations[i][j].toInt() == -1) {
-                    output.append("<X>")
                 } else if (locations[i][j] in 1..(maxElements - 1)) {
                     output.append("[")
                     output.append((0x40 + locations[i][j]).toChar())
