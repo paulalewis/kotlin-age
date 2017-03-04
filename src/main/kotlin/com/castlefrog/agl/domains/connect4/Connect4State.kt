@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.connect4
 
 import com.castlefrog.agl.State
+import java.util.Arrays
 
 /**
  * State represented by a bitBoard described below:
@@ -12,12 +13,29 @@ import com.castlefrog.agl.State
  * 1  8 15 22 29 36 43
  * 0  7 14 21 28 35 42
  */
-data class Connect4State(var bitBoardBlack: Long = 0,
-                         var bitBoardWhite: Long = 0,
-                         var agentTurn: Int = 0) : State<Connect4State> {
+class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4State> {
+
+    val agentTurn: Int
+            get() {
+                if (java.lang.Long.bitCount(bitBoards[0]) <= java.lang.Long.bitCount(bitBoards[1])) {
+                    return 0
+                } else {
+                    return 1
+                }
+            }
 
     override fun copy(): Connect4State {
-        return copy(bitBoardBlack, bitBoardWhite, agentTurn)
+        return Connect4State(bitBoards.copyOf())
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+        return Arrays.equals(bitBoards, (other as Connect4State).bitBoards)
+    }
+
+    override fun hashCode(): Int {
+        return Arrays.hashCode(bitBoards)
     }
 
     override fun toString(): String {
@@ -31,9 +49,9 @@ data class Connect4State(var bitBoardBlack: Long = 0,
             var j = i
             while (j < (HEIGHT + 1) * WIDTH) {
                 val mask = 1L shl j
-                if ((bitBoardBlack and mask) != 0L) {
+                if ((bitBoards[0] and mask) != 0L) {
                     output.append("X")
-                } else if ((bitBoardWhite and mask) != 0L) {
+                } else if ((bitBoards[1] and mask) != 0L) {
                     output.append("O")
                 } else {
                     output.append("-")

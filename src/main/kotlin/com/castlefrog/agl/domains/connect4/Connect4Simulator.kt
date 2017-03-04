@@ -4,7 +4,6 @@ import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_BLACK_WINS
 import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_NEUTRAL
 import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
-import com.castlefrog.agl.domains.nextPlayerTurnSequential
 import com.castlefrog.agl.util.LruCache
 
 import java.util.ArrayList
@@ -14,7 +13,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
     private val columnHeightsCache = LruCache<Connect4State, IntArray>(1)
 
-    override val nPlayers: Int = 2
+    override val nPlayers: Int = N_PLAYERS
 
     override fun getInitialState(): Connect4State {
         return Connect4State()
@@ -22,8 +21,8 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
     override fun calculateRewards(state: Connect4State): IntArray {
         val height = Connect4State.HEIGHT
-        for (i in 0..1) {
-            val bitBoard = if (i == 0) state.bitBoardBlack else state.bitBoardWhite
+        for (i in 0..N_PLAYERS - 1) {
+            val bitBoard = state.bitBoards[i]
             val diagonal1 = bitBoard and (bitBoard shr height)
             val horizontal = bitBoard and (bitBoard shr height + 1)
             val diagonal2 = bitBoard and (bitBoard shr height + 2)
@@ -59,18 +58,14 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
     }
 
     override fun stateTransition(state: Connect4State, actions: Map<Int, Connect4Action>): Connect4State {
-        val action = actions[state.agentTurn]
+        val agentTurn = state.agentTurn
+        val action = actions[agentTurn]
         val legalActions = calculateLegalActions(state)
         val columnHeights = getColumnHeights(state)
-        if (action === null || !legalActions[state.agentTurn].contains(action)) {
+        if (action === null || !legalActions[agentTurn].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
-        if (state.agentTurn == 0) {
-            state.bitBoardBlack = state.bitBoardBlack xor (1L shl columnHeights[action.location]++)
-        } else {
-            state.bitBoardWhite = state.bitBoardWhite xor (1L shl columnHeights[action.location]++)
-        }
-        state.agentTurn = nextPlayerTurnSequential(state.agentTurn, nPlayers)
+        state.bitBoards[agentTurn] = state.bitBoards[agentTurn] xor (1L shl columnHeights[action.location]++)
         return state
     }
 
@@ -81,6 +76,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
     }
 
     companion object {
+        private val N_PLAYERS = 2
         private val ALL_LOCATIONS = (1L shl (Connect4State.HEIGHT + 1) * Connect4State.WIDTH) - 1
         private val FIRST_COLUMN = (1L shl Connect4State.HEIGHT + 1) - 1
         private val BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN
@@ -105,7 +101,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
         private fun calculateColumnHeights(state: Connect4State): IntArray {
             val columnHeights = IntArray(Connect4State.WIDTH)
-            val bitBoard = state.bitBoardBlack or state.bitBoardWhite
+            val bitBoard = state.bitBoards[0] or state.bitBoards[1]
             for (i in 0..Connect4State.WIDTH - 1) {
                 columnHeights[i] = (Connect4State.HEIGHT + 1) * i
                 while (bitBoard and (1L shl columnHeights[i]) != 0L) {
