@@ -7,11 +7,12 @@ import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
 import java.util.ArrayList
 import java.util.LinkedList
+import java.util.Random
 
 /**
  * Classic game of Backgammon
  */
-class BackgammonSimulator : Simulator<BackgammonState, BackgammonAction> {
+class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonState, BackgammonAction> {
 
     override val nPlayers: Int = 2
 
@@ -20,14 +21,14 @@ class BackgammonSimulator : Simulator<BackgammonState, BackgammonAction> {
             val dice = ByteArray(BackgammonState.N_DICE)
             val agentTurn: Int
             do {
-                dice[0] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
-                dice[1] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
+                dice[0] = random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte()
+                dice[1] = random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte()
             } while (dice[0] == dice[1])
             if (dice[0] > dice[1]) {
-                dice[1] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
+                dice[1] = random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte()
                 agentTurn = BackgammonState.TURN_BLACK
             } else {
-                dice[0] = (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte()
+                dice[0] = random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte()
                 agentTurn = BackgammonState.TURN_WHITE
             }
             return BackgammonState(dice = dice, agentTurn = agentTurn)
@@ -37,9 +38,9 @@ class BackgammonSimulator : Simulator<BackgammonState, BackgammonAction> {
         var pos = false
         var neg = false
         for (i in 0..BackgammonState.N_LOCATIONS - 1) {
-            if (state.locations[i] > 0) {
+            if (!pos && state.locations[i] > 0) {
                 pos = true
-            } else if (state.locations[i] < 0) {
+            } else if (!neg && state.locations[i] < 0) {
                 neg = true
             }
         }
@@ -137,8 +138,8 @@ class BackgammonSimulator : Simulator<BackgammonState, BackgammonAction> {
             }
             locations[from] = (locations[from] - piece).toByte()
         }
-        val dice = byteArrayOf((Math.random() * BackgammonState.N_DIE_FACES + 1).toByte(),
-                (Math.random() * BackgammonState.N_DIE_FACES + 1).toByte())
+        val dice = byteArrayOf(random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte(),
+                random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte())
         return BackgammonState(locations, dice, nextPlayerTurnSequential(state.agentTurn, nPlayers))
     }
 
