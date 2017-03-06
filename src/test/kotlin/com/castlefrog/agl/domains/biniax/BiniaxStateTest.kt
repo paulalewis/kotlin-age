@@ -5,6 +5,11 @@ import org.junit.Test
 
 class BiniaxStateTest {
 
+    @Test(expected = IllegalArgumentException::class)
+    fun testIllegalBiniaxStateSize() {
+        BiniaxState(locations = byteArrayOf())
+    }
+
     @Test
     fun testCopy() {
         val state = BiniaxSimulator().initialState
@@ -15,14 +20,26 @@ class BiniaxStateTest {
     fun testCopyModification() {
         val state = BiniaxSimulator().initialState
         val copyState = state.copy()
-        state.locations[0][0] = -8
-        Truth.assertThat(copyState.locations[0][0]).isNotEqualTo(-8)
+        state.locations[0] = -8
+        Truth.assertThat(copyState.locations[0]).isNotEqualTo(-8)
+    }
+
+    @Test
+    fun testHashCode() {
+        Truth.assertThat(BiniaxState().hashCode()).isEqualTo(BiniaxState().hashCode())
     }
 
     @Test
     fun testToString() {
-        val locations = Array(5) { byteArrayOf(0, 0, 0, 4, 18, 0, 11)}
-        val state = BiniaxState(locations, 10, 2, 0)
+        val locations = byteArrayOf(
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                28, 28, 28, 0, 28,
+                18, 18, 18, 18, 18,
+                0, 0, 0, 0, 0,
+                0, 0, 4, 0, 0)
+        val state = BiniaxState(locations = locations)
         Truth.assertThat(state.toString()).isEqualTo("""
         |Turns: 0
         |Free Moves: 2
@@ -30,10 +47,10 @@ class BiniaxStateTest {
         |:                   :
         |:                   :
         |:                   :
-        |:[D] [D] [D] [D] [D]:
+        |:B-H B-H B-H     B-H:
         |:A-H A-H A-H A-H A-H:
         |:                   :
-        |:A-A A-A A-A A-A A-A:
+        |:        [D]        :
         |---------------------
         """.trimMargin())
     }

@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.biniax
 
 import com.castlefrog.agl.State
+import java.util.Arrays
 
 /**
  * Defines a Biniax state.
@@ -9,83 +10,68 @@ import com.castlefrog.agl.State
  * x: single element 0 < x <= MAX_ELEMENTS
  * xy: element pair 0 < x <= MAX_ELEMENTS and 0 < y <= MAX_ELEMENTS and x < y
  */
-data class BiniaxState(val locations: Array<ByteArray>,
-                       val maxElements: Int,
-                       var freeMoves: Byte,
-                       var nTurns: Int = 0) : State<BiniaxState> {
+data class BiniaxState(
+        val locations: ByteArray = ByteArray(BiniaxSimulator.WIDTH * BiniaxSimulator.HEIGHT),
+        val maxElements: Byte = 10,
+        var freeMoves: Byte = 2,
+        var nTurns: Int = 0) : State<BiniaxState> {
 
-    val width: Int
-        get() = locations.size
-
-    val height: Int
-        get() = locations[0].size
+    init {
+        if (locations.size != BiniaxSimulator.WIDTH * BiniaxSimulator.HEIGHT) {
+            throw IllegalArgumentException("locations size must be = " + BiniaxSimulator.WIDTH * BiniaxSimulator.HEIGHT)
+        }
+    }
 
     override fun copy(): BiniaxState {
-        val copyLocations = Array(width) { ByteArray(height) }
-        for (i in 0..width - 1) {
-            System.arraycopy(locations[i], 0, copyLocations[i], 0, height)
-        }
+        val copyLocations = ByteArray(locations.size)
+        System.arraycopy(locations, 0, copyLocations, 0, locations.size)
         return copy(copyLocations, maxElements, freeMoves, nTurns)
     }
 
     override fun hashCode(): Int {
-        var code = 7 + freeMoves
-        for (row in locations) {
-            for (location in row) {
-                code = 11 * code + location
-            }
-        }
-        code = 11 * code + nTurns
-        return code
+        return 11 * (17 * freeMoves + Arrays.hashCode(locations)) + nTurns
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is BiniaxState) {
-            return false
-        }
-        if (freeMoves != other.freeMoves) {
-            return false
-        }
-        for (i in 0..width - 1) {
-            for (j in 0..height - 1) {
-                if (locations[i][j] != other.locations[i][j]) {
-                    return false
-                }
-            }
-        }
-        return nTurns == other.nTurns
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+        return other is BiniaxState
+                && Arrays.equals(locations, other.locations)
+                && freeMoves == other.freeMoves
+                && nTurns == other.nTurns
     }
 
     override fun toString(): String {
         val output = StringBuilder()
         output.append("Turns: ").append(nTurns).append("\n")
         output.append("Free Moves: ").append(freeMoves.toInt()).append("\n")
-        for (i in 0..width - 1) {
+        for (i in 0..BiniaxSimulator.WIDTH - 1) {
             output.append("----")
         }
         output.append("-\n")
-        for (j in 0..height - 1) {
+        for (j in 0..BiniaxSimulator.HEIGHT - 1) {
             output.append(":")
-            for (i in 0..width - 1) {
+            for (i in 0..BiniaxSimulator.WIDTH - 1) {
+                val location = locations[i + j * BiniaxSimulator.WIDTH].toInt()
                 if (i != 0) {
                     output.append(" ")
                 }
-                if (locations[i][j].toInt() == 0) {
+                if (location == 0) {
                     output.append("   ")
-                } else if (locations[i][j] in 1..(maxElements - 1)) {
+                } else if (location in 1..(maxElements - 1)) {
                     output.append("[")
-                    output.append((0x40 + locations[i][j]).toChar())
+                    output.append((0x40 + location).toChar())
                     output.append("]")
                 } else {
-                    output.append((0x40 + locations[i][j] / (maxElements)).toChar())
+                    output.append((0x40 + location / (maxElements)).toChar())
                     output.append("-")
-                    output.append((0x40 + locations[i][j] % (maxElements)).toChar())
+                    output.append((0x40 + location % (maxElements)).toChar())
                 }
             }
             output.append(":\n")
         }
         output.append("-")
-        for (i in 0..width - 1) {
+        for (i in 0..BiniaxSimulator.WIDTH - 1) {
             output.append("----")
         }
         return output.toString()
