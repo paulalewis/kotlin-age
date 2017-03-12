@@ -188,17 +188,13 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
          */
         private fun canMoveOff(locations: ByteArray, piece: Int): Boolean {
             if (piece > 0) {
-                for (i in 0..18) {
-                    if (locations[i] > 0) {
-                        return false
-                    }
-                }
+                (0..18)
+                        .filter { locations[it] > 0 }
+                        .forEach { return false }
             } else {
-                for (i in 7..BackgammonState.N_LOCATIONS - 1) {
-                    if (locations[i] < 0) {
-                        return false
-                    }
-                }
+                (7..BackgammonState.N_LOCATIONS - 1)
+                        .filter { locations[it] < 0 }
+                        .forEach { return false }
             }
             return true
         }
