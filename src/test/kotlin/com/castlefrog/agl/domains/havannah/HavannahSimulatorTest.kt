@@ -23,14 +23,21 @@ class HavannahSimulatorTest {
     }
 
     @Test
-    fun stateTransitionMove2SameLocation() {
-        val simulator = HavannahSimulator(5)
+    fun stateTransitionMove2SameLocationPieRuleTrue() {
+        val simulator = HavannahSimulator(base = 5, pieRule = true)
         val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
         val state3 = simulator.stateTransition(state2, mapOf(Pair(1, HavannahAction.valueOf(0, 0))))
         val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_WHITE
         expectedState.agentTurn = HavannahState.TURN_BLACK
         Truth.assertThat(state3).isEqualTo(expectedState)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun stateTransitionMove2SameLocationPieRuleFalse() {
+        val simulator = HavannahSimulator(base = 5, pieRule = false)
+        val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        simulator.stateTransition(state2, mapOf(Pair(1, HavannahAction.valueOf(0, 0))))
     }
 
     @Test

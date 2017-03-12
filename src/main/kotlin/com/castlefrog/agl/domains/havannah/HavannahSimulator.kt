@@ -149,10 +149,10 @@ class HavannahSimulator(
                 for (x in xMin..xMax - 1) {
                     if (state.isLocationEmpty(x, y)) {
                         legalActions[state.agentTurn.toInt()].add(HavannahAction.valueOf(x, y))
-                    } else if (state.agentTurn == HavannahState.TURN_WHITE && count == 0) {
+                    } else if (pieRule && count == 0 && state.agentTurn == HavannahState.TURN_WHITE) {
                         count = 1
                         tempAction = HavannahAction.valueOf(x, y)
-                    } else if (state.agentTurn == HavannahState.TURN_WHITE && count == 1) {
+                    } else if (pieRule && count == 1 && state.agentTurn == HavannahState.TURN_WHITE) {
                         count = 2
                         tempAction = null
                     }
