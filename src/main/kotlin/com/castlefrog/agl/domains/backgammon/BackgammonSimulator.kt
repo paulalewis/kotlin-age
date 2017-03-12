@@ -18,19 +18,16 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
 
     override val initialState: BackgammonState
         get() {
-            val dice = ByteArray(BackgammonState.N_DICE)
-            val agentTurn: Int
-            do {
-                dice[0] = random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte()
-                dice[1] = random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte()
-            } while (dice[0] == dice[1])
-            if (dice[0] > dice[1]) {
-                dice[1] = random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte()
-                agentTurn = BackgammonState.TURN_BLACK
-            } else {
-                dice[0] = random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte()
-                agentTurn = BackgammonState.TURN_WHITE
-            }
+            val agentTurn: Int = random.nextInt(2)
+            val dice: ByteArray = byteArrayOf(
+                    when (random.nextInt(15)) {
+                        0 -> 1
+                        1, 2 -> 2
+                        3, 4, 5 -> 3
+                        6, 7, 8, 9 -> 4
+                        else -> 5
+                    },
+                    (random.nextInt(BackgammonState.N_DIE_FACES)).toByte())
             return BackgammonState(dice = dice, agentTurn = agentTurn)
         }
 
@@ -54,63 +51,35 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
     }
 
     override fun calculateLegalActions(state: BackgammonState): List<List<BackgammonAction>> {
-        val legalActions = ArrayList<MutableList<BackgammonAction>>()
-        legalActions.add(ArrayList<BackgammonAction>())
-        legalActions.add(ArrayList<BackgammonAction>())
-        val locations = state.locations
-        val dice = state.dice
-        val piece: Int
-        val values: ByteArray
-        val depth: Int
+        val legalActions = arrayListOf<MutableList<BackgammonAction>>(ArrayList(), ArrayList())
 
         val rewards = calculateRewards(state)
         if (rewards[0] == 0) {
-            if (state.agentTurn == 0) {
-                piece = 1
+            val piece = if (state.agentTurn == 0) 1 else -1
+
+            val dice = state.dice
+            val values = if (dice[0] == dice[1]) {
+                intArrayOf(dice[0] + 1)
             } else {
-                piece = -1
+                intArrayOf(dice[0] + 1, dice[1] + 1)
             }
 
-            if (dice[0] == dice[1]) {
-                values = byteArrayOf(dice[0])
-            } else {
-                values = dice
-            }
+            val depth = if (dice[0] == dice[1]) 4 else 2
 
-            if (dice[0] == dice[1]) {
-                depth = 4
-            } else {
-                depth = 2
-            }
+            val tempLegalActions = dfs(state.locations, LinkedList<BackgammonMove>(),
+                    values, piece, depth, state.agentTurn)
 
-            // Simplify the board
-            for (i in 0..BackgammonState.N_LOCATIONS - 1) {
-                if (locations[i] * piece == -1) {
-                    locations[i] = 0
-                }
-            }
-
-            legalActions[state.agentTurn].addAll(dfs(locations, LinkedList<BackgammonMove>(),
-                    values, piece, depth, state.agentTurn))
-
-            // Prune moves that are too small
+            // only allow actions that are tied for using most moves
             var max = 0
-            for (legalAction in legalActions) {
-                if (legalAction[state.agentTurn].moves.size > max) {
-                    max = legalAction[state.agentTurn].moves.size
-                }
+            for ((moves) in tempLegalActions) {
+                max = Math.max(max, moves.size)
             }
-            var i = 0
-            while (i < legalActions.size) {
-                if (legalActions[state.agentTurn][i].moves.size != max) {
-                    legalActions.removeAt(i--)
-                }
-                i++
-            }
+            tempLegalActions
+                    .filter { it.moves.size == max }
+                    .forEach { legalActions[state.agentTurn].add(it) }
         }
         return legalActions
     }
-
 
     override fun stateTransition(state: BackgammonState, actions: Map<Int, BackgammonAction>): BackgammonState {
         val action = actions[state.agentTurn]
@@ -138,8 +107,8 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
             }
             locations[from] = (locations[from] - piece).toByte()
         }
-        val dice = byteArrayOf(random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte(),
-                random.nextInt(BackgammonState.N_DIE_FACES + 1).toByte())
+        val dice = byteArrayOf(random.nextInt(BackgammonState.N_DIE_FACES).toByte(),
+                random.nextInt(BackgammonState.N_DIE_FACES).toByte())
         return BackgammonState(locations, dice, nextPlayerTurnSequential(state.agentTurn, nPlayers))
     }
 
@@ -147,27 +116,20 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
 
         private fun dfs(locations: ByteArray,
                         moves: LinkedList<BackgammonMove>,
-                        values: ByteArray,
+                        values: IntArray,
                         piece: Int,
                         depth: Int,
                         agentTurn: Int): MutableList<BackgammonAction> {
             val legalActions = ArrayList<BackgammonAction>()
-            var limit = BackgammonState.N_LOCATIONS
-            var start = 0
-
-            if (piece > 0 && locations[0] > 0) {
-                limit = 1
-            } else if (piece < 0 && locations[25] < 0) {
-                start = 25
-            }
-
+            val limit = if (piece > 0 && locations[0] > 0) 1 else BackgammonState.N_LOCATIONS
+            val start = if (piece < 0 && locations[25] < 0) 25 else 0
             val moveOff = canMoveOff(locations, piece)
+
             for (i in start..limit - 1) {
                 if (locations[i] * piece >= 1) {
                     for (j in values.indices) {
-                        if (canMove(i, values[j].toInt(), moveOff, agentTurn, locations)) {
-                            val move = BackgammonMove.valueOf(i,
-                                    values[j].toInt())
+                        if (canMove(i, values[j], moveOff, agentTurn, locations)) {
+                            val move = BackgammonMove.valueOf(i, values[j])
                             if (moves.isEmpty() || move.compareTo(moves.last) * piece >= 0) {
                                 moves.addLast(move)
                                 if (depth > 1) {
@@ -184,7 +146,7 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
                                             k = 0
                                         }
                                     }
-                                    legalActions.addAll(dfs(locations, moves, byteArrayOf(values[k]),
+                                    legalActions.addAll(dfs(locations, moves, intArrayOf(values[k]),
                                             piece, depth - 1, agentTurn))
                                     if (next > 0 && next < BackgammonState.N_LOCATIONS - 1) {
                                         locations[next] = (locations[next] - piece).toByte()
@@ -210,7 +172,7 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
                             moveOff: Boolean,
                             agentTurn: Int,
                             locations: ByteArray): Boolean {
-            if (agentTurn == BackgammonState.TURN_BLACK) {
+            if (agentTurn == BackgammonState.TURN_PLAYER_1) {
                 val next = location + distance
                 return next < BackgammonState.N_LOCATIONS - 1 && locations[next] >= -1 ||
                         moveOff && next >= BackgammonState.N_LOCATIONS - 1

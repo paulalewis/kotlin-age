@@ -22,7 +22,7 @@ data class BackgammonMove private constructor(val from: Int, val distance: Int) 
     }
 
     override fun toString(): String {
-        return from.toString() + "/" + distance
+        return from.toString() + "/" + distance.toString()
     }
 
     companion object {

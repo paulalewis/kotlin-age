@@ -1,48 +1,59 @@
 package com.castlefrog.agl.domains.backgammon
 
 import com.castlefrog.agl.State
+import java.util.Arrays
 
 /**
- * Represents a backgammon state as an array of byte locations. Each location is
- * 0 if no pieces are at that location and positive if player 1 has pieces there
- * and negative for the number of pieces player 2 has there.
+ * Represents a backgammon state as an array of byte locations.
+ * @param locations each location is 0 if no pieces are at that location and positive for
+ *                  the number of pieces player 1 has there and negative for the number of
+ *                  pieces player 2 has there.
+ * @param dice two values in range 0-5 that represent die faces 1 to 6 each; order does not matter
+ * @param agentTurn current players turn
  */
-data class BackgammonState(val locations: ByteArray = byteArrayOf(0, 2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2, 0),
-                           val dice: ByteArray = ByteArray(BackgammonState.N_DICE),
-                           var agentTurn: Int = 0) : State<BackgammonState> {
+class BackgammonState(
+        val locations: ByteArray = byteArrayOf(0, 2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2, 0),
+        val dice: ByteArray = ByteArray(BackgammonState.N_DICE),
+        var agentTurn: Int = 0) : State<BackgammonState> {
 
     override fun copy(): BackgammonState {
         val locations = ByteArray(N_LOCATIONS)
         System.arraycopy(this.locations, 0, locations, 0, N_LOCATIONS)
         val dice = ByteArray(N_DICE)
         System.arraycopy(this.dice, 0, dice, 0, N_DICE)
-        return copy(locations, dice, agentTurn)
+        return BackgammonState(locations, dice, agentTurn)
     }
 
     override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
         if (other !is BackgammonState) {
             return false
         }
-        for (i in 0..N_LOCATIONS - 1) {
-            if (locations[i] != other.locations[i]) {
-                return false
-            }
-        }
-        return dice[0] == other.dice[0] && dice[1] == other.dice[1]
+        return Arrays.equals(locations, other.locations) &&
+                ((dice[0] == other.dice[0] && dice[1] == other.dice[1]) ||
+                        (dice[0] == other.dice[1] && dice[1] == other.dice[0])) &&
+                agentTurn == other.agentTurn
     }
 
     override fun hashCode(): Int {
-        var code = 11 * (7 + dice[0]) + dice[1]
-        for (i in 0..N_LOCATIONS - 1) {
-            code = 11 * code + locations[i]
+        val dice = if (dice[0] < dice[1]) {
+            intArrayOf(dice[1].toInt(), dice[0].toInt())
+        } else {
+            intArrayOf(dice[0].toInt(), dice[1].toInt())
         }
-        code = 11 * code + agentTurn
-        return code
+        return (agentTurn * 11 + Arrays.hashCode(locations)) * 17 + Arrays.hashCode(dice)
     }
 
     override fun toString(): String {
-        val output = StringBuilder()
-        output.append("[").append(dice[0].toInt()).append("][").append(dice[1].toInt()).append("]\n")
+        val output = StringBuilder(" ").append(agentTurn).append(" - ")
+        val dice = if (dice[0] < dice[1]) {
+            intArrayOf(dice[1].toInt(), dice[0].toInt())
+        } else {
+            intArrayOf(dice[0].toInt(), dice[1].toInt())
+        }
+        output.append("[").append(dice[0] + 1).append("][").append(dice[1] + 1).append("]\n")
         for (i in 12 downTo 7) {
             if (locations[i] >= 0) {
                 output.append(" ")
@@ -82,7 +93,7 @@ data class BackgammonState(val locations: ByteArray = byteArrayOf(0, 2, 0, 0, 0,
         val N_DIE_FACES = 6
         val N_LOCATIONS = 26
 
-        val TURN_BLACK = 0
-        val TURN_WHITE = 1
+        val TURN_PLAYER_1 = 0
+        val TURN_PLAYER_2 = 1
     }
 }
