@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.biniax
 
-import com.google.common.truth.Truth
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class BiniaxStateTest {
@@ -13,7 +13,7 @@ class BiniaxStateTest {
     @Test
     fun testCopy() {
         val state = BiniaxSimulator().initialState
-        Truth.assertThat(state).isEqualTo(state.copy())
+        assertThat(state).isEqualTo(state.copy())
     }
 
     @Test
@@ -21,12 +21,12 @@ class BiniaxStateTest {
         val state = BiniaxSimulator().initialState
         val copyState = state.copy()
         state.locations[0] = -8
-        Truth.assertThat(copyState.locations[0]).isNotEqualTo(-8)
+        assertThat(copyState.locations[0]).isNotEqualTo(-8)
     }
 
     @Test
     fun testHashCode() {
-        Truth.assertThat(BiniaxState().hashCode()).isEqualTo(BiniaxState().hashCode())
+        assertThat(BiniaxState().hashCode()).isEqualTo(BiniaxState().hashCode())
     }
 
     @Test
@@ -40,7 +40,7 @@ class BiniaxStateTest {
                 0, 0, 0, 0, 0,
                 0, 0, 4, 0, 0)
         val state = BiniaxState(locations = locations)
-        Truth.assertThat(state.toString()).isEqualTo("""
+        assertThat(state.toString()).isEqualTo("""
         |Turns: 0
         |Free Moves: 2
         |---------------------

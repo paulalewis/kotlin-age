@@ -3,7 +3,7 @@ package com.castlefrog.agl.agents
 import com.castlefrog.agl.TestAction
 import com.castlefrog.agl.TestSimulator
 import com.castlefrog.agl.TestState
-import com.google.common.truth.Truth
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.util.ArrayList
 import java.util.Random
@@ -21,7 +21,7 @@ class RandomAgentTest {
                 state = simulator.stateTransition(state, mapOf(Pair(0, action.get())))
             }
         }
-        Truth.assertThat(agent.selectAction(0, state, simulator).isPresent).isFalse()
+        assertThat(agent.selectAction(0, state, simulator).isPresent).isFalse()
     }
 
     @Test
@@ -35,7 +35,7 @@ class RandomAgentTest {
                 state = simulator.stateTransition(state, mapOf(Pair(0, action.get())))
             }
         }
-        Truth.assertThat(agent.selectAction(0, state, simulator).isPresent).isFalse()
+        assertThat(agent.selectAction(0, state, simulator).isPresent).isFalse()
     }
 
     @Test
@@ -53,12 +53,12 @@ class RandomAgentTest {
         for (i in 0..expectedActions.size - 1) {
             actualActions.add(agent.selectAction(0, simulator.initialState, simulator).orElse(null))
         }
-        Truth.assertThat(actualActions).isEqualTo(expectedActions)
+        assertThat(actualActions).isEqualTo(expectedActions)
     }
 
     @Test
     fun testToString() {
         val agent = RandomAgent()
-        Truth.assertThat(agent.toString()).isEqualTo(agent.javaClass.simpleName)
+        assertThat(agent.toString()).isEqualTo(agent.javaClass.simpleName)
     }
 }

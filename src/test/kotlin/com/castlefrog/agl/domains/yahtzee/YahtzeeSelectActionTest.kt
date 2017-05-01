@@ -1,18 +1,18 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import com.google.common.truth.Truth
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class YahtzeeSelectActionTest {
 
     @Test
     fun testValueOfIdentical() {
-        Truth.assertThat(YahtzeeSelectAction.valueOf(1)).isSameAs(YahtzeeSelectAction.valueOf(1))
+        assertThat(YahtzeeSelectAction.valueOf(1)).isSameAs(YahtzeeSelectAction.valueOf(1))
     }
 
     @Test
     fun testValueOfIdentical2() {
-        Truth.assertThat(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.CHANCE))
+        assertThat(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.CHANCE))
                 .isSameAs(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.CHANCE))
     }
 
@@ -28,6 +28,6 @@ class YahtzeeSelectActionTest {
 
     @Test
     fun testToString() {
-        Truth.assertThat(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.FIVES).toString()).isEqualTo("FIVES")
+        assertThat(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.FIVES).toString()).isEqualTo("FIVES")
     }
 }

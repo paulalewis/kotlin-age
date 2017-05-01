@@ -1,6 +1,6 @@
 package com.castlefrog.agl
 
-import com.google.common.truth.Truth
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class SimulatorTest {
@@ -10,7 +10,7 @@ class SimulatorTest {
         val simulator = TestSimulator(initialState = TestState(),
                 legalActions = arrayListOf(arrayListOf(TestAction()), arrayListOf()),
                 rewards = intArrayOf(0, 0))
-        Truth.assertThat(simulator.isTerminalState(TestState())).isFalse()
+        assertThat(simulator.isTerminalState(TestState())).isFalse()
     }
 
     @Test
@@ -18,7 +18,7 @@ class SimulatorTest {
         val simulator = TestSimulator(initialState = TestState(),
                 legalActions = arrayListOf(arrayListOf(), arrayListOf()),
                 rewards = intArrayOf(0, 0))
-        Truth.assertThat(simulator.isTerminalState(TestState())).isTrue()
+        assertThat(simulator.isTerminalState(TestState())).isTrue()
     }
 
 }

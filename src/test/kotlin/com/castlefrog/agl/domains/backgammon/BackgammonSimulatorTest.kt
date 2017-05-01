@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.backgammon
 
-import com.google.common.truth.Truth
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.util.Random
 
@@ -8,39 +8,39 @@ class BackgammonSimulatorTest {
 
     @Test
     fun testGetNPlayers() {
-        Truth.assertThat(BackgammonSimulator().nPlayers).isEqualTo(2)
+        assertThat(BackgammonSimulator().nPlayers).isEqualTo(2)
     }
 
     @Test
     fun testGetInitialStatePlayer1First() {
         val simulator = BackgammonSimulator(Random(381582))
-        Truth.assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(4, 0), agentTurn = 0))
+        assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(4, 0), agentTurn = 0))
     }
 
     @Test
     fun testGetInitialStatePlayer2First() {
         val simulator = BackgammonSimulator(Random(5311224))
-        Truth.assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(4, 5), agentTurn = 1))
+        assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(4, 5), agentTurn = 1))
     }
 
     @Test
     fun testCalculateRewardsInitialState() {
         val simulator = BackgammonSimulator(Random(111))
-        Truth.assertThat(simulator.calculateRewards(simulator.initialState)).isEqualTo(intArrayOf(0, 0))
+        assertThat(simulator.calculateRewards(simulator.initialState)).isEqualTo(intArrayOf(0, 0))
     }
 
     @Test
     fun testCalculateRewardsPlayer1Wins() {
         val simulator = BackgammonSimulator(Random(111))
         val state = BackgammonState(locations = byteArrayOf(0, 0, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 0))
-        Truth.assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
+        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
     }
 
     @Test
     fun testCalculateRewardsPlayer2Wins() {
         val simulator = BackgammonSimulator(Random(111))
         val state = BackgammonState(locations = byteArrayOf(0, 0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0))
-        Truth.assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(-1, 1))
+        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(-1, 1))
     }
 
     @Test
@@ -70,6 +70,6 @@ class BackgammonSimulatorTest {
                         BackgammonAction(setOf(BackgammonMove.valueOf(24, 2), BackgammonMove.valueOf(13, 4))),
                         BackgammonAction(setOf(BackgammonMove.valueOf(24, 2), BackgammonMove.valueOf(22, 4)))
                 ))
-        Truth.assertThat(simulator.calculateLegalActions(simulator.initialState)).isEqualTo(expectedLegalActions)
+        assertThat(simulator.calculateLegalActions(simulator.initialState)).isEqualTo(expectedLegalActions)
     }
 }

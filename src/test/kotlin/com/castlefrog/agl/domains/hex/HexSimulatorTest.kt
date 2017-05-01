@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.hex
 
-import com.google.common.truth.Truth
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class HexSimulatorTest {
@@ -12,7 +12,7 @@ class HexSimulatorTest {
         val expectedState = simulator.initialState
         expectedState.setLocation(0, 0, HexState.LOCATION_BLACK)
         expectedState.agentTurn = HexState.TURN_WHITE
-        Truth.assertThat(state2).isEqualTo(expectedState)
+        assertThat(state2).isEqualTo(expectedState)
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -30,7 +30,7 @@ class HexSimulatorTest {
         val expectedState = simulator.initialState
         expectedState.setLocation(0, 0, HexState.LOCATION_WHITE)
         expectedState.agentTurn = HexState.TURN_BLACK
-        Truth.assertThat(state3).isEqualTo(expectedState)
+        assertThat(state3).isEqualTo(expectedState)
     }
 
     @Test
@@ -42,7 +42,7 @@ class HexSimulatorTest {
         expectedState.setLocation(0, 0, HexState.LOCATION_BLACK)
         expectedState.setLocation(0, 1, HexState.LOCATION_WHITE)
         expectedState.agentTurn = HexState.TURN_BLACK
-        Truth.assertThat(state3).isEqualTo(expectedState)
+        assertThat(state3).isEqualTo(expectedState)
     }
 
 }
