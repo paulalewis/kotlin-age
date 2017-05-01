@@ -49,11 +49,9 @@ class YahtzeeSimulator : Simulator<YahtzeeState, YahtzeeAction> {
             } else {
                 val yahtzee = checkYahtzee(state.diceValues)
                 if (yahtzee == -1 || state.scores[yahtzee] != -1) {
-                    for (i in 0..YahtzeeState.N_SCORES - 1) {
-                        if (state.scores[i] == -1) {
-                            legalActions[0].add(YahtzeeSelectAction.valueOf(i))
-                        }
-                    }
+                    (0..YahtzeeState.N_SCORES - 1)
+                            .filter { state.scores[it] == -1 }
+                            .forEach { legalActions[0].add(YahtzeeSelectAction.valueOf(it)) }
                 } else {
                     legalActions[0].add(YahtzeeSelectAction.valueOf(yahtzee))
                     if (state.scores[YahtzeeScoreCategory.YAHTZEE.ordinal] == -1) {
@@ -82,10 +80,7 @@ class YahtzeeSimulator : Simulator<YahtzeeState, YahtzeeAction> {
 
         if (action is YahtzeeRollAction) {
             diceValues = action.selected
-            var numSelected = 0
-            for (diceValue in diceValues) {
-                numSelected += diceValue.toInt()
-            }
+            val numSelected = diceValues.sumBy { it.toInt() }
             for (i in numSelected..YahtzeeState.N_DICE - 1) {
                 diceValues[(Math.random() * YahtzeeState.N_VALUES).toInt()].inc()
             }
@@ -162,11 +157,9 @@ class YahtzeeSimulator : Simulator<YahtzeeState, YahtzeeAction> {
                         scores[category.ordinal] = 40
                     }
                 }
-                YahtzeeScoreCategory.YAHTZEE -> for (i in 0..YahtzeeState.N_VALUES - 1) {
-                    if (diceValues[i].toInt() == 5) {
-                        scores[category.ordinal] = 50
-                    }
-                }
+                YahtzeeScoreCategory.YAHTZEE -> (0..YahtzeeState.N_VALUES - 1)
+                        .filter { diceValues[it].toInt() == 5 }
+                        .forEach { scores[category.ordinal] = 50 }
                 YahtzeeScoreCategory.CHANCE -> for (i in 0..YahtzeeState.N_VALUES - 1) {
                     scores[category.ordinal] += diceValues[i] * (i + 1)
                 }
@@ -188,21 +181,11 @@ class YahtzeeSimulator : Simulator<YahtzeeState, YahtzeeAction> {
          * @return die number corresponding to yahtzee or -1 if no yahtzee
          */
         private fun checkYahtzee(diceValues: ByteArray): Int {
-            for (i in 0..YahtzeeState.N_VALUES - 1) {
-                if (diceValues[i].toInt() == YahtzeeState.N_DICE) {
-                    return i
-                }
-            }
-            return -1
+            return (0..YahtzeeState.N_VALUES - 1).firstOrNull { diceValues[it].toInt() == YahtzeeState.N_DICE } ?: -1
         }
 
         fun YahtzeeState.hasCategoriesLeft(): Boolean {
-            for (i in 0..scores.size - 1) {
-                if (scores[i] == -1) {
-                    return true
-                }
-            }
-            return false
+            return (0..scores.size - 1).any { scores[it] == -1 }
         }
 
     }

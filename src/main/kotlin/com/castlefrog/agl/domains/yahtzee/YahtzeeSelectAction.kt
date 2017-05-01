@@ -1,7 +1,5 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import java.util.ArrayList
-
 data class YahtzeeSelectAction private constructor(val scoreCategory: YahtzeeScoreCategory) : YahtzeeAction {
 
     override fun copy(): YahtzeeSelectAction {
@@ -25,11 +23,7 @@ data class YahtzeeSelectAction private constructor(val scoreCategory: YahtzeeSco
         }
 
         private fun generateSelectActions(): List<YahtzeeSelectAction> {
-            val selectActions = ArrayList<YahtzeeSelectAction>()
-            for (scoreCategory in YahtzeeScoreCategory.values()) {
-                selectActions.add(YahtzeeSelectAction(scoreCategory))
-            }
-            return selectActions
+            return YahtzeeScoreCategory.values().map { YahtzeeSelectAction(it) }
         }
     }
 }

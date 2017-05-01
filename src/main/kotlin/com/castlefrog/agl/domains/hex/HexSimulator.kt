@@ -78,8 +78,8 @@ class HexSimulator(
     }
 
     companion object {
-        private val MIN_BOARD_SIZE = 1
-        private val MAX_BOARD_SIZE = 256
+        private val MIN_BOARD_SIZE = 3
+        private val MAX_BOARD_SIZE = 255
 
         /*private fun computeRewards(action: HexAction, state: HexState): IntArray {
             val locations = state.locations
