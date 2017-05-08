@@ -1,7 +1,8 @@
 package com.castlefrog.agl.domains.havannah
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class HavannahSimulatorTest {
 
@@ -15,11 +16,12 @@ class HavannahSimulatorTest {
         assertThat(state2).isEqualTo(expectedState)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun stateTransitionIllegalMove() {
         val simulator = HavannahSimulator(5)
         val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
-        simulator.stateTransition(state2, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
+        assertThrows(IllegalArgumentException::class.java,
+                { simulator.stateTransition(state2, mapOf(Pair(0, HavannahAction.valueOf(0, 0)))) })
     }
 
     @Test
@@ -33,11 +35,12 @@ class HavannahSimulatorTest {
         assertThat(state3).isEqualTo(expectedState)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun stateTransitionMove2SameLocationPieRuleFalse() {
         val simulator = HavannahSimulator(base = 5, pieRule = false)
         val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HavannahAction.valueOf(0, 0))))
-        simulator.stateTransition(state2, mapOf(Pair(1, HavannahAction.valueOf(0, 0))))
+        assertThrows(IllegalArgumentException::class.java,
+                { simulator.stateTransition(state2, mapOf(Pair(1, HavannahAction.valueOf(0, 0)))) })
     }
 
     @Test

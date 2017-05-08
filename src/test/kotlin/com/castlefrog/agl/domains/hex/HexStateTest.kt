@@ -1,15 +1,16 @@
 package com.castlefrog.agl.domains.hex
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class HexStateTest {
 
     val emptyState: HexState = HexState(boardSize = 5)
     val hexState: HexState = HexState(boardSize = 5)
 
-    @Before
+    @BeforeEach
     fun setup() {
         hexState.setLocation(2, 1, HexState.LOCATION_BLACK)
         hexState.setLocation(1, 1, HexState.LOCATION_BLACK)
@@ -45,14 +46,16 @@ class HexStateTest {
         assertThat(otherHexState).isNotEqualTo(hexState)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testSetLocationOutOfBounds() {
-        hexState.copy().setLocation(-1, -1, HexState.LOCATION_EMPTY)
+        assertThrows(IllegalArgumentException::class.java,
+                { hexState.copy().setLocation(-1, -1, HexState.LOCATION_EMPTY) })
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testSetLocationOutOfBounds2() {
-        hexState.copy().setLocation(hexState.boardSize, hexState.boardSize, HexState.LOCATION_EMPTY)
+        assertThrows(IllegalArgumentException::class.java,
+                { hexState.copy().setLocation(hexState.boardSize, hexState.boardSize, HexState.LOCATION_EMPTY) })
     }
 
     @Test
@@ -60,14 +63,15 @@ class HexStateTest {
         hexState.copy().setLocation(hexState.boardSize - 1, hexState.boardSize - 1, HexState.LOCATION_EMPTY)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testGetLocationOutOfBounds() {
-        hexState.getLocation(-1, -1)
+        assertThrows(IllegalArgumentException::class.java, { hexState.getLocation(-1, -1) })
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testGetLocationOutOfBounds2() {
-        hexState.getLocation(hexState.boardSize, hexState.boardSize)
+        assertThrows(IllegalArgumentException::class.java,
+                { hexState.getLocation(hexState.boardSize, hexState.boardSize) })
     }
 
     @Test
@@ -85,14 +89,15 @@ class HexStateTest {
         assertThat(hexState.isLocationEmpty(1, 1)).isFalse()
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testIsLocationEmptyOutOfRange() {
-        hexState.isLocationEmpty(-1, -1)
+        assertThrows(IllegalArgumentException::class.java, { hexState.isLocationEmpty(-1, -1) })
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testIsLocationEmptyOutOfRange2() {
-        hexState.isLocationEmpty(hexState.boardSize, hexState.boardSize)
+        assertThrows(IllegalArgumentException::class.java,
+                { hexState.isLocationEmpty(hexState.boardSize, hexState.boardSize) })
     }
 
     @Test

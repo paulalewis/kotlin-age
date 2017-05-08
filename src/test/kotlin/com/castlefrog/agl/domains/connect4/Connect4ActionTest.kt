@@ -1,7 +1,8 @@
 package com.castlefrog.agl.domains.connect4
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class Connect4ActionTest {
 
@@ -31,14 +32,14 @@ class Connect4ActionTest {
         Connect4Action.valueOf(6)
     }
 
-    @Test(expected = IndexOutOfBoundsException::class)
+    @Test
     fun testValueOfIndexOutOfBoundsLowerBound() {
-        Connect4Action.valueOf(-1)
+        assertThrows(IndexOutOfBoundsException::class.java, { Connect4Action.valueOf(-1) })
     }
 
-    @Test(expected = IndexOutOfBoundsException::class)
+    @Test
     fun testValueOfIndexOutOfBoundsUpperBound() {
-        Connect4Action.valueOf(8)
+        assertThrows(IndexOutOfBoundsException::class.java, { Connect4Action.valueOf(8) })
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.castlefrog.agl.TestAction
 import com.castlefrog.agl.TestSimulator
 import com.castlefrog.agl.TestState
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.util.ArrayList
 import java.util.Random
 

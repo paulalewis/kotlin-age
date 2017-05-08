@@ -1,8 +1,9 @@
 package com.castlefrog.agl.domains.havannah
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class HavannahStateTest {
 
@@ -10,7 +11,7 @@ class HavannahStateTest {
     val emptyState = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
     val state = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
 
-    @Before
+    @BeforeEach
     fun setup() {
         state.locations[2][1] = HavannahState.LOCATION_BLACK
         state.locations[1][1] = HavannahState.LOCATION_BLACK
@@ -54,14 +55,16 @@ class HavannahStateTest {
         assertThat(otherHavannahState).isNotEqualTo(state)
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException::class)
+    @Test
     fun testSetLocationOutOfBounds() {
-        state.copy().locations[-1][-1] = HavannahState.LOCATION_EMPTY
+        assertThrows(ArrayIndexOutOfBoundsException::class.java,
+                { state.copy().locations[-1][-1] = HavannahState.LOCATION_EMPTY })
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException::class)
+    @Test
     fun testSetLocationOutOfBounds2() {
-        state.copy().locations[state.locations.size][state.locations.size] = HavannahState.LOCATION_EMPTY
+        assertThrows(ArrayIndexOutOfBoundsException::class.java,
+                { state.copy().locations[state.locations.size][state.locations.size] = HavannahState.LOCATION_EMPTY })
     }
 
     @Test
@@ -69,14 +72,16 @@ class HavannahStateTest {
         state.copy().locations[state.base - 1][state.base - 1] = HavannahState.LOCATION_EMPTY
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException::class)
+    @Test
     fun testGetLocationOutOfBounds() {
-        state.locations[-1][-1]
+        assertThrows(ArrayIndexOutOfBoundsException::class.java,
+                { state.locations[-1][-1] })
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException::class)
+    @Test
     fun testGetLocationOutOfBounds2() {
-        state.locations[state.locations.size][state.locations.size]
+        assertThrows(ArrayIndexOutOfBoundsException::class.java,
+                { state.locations[state.locations.size][state.locations.size] })
     }
 
     @Test
@@ -95,14 +100,16 @@ class HavannahStateTest {
         assertThat(state.isLocationEmpty(1, 1)).isFalse()
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException::class)
+    @Test
     fun testIsLocationEmptyOutOfRange() {
-        state.isLocationEmpty(-1, -1)
+        assertThrows(ArrayIndexOutOfBoundsException::class.java,
+                { state.isLocationEmpty(-1, -1) })
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException::class)
+    @Test
     fun testIsLocationEmptyOutOfRange2() {
-        state.isLocationEmpty(state.locations.size, state.locations.size)
+        assertThrows(ArrayIndexOutOfBoundsException::class.java,
+                { state.isLocationEmpty(state.locations.size, state.locations.size) })
     }
 
     @Test

@@ -1,7 +1,8 @@
 package com.castlefrog.agl.domains.yahtzee
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class YahtzeeSelectActionTest {
 
@@ -16,14 +17,14 @@ class YahtzeeSelectActionTest {
                 .isSameAs(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.CHANCE))
     }
 
-    @Test(expected = IndexOutOfBoundsException::class)
+    @Test
     fun testValueOfUpperBound() {
-        YahtzeeSelectAction.valueOf(20)
+        assertThrows(IndexOutOfBoundsException::class.java, { YahtzeeSelectAction.valueOf(20) })
     }
 
-    @Test(expected = IndexOutOfBoundsException::class)
+    @Test
     fun testValueOfLowerBound() {
-        YahtzeeSelectAction.valueOf(-1)
+        assertThrows(IndexOutOfBoundsException::class.java, { YahtzeeSelectAction.valueOf(-1) })
     }
 
     @Test

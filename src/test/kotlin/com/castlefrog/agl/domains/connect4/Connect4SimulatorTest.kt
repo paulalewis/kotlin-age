@@ -1,7 +1,8 @@
 package com.castlefrog.agl.domains.connect4
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class Connect4SimulatorTest {
 
@@ -114,10 +115,11 @@ class Connect4SimulatorTest {
                 arrayListOf()))
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testStateTransitionInvalidNumberOfActions() {
         val simulator = Connect4Simulator()
-        simulator.stateTransition(simulator.initialState, emptyMap())
+        assertThrows(IllegalArgumentException::class.java,
+                { simulator.stateTransition(simulator.initialState, emptyMap()) })
     }
 
     @Test
@@ -128,11 +130,12 @@ class Connect4SimulatorTest {
         assertThat(state).isEqualTo(expectedState)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testStateTransitionNullAction() {
         val simulator = Connect4Simulator()
         val state = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, Connect4Action.valueOf(2))))
-        simulator.stateTransition(state, mapOf(Pair(0, Connect4Action.valueOf(2))))
+        assertThrows(IllegalArgumentException::class.java,
+                { simulator.stateTransition(state, mapOf(Pair(0, Connect4Action.valueOf(2)))) })
     }
 
     @Test

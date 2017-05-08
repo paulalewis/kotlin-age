@@ -1,13 +1,14 @@
 package com.castlefrog.agl.domains.biniax
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class BiniaxStateTest {
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun testIllegalBiniaxStateSize() {
-        BiniaxState(locations = byteArrayOf())
+        assertThrows(IllegalArgumentException::class.java, { BiniaxState(locations = byteArrayOf()) })
     }
 
     @Test

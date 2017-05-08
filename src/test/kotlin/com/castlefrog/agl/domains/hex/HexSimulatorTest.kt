@@ -1,7 +1,8 @@
 package com.castlefrog.agl.domains.hex
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class HexSimulatorTest {
 
@@ -15,11 +16,12 @@ class HexSimulatorTest {
         assertThat(state2).isEqualTo(expectedState)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun stateTransitionIllegalMove() {
         val simulator = HexSimulator(boardSize = 5)
         val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, HexAction.valueOf(0, 0))))
-        simulator.stateTransition(state2, mapOf(Pair(0, HexAction.valueOf(0, 0))))
+        assertThrows(IllegalArgumentException::class.java,
+                { simulator.stateTransition(state2, mapOf(Pair(0, HexAction.valueOf(0, 0)))) })
     }
 
     @Test
