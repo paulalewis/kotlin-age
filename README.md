@@ -29,7 +29,7 @@ Setup
 -----
 
 1. Install gradle
-2. Install java sdk 1.7
+2. Install java sdk 1.8
 
 Build
 -----
