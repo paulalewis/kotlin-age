@@ -17,7 +17,8 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
     override val nPlayers: Int = N_PLAYERS
 
-    override val initialState: Connect4State = Connect4State()
+    override val initialState: Connect4State
+        get() = Connect4State()
 
     override fun calculateRewards(state: Connect4State): IntArray {
         val rewards = rewardsCache[state] ?: Companion.calculateRewards(state)

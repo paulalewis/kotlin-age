@@ -7,7 +7,8 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
 
     override val nPlayers: Int = 1
 
-    override val initialState: YahtzeeState = YahtzeeState(diceValues = rollDice(random))
+    override val initialState: YahtzeeState
+        get() = YahtzeeState(diceValues = rollDice(random))
 
     override fun calculateRewards(state: YahtzeeState): IntArray {
         val rewards = intArrayOf(0)

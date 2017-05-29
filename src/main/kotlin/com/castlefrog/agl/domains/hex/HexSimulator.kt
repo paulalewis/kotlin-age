@@ -21,7 +21,8 @@ class HexSimulator(
 
     override val nPlayers: Int = 2
 
-    override val initialState: HexState = HexState(boardSize = boardSize)
+    override val initialState: HexState
+        get() = HexState(boardSize = boardSize)
 
     override fun calculateRewards(state: HexState): IntArray {
         val locations = state.locations
