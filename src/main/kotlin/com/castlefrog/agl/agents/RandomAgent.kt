@@ -16,14 +16,12 @@ class RandomAgent(val random: Random = Random()) : Agent {
     override fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>):
             Optional<A> {
         val legalActions = simulator.calculateLegalActions(state)
-        if (playerId >= legalActions.size) {
+        if (Agent.playerHasLegalActions(playerId, legalActions)) {
+            val actions = legalActions[playerId]
+            return Optional.of(actions[random.nextInt(actions.size)])
+        } else {
             return Optional.empty()
         }
-        val actions = legalActions[playerId]
-        if (actions.isEmpty()) {
-            return Optional.empty()
-        }
-        return Optional.of(actions[random.nextInt(31) % actions.size])
     }
 
     override fun toString(): String {

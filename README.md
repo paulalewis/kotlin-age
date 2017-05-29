@@ -20,10 +20,7 @@ Domains:
 - [yahtzee](https://en.wikipedia.org/wiki/Yahtzee)
 
 Agents:
-- random - basic agent randomly selects an action
-- uct - agent based on UCT algorithm with some additions
-- console - agent for human input from console
-- external - agent for input from external interfaces such as a gui
+- random - agent randomly selects an action
 
 Setup
 -----

@@ -42,7 +42,7 @@ class RandomAgentTest {
     fun testSelectAction() {
         val expectedActions = arrayListOf(TestAction(3),
                 TestAction(1),
-                TestAction(3),
+                TestAction(2),
                 TestAction(1),
                 TestAction(2))
         val actualActions = ArrayList<TestAction>()
