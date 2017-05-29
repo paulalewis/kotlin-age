@@ -114,6 +114,8 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
 
     companion object {
 
+        private val TURN_PLAYER_1 = 0
+
         private fun dfs(locations: ByteArray,
                         moves: LinkedList<BackgammonMove>,
                         values: IntArray,
@@ -172,7 +174,7 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
                             moveOff: Boolean,
                             agentTurn: Int,
                             locations: ByteArray): Boolean {
-            if (agentTurn == BackgammonState.TURN_PLAYER_1) {
+            if (agentTurn == TURN_PLAYER_1) {
                 val next = location + distance
                 return next < BackgammonState.N_LOCATIONS - 1 && locations[next] >= -1 ||
                         moveOff && next >= BackgammonState.N_LOCATIONS - 1

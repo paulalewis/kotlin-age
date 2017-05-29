@@ -92,8 +92,5 @@ class BackgammonState(
         val N_DICE = 2
         val N_DIE_FACES = 6
         val N_LOCATIONS = 26
-
-        val TURN_PLAYER_1 = 0
-        val TURN_PLAYER_2 = 1
     }
 }
