@@ -1,13 +1,13 @@
 package com.castlefrog.agl.domains.yahtzee
 
 import com.castlefrog.agl.Simulator
-import java.util.ArrayList
+import java.util.Random
 
-class YahtzeeSimulator : Simulator<YahtzeeState, YahtzeeAction> {
+class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, YahtzeeAction> {
 
-    override val nPlayers: Int = 2
+    override val nPlayers: Int = 1
 
-    override val initialState: YahtzeeState = YahtzeeState()
+    override val initialState: YahtzeeState = YahtzeeState(diceValues = rollDice(random))
 
     override fun calculateRewards(state: YahtzeeState): IntArray {
         val rewards = intArrayOf(0)
@@ -82,7 +82,8 @@ class YahtzeeSimulator : Simulator<YahtzeeState, YahtzeeAction> {
             diceValues = action.selected
             val numSelected = diceValues.sumBy { it.toInt() }
             for (i in numSelected..YahtzeeState.N_DICE - 1) {
-                diceValues[(Math.random() * YahtzeeState.N_VALUES).toInt()].inc()
+                val roll = random.nextInt(diceValues.size)
+                diceValues[roll] = diceValues[roll].inc()
             }
             rolls += 1
         } else {
@@ -163,19 +164,23 @@ class YahtzeeSimulator : Simulator<YahtzeeState, YahtzeeAction> {
                 YahtzeeScoreCategory.CHANCE -> for (i in 0..YahtzeeState.N_VALUES - 1) {
                     scores[category.ordinal] += diceValues[i] * (i + 1)
                 }
-                else -> {
-                }
             }
-            diceValues = ByteArray(YahtzeeState.N_VALUES)
-            for (i in 0..YahtzeeState.N_DICE - 1) {
-                diceValues[(Math.random() * YahtzeeState.N_VALUES).toInt()].inc()
-            }
+            diceValues = rollDice(random)
             rolls = 1
         }
         return YahtzeeState(diceValues, rolls.toByte(), scores)
     }
 
     companion object {
+
+        private fun rollDice(random: Random): ByteArray {
+            val diceValues = ByteArray(YahtzeeState.N_VALUES)
+            for (i in 0..YahtzeeState.N_DICE - 1) {
+                val index = random.nextInt(YahtzeeState.N_VALUES)
+                diceValues[index] = diceValues[index].inc()
+            }
+            return diceValues
+        }
 
         /**
          * @return die number corresponding to yahtzee or -1 if no yahtzee

@@ -3,8 +3,8 @@ package com.castlefrog.agl.domains.yahtzee
 import com.castlefrog.agl.State
 import java.util.Arrays
 
-data class YahtzeeState(val diceValues: ByteArray = ByteArray(N_DICE),
-                        var nRolls: Byte = 0,
+data class YahtzeeState(val diceValues: ByteArray,
+                        var nRolls: Byte = 1,
                         val scores: IntArray = IntArray(N_SCORES) {-1}) : State<YahtzeeState> {
 
     companion object {

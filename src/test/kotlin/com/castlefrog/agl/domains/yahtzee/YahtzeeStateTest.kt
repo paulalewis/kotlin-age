@@ -15,7 +15,7 @@ class YahtzeeStateTest {
     @Test
     fun testEqualityNotEqual() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte))
-        val otherYahtzeeState = YahtzeeState()
+        val otherYahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte), nRolls = 2)
         assertThat(yahtzeeState).isNotEqualTo(otherYahtzeeState)
     }
 
