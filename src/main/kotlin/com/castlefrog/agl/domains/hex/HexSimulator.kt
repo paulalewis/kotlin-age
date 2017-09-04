@@ -14,7 +14,7 @@ class HexSimulator(
         val pieRule: Boolean = true) : Simulator<HexState, HexAction> {
 
     init {
-        if (boardSize !in MIN_BOARD_SIZE..MAX_BOARD_SIZE - 1) {
+        if (boardSize !in MIN_BOARD_SIZE until MAX_BOARD_SIZE) {
             throw IllegalArgumentException("Invalid board size: " + boardSize)
         }
     }
@@ -27,7 +27,7 @@ class HexSimulator(
     override fun calculateRewards(state: HexState): IntArray {
         val locations = state.locations
         val visited = Array(state.boardSize) { BooleanArray(state.boardSize) }
-        for (i in 0..state.boardSize - 1) {
+        for (i in 0 until state.boardSize) {
             if (locations[0][i].toInt() == HexState.LOCATION_BLACK && !visited[0][i]) {
                 if (dfsSides(0, i, locations, visited, state.boardSize) and 3 == 3) {
                     return ADVERSARIAL_REWARDS_BLACK_WINS
@@ -44,12 +44,12 @@ class HexSimulator(
 
     override fun calculateLegalActions(state: HexState): List<MutableList<HexAction>> {
         val legalActions = ArrayList<MutableList<HexAction>>()
-        legalActions.add(ArrayList<HexAction>())
-        legalActions.add(ArrayList<HexAction>())
+        legalActions.add(ArrayList())
+        legalActions.add(ArrayList())
         val rewards = calculateRewards(state)
         if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
-            for (i in 0..state.boardSize - 1) {
-                for (j in 0..state.boardSize - 1) {
+            for (i in 0 until state.boardSize) {
+                for (j in 0 until state.boardSize) {
                     if (state.isLocationEmpty(i, j) || (pieRule && isSecondMove(state))) {
                         legalActions[state.agentTurn.toInt()].add(HexAction.valueOf(i, j))
                     }

@@ -34,19 +34,19 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
     override fun calculateRewards(state: BackgammonState): IntArray {
         var pos = false
         var neg = false
-        for (i in 0..BackgammonState.N_LOCATIONS - 1) {
+        for (i in 0 until BackgammonState.N_LOCATIONS) {
             if (!pos && state.locations[i] > 0) {
                 pos = true
             } else if (!neg && state.locations[i] < 0) {
                 neg = true
             }
         }
-        if (!pos) {
-            return ADVERSARIAL_REWARDS_BLACK_WINS
+        return if (!pos) {
+            ADVERSARIAL_REWARDS_BLACK_WINS
         } else if (!neg) {
-            return ADVERSARIAL_REWARDS_WHITE_WINS
+            ADVERSARIAL_REWARDS_WHITE_WINS
         } else {
-            return ADVERSARIAL_REWARDS_NEUTRAL
+            ADVERSARIAL_REWARDS_NEUTRAL
         }
     }
 
@@ -66,7 +66,7 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
 
             val depth = if (dice[0] == dice[1]) 4 else 2
 
-            val tempLegalActions = dfs(state.locations, LinkedList<BackgammonMove>(),
+            val tempLegalActions = dfs(state.locations, LinkedList(),
                     values, piece, depth, state.agentTurn)
 
             // only allow actions that are tied for using most moves
@@ -127,7 +127,7 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
             val start = if (piece < 0 && locations[25] < 0) 25 else 0
             val moveOff = canMoveOff(locations, piece)
 
-            for (i in start..limit - 1) {
+            for (i in start until limit) {
                 if (locations[i] * piece >= 1) {
                     for (j in values.indices) {
                         if (canMove(i, values[j], moveOff, agentTurn, locations)) {
@@ -142,11 +142,7 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
                                     }
                                     var k = 0
                                     if (values.size == 2) {
-                                        if (j == 0) {
-                                            k = 1
-                                        } else {
-                                            k = 0
-                                        }
+                                        k = if (j == 0) 1 else 0
                                     }
                                     legalActions.addAll(dfs(locations, moves, intArrayOf(values[k]),
                                             piece, depth - 1, agentTurn))
@@ -174,13 +170,13 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
                             moveOff: Boolean,
                             agentTurn: Int,
                             locations: ByteArray): Boolean {
-            if (agentTurn == TURN_PLAYER_1) {
+            return if (agentTurn == TURN_PLAYER_1) {
                 val next = location + distance
-                return next < BackgammonState.N_LOCATIONS - 1 && locations[next] >= -1 ||
+                next < BackgammonState.N_LOCATIONS - 1 && locations[next] >= -1 ||
                         moveOff && next >= BackgammonState.N_LOCATIONS - 1
             } else {
                 val next = location - distance
-                return next > 0 && locations[next] <= 1 || moveOff && next <= 0
+                next > 0 && locations[next] <= 1 || moveOff && next <= 0
             }
         }
 
@@ -194,7 +190,7 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
                         .filter { locations[it] > 0 }
                         .forEach { return false }
             } else {
-                (7..BackgammonState.N_LOCATIONS - 1)
+                (7 until BackgammonState.N_LOCATIONS)
                         .filter { locations[it] < 0 }
                         .forEach { return false }
             }

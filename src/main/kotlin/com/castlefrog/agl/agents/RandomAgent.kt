@@ -11,16 +11,16 @@ import java.util.Random
  * This agent selects an action at random (normal distribution)
  * from the list of possible actions from a given state.
  */
-class RandomAgent(val random: Random = Random()) : Agent {
+class RandomAgent(private val random: Random = Random()) : Agent {
 
     override fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>):
             Optional<A> {
         val legalActions = simulator.calculateLegalActions(state)
-        if (Agent.playerHasLegalActions(playerId, legalActions)) {
+        return if (Agent.playerHasLegalActions(playerId, legalActions)) {
             val actions = legalActions[playerId]
-            return Optional.of(actions[random.nextInt(actions.size)])
+            Optional.of(actions[random.nextInt(actions.size)])
         } else {
-            return Optional.empty()
+            Optional.empty()
         }
     }
 

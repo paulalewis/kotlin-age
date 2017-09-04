@@ -50,7 +50,7 @@ class RandomAgentTest {
         val simulator = TestSimulator(initialState = TestState(0),
                 legalActions = arrayListOf(arrayListOf(TestAction(1), TestAction(2), TestAction(3))),
                 rewards = intArrayOf(0))
-        for (i in 0..expectedActions.size - 1) {
+        for (i in 0 until expectedActions.size) {
             actualActions.add(agent.selectAction(0, simulator.initialState, simulator).orElse(null))
         }
         assertThat(actualActions).isEqualTo(expectedActions)

@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test
 
 class HexStateTest {
 
-    val emptyState: HexState = HexState(boardSize = 5)
-    val hexState: HexState = HexState(boardSize = 5)
+    private val emptyState: HexState = HexState(boardSize = 5)
+    private val hexState: HexState = HexState(boardSize = 5)
 
     @BeforeEach
     fun setup() {

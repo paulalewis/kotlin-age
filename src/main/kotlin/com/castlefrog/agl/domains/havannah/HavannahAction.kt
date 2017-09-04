@@ -32,12 +32,12 @@ data class HavannahAction private constructor(val x: Byte, val y: Byte) : Action
 
         private fun generateActions(size: Int) {
             actions.setSize(size)
-            for (i in 0..size - 1) {
+            for (i in 0 until size) {
                 if (actions[i] == null) {
-                    actions[i] = Vector<HavannahAction>()
+                    actions[i] = Vector()
                 }
                 actions[i].setSize(size)
-                for (j in 0..size - 1) {
+                for (j in 0 until size) {
                     if (actions[i][j] == null) {
                         actions[i][j] = HavannahAction(i.toByte(), j.toByte())
                     }

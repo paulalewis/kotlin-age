@@ -20,7 +20,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
             if (rewards[0] >= 63) {
                 rewards[0] += 35
             }
-            for (i in 6..YahtzeeState.N_SCORES - 1) {
+            for (i in 6 until YahtzeeState.N_SCORES) {
                 rewards[0] += scores[i]
             }
         }
@@ -29,7 +29,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
 
     override fun calculateLegalActions(state: YahtzeeState): List<MutableList<YahtzeeAction>> {
         val legalActions = ArrayList<MutableList<YahtzeeAction>>()
-        legalActions.add(ArrayList<YahtzeeAction>())
+        legalActions.add(ArrayList())
         if (state.hasCategoriesLeft()) {
             if (state.nRolls < 3) {
                 val diceValues = state.diceValues
@@ -50,7 +50,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
             } else {
                 val yahtzee = checkYahtzee(state.diceValues)
                 if (yahtzee == -1 || state.scores[yahtzee] != -1) {
-                    (0..YahtzeeState.N_SCORES - 1)
+                    (0 until YahtzeeState.N_SCORES)
                             .filter { state.scores[it] == -1 }
                             .forEach { legalActions[0].add(YahtzeeSelectAction.valueOf(it)) }
                 } else {
@@ -82,7 +82,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
         if (action is YahtzeeRollAction) {
             diceValues = action.selected
             val numSelected = diceValues.sumBy { it.toInt() }
-            for (i in numSelected..YahtzeeState.N_DICE - 1) {
+            for (i in numSelected until YahtzeeState.N_DICE) {
                 val roll = random.nextInt(diceValues.size)
                 diceValues[roll] = diceValues[roll].inc()
             }
@@ -99,7 +99,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
                 YahtzeeScoreCategory.FOURS -> scores[category.ordinal] = diceValues[3] * 4
                 YahtzeeScoreCategory.FIVES -> scores[category.ordinal] = diceValues[4] * 5
                 YahtzeeScoreCategory.SIXES -> scores[category.ordinal] = diceValues[5] * 6
-                YahtzeeScoreCategory.THREE_OF_KIND -> for (i in 0..YahtzeeState.N_VALUES - 1) {
+                YahtzeeScoreCategory.THREE_OF_KIND -> for (i in 0 until YahtzeeState.N_VALUES) {
                     if (diceValues[i] >= 3) {
                         for (j in diceValues.indices) {
                             scores[category.ordinal] += diceValues[j] * (j + 1)
@@ -107,7 +107,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
                         break
                     }
                 }
-                YahtzeeScoreCategory.FOUR_OF_KIND -> for (i in 0..YahtzeeState.N_VALUES - 1) {
+                YahtzeeScoreCategory.FOUR_OF_KIND -> for (i in 0 until YahtzeeState.N_VALUES) {
                     if (diceValues[i] >= 4) {
                         for (j in diceValues.indices) {
                             scores[category.ordinal] += diceValues[j] * (j + 1)
@@ -118,7 +118,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
                 YahtzeeScoreCategory.FULL_HOUSE -> {
                     var two = false
                     var three = false
-                    for (i in 0..YahtzeeState.N_VALUES - 1) {
+                    for (i in 0 until YahtzeeState.N_VALUES) {
                         if (diceValues[i].toInt() == 2) {
                             two = true
                         } else if (diceValues[i].toInt() == 3) {
@@ -131,7 +131,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
                 }
                 YahtzeeScoreCategory.SMALL_STRAIGHT -> {
                     var count = 0
-                    for (i in 0..YahtzeeState.N_VALUES - 1) {
+                    for (i in 0 until YahtzeeState.N_VALUES) {
                         if (diceValues[i] > 0) {
                             count++
                         } else if (count >= 4) {
@@ -146,7 +146,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
                 }
                 YahtzeeScoreCategory.LARGE_STRAIGHT -> {
                     var count = 0
-                    for (i in 0..YahtzeeState.N_VALUES - 1) {
+                    for (i in 0 until YahtzeeState.N_VALUES) {
                         if (diceValues[i] > 0) {
                             count++
                         } else if (count >= 5) {
@@ -159,10 +159,10 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
                         scores[category.ordinal] = 40
                     }
                 }
-                YahtzeeScoreCategory.YAHTZEE -> (0..YahtzeeState.N_VALUES - 1)
+                YahtzeeScoreCategory.YAHTZEE -> (0 until YahtzeeState.N_VALUES)
                         .filter { diceValues[it].toInt() == 5 }
                         .forEach { scores[category.ordinal] = 50 }
-                YahtzeeScoreCategory.CHANCE -> for (i in 0..YahtzeeState.N_VALUES - 1) {
+                YahtzeeScoreCategory.CHANCE -> for (i in 0 until YahtzeeState.N_VALUES) {
                     scores[category.ordinal] += diceValues[i] * (i + 1)
                 }
             }
@@ -176,7 +176,7 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
 
         private fun rollDice(random: Random): ByteArray {
             val diceValues = ByteArray(YahtzeeState.N_VALUES)
-            for (i in 0..YahtzeeState.N_DICE - 1) {
+            for (i in 0 until YahtzeeState.N_DICE) {
                 val index = random.nextInt(YahtzeeState.N_VALUES)
                 diceValues[index] = diceValues[index].inc()
             }
@@ -187,11 +187,11 @@ class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, 
          * @return die number corresponding to yahtzee or -1 if no yahtzee
          */
         private fun checkYahtzee(diceValues: ByteArray): Int {
-            return (0..YahtzeeState.N_VALUES - 1).firstOrNull { diceValues[it].toInt() == YahtzeeState.N_DICE } ?: -1
+            return (0 until YahtzeeState.N_VALUES).firstOrNull { diceValues[it].toInt() == YahtzeeState.N_DICE } ?: -1
         }
 
         fun YahtzeeState.hasCategoriesLeft(): Boolean {
-            return (0..scores.size - 1).any { scores[it] == -1 }
+            return (0 until scores.size).any { scores[it] == -1 }
         }
 
     }

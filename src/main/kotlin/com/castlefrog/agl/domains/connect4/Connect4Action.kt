@@ -27,7 +27,7 @@ class Connect4Action private constructor(val location: Int) : Action<Connect4Act
 
     companion object {
         /** Holds list of all possible actions. */
-        private val actions = (0..Connect4State.WIDTH - 1).map(::Connect4Action)
+        private val actions = (0 until Connect4State.WIDTH).map(::Connect4Action)
 
         /**
          * Returns the Connect 4 action representation of the slot location.

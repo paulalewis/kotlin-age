@@ -20,9 +20,9 @@ class BiniaxSimulator(
     override val initialState: BiniaxState
         get() {
             val locations = ByteArray(WIDTH * HEIGHT)
-            for (i in 0..HEIGHT - 1) {
+            for (i in 0 until HEIGHT) {
                 val emptyLocation = random.nextInt(WIDTH)
-                for (j in 0..WIDTH - 1) {
+                for (j in 0 until WIDTH) {
                     if (j != emptyLocation && i < HEIGHT - buffer) {
                         locations[i * WIDTH + j] = BiniaxSimulator.generateRandomElementPair(random, initialElements, 0, maxElements, elementIncrementInterval).toByte()
                         if (i == HEIGHT - buffer - 1) {
@@ -46,7 +46,7 @@ class BiniaxSimulator(
      */
     override fun calculateLegalActions(state: BiniaxState): List<List<BiniaxAction>> {
         val legalActions = ArrayList<MutableList<BiniaxAction>>()
-        legalActions.add(ArrayList<BiniaxAction>())
+        legalActions.add(ArrayList())
         val elementLocation = state.elementLocation()
         val x = elementLocation[0]
         val y = elementLocation[1]
@@ -61,12 +61,10 @@ class BiniaxSimulator(
 
         if (x != WIDTH - 1) {
             var nextElement = 0
-            if (locations[x + 1 + y * WIDTH].toInt() == 0) {
-                nextElement = element
-            } else if (locations[x + 1 + y * WIDTH] / state.maxElements == element) {
-                nextElement = locations[x + 1 + y * WIDTH] % state.maxElements
-            } else if (locations[x + 1 + y * WIDTH] % 10 == element) {
-                nextElement = locations[x + 1 + y * WIDTH] / state.maxElements
+            when {
+                locations[x + 1 + y * WIDTH].toInt() == 0 -> nextElement = element
+                locations[x + 1 + y * WIDTH] / state.maxElements == element -> nextElement = locations[x + 1 + y * WIDTH] % state.maxElements
+                locations[x + 1 + y * WIDTH] % 10 == element -> nextElement = locations[x + 1 + y * WIDTH] / state.maxElements
             }
 
             if (nextElement != 0) {
@@ -88,12 +86,10 @@ class BiniaxSimulator(
 
         if (x != 0) {
             var nextElement = 0
-            if (locations[x - 1 + y * WIDTH].toInt() == 0) {
-                nextElement = element
-            } else if (locations[x - 1 + y * WIDTH] / state.maxElements == element) {
-                nextElement = locations[x - 1 + y * WIDTH] % state.maxElements
-            } else if (locations[x - 1 + y * WIDTH] % state.maxElements == element) {
-                nextElement = locations[x - 1 + y * WIDTH] / state.maxElements
+            when {
+                locations[x - 1 + y * WIDTH].toInt() == 0 -> nextElement = element
+                locations[x - 1 + y * WIDTH] / state.maxElements == element -> nextElement = locations[x - 1 + y * WIDTH] % state.maxElements
+                locations[x - 1 + y * WIDTH] % state.maxElements == element -> nextElement = locations[x - 1 + y * WIDTH] / state.maxElements
             }
 
             if (nextElement != 0) {
@@ -145,7 +141,7 @@ class BiniaxSimulator(
             // Move all elements down
             val emptyLocation = random.nextInt(WIDTH)
             for (i in HEIGHT - 1 downTo 0) {
-                for (j in 0..WIDTH - 1) {
+                for (j in 0 until WIDTH) {
                     if (i == 0) {
                         if (j != emptyLocation) {
                             locations[j + i * WIDTH] = generateRandomElementPair(random, initialElements, nTurns, maxElements,
@@ -185,8 +181,8 @@ class BiniaxSimulator(
         val HEIGHT = 7
 
         private fun BiniaxState.elementLocation(): IntArray {
-            for (i in 0..WIDTH - 1) {
-                for (j in 0..HEIGHT - 1) {
+            for (i in 0 until WIDTH) {
+                for (j in 0 until HEIGHT) {
                     if (locations[i + j * WIDTH] in 1..(maxElements - 1)) {
                         return intArrayOf(i, j)
                     }
@@ -209,10 +205,10 @@ class BiniaxSimulator(
             val nElementTypes = getNElementTypes(initialElements, nTurns, maxElements, elementIncrementInterval)
             val element1 = random.nextInt(nElementTypes) + 1
             val element2 = random.nextInt(nElementTypes - 1) + 1
-            if (element1 <= element2) {
-                return element1 * maxElements + element2 + 1
+            return if (element1 <= element2) {
+                element1 * maxElements + element2 + 1
             } else {
-                return element2 * maxElements + element1
+                element2 * maxElements + element1
             }
         }
 

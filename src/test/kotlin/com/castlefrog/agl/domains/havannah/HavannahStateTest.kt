@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test
 
 class HavannahStateTest {
 
-    val base = 5
-    val emptyState = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
-    val state = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
+    private val base = 5
+    private val emptyState = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
+    private val state = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
 
     @BeforeEach
     fun setup() {

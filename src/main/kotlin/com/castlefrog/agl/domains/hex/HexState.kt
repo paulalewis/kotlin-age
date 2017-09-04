@@ -41,12 +41,10 @@ data class HexState(
         checkLocationArgs(x, y)
         val bitLocation = y * boardSize + x
         val byteLocation = bitLocation / java.lang.Byte.SIZE
-        if (bitBoards[0][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) != 0) {
-            return LOCATION_BLACK
-        } else if (bitBoards[1][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) != 0) {
-            return LOCATION_WHITE
-        } else {
-            return LOCATION_EMPTY
+        return when {
+            bitBoards[0][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) != 0 -> LOCATION_BLACK
+            bitBoards[1][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) != 0 -> LOCATION_WHITE
+            else -> LOCATION_EMPTY
         }
     }
 
@@ -63,7 +61,7 @@ data class HexState(
 
     val nPieces: Int
         get() {
-            return (0..bitBoards[0].size - 1).sumBy {
+            return (0 until bitBoards[0].size).sumBy {
                 Integer.bitCount((bitBoards[0][it].toInt() or bitBoards[1][it].toInt()) and 0xff)
             }
         }
@@ -73,15 +71,19 @@ data class HexState(
         val bitLocation = y * boardSize + x
         val byteLocation = bitLocation / java.lang.Byte.SIZE
         val byteShift = bitLocation % java.lang.Byte.SIZE
-        if (value == LOCATION_EMPTY) {
-            bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
-            bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
-        } else if (value == LOCATION_BLACK) {
-            bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() or (1 shl byteShift)).toByte()
-            bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
-        } else if (value == LOCATION_WHITE) {
-            bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
-            bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() or (1 shl byteShift)).toByte()
+        when (value) {
+            LOCATION_EMPTY -> {
+                bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+                bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+            }
+            LOCATION_BLACK -> {
+                bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() or (1 shl byteShift)).toByte()
+                bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+            }
+            LOCATION_WHITE -> {
+                bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+                bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() or (1 shl byteShift)).toByte()
+            }
         }
     }
 
@@ -122,14 +124,12 @@ data class HexState(
             for (j in i..boardSize - 2) {
                 output.append(" ")
             }
-            for (j in 0..boardSize - 1) {
+            for (j in 0 until boardSize) {
                 val location = getLocation(j, i)
-                if (location == LOCATION_BLACK) {
-                    output.append("X")
-                } else if (location == LOCATION_WHITE) {
-                    output.append("O")
-                } else {
-                    output.append("-")
+                when (location) {
+                    LOCATION_BLACK -> output.append("X")
+                    LOCATION_WHITE -> output.append("O")
+                    else -> output.append("-")
                 }
                 if (j != boardSize - 1) {
                     output.append(" ")

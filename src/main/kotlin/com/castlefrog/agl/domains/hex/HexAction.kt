@@ -34,11 +34,11 @@ data class HexAction private constructor(val x: Byte, val y: Byte) : Action<HexA
         }
 
         private fun generateActions(size: Int) {
-            for (i in 0..size - 1) {
+            for (i in 0 until size) {
                 if (i >= actions.size) {
-                    actions.add(ArrayList<HexAction>())
+                    actions.add(ArrayList())
                 }
-                for (j in actions[i].size..size - 1) {
+                for (j in actions[i].size until size) {
                     actions[i].add(HexAction(i.toByte(), j.toByte()))
                 }
             }

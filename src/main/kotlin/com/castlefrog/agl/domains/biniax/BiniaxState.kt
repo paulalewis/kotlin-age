@@ -45,33 +45,35 @@ data class BiniaxState(
         val output = StringBuilder()
         output.append("Turns: ").append(nTurns).append("\n")
         output.append("Free Moves: ").append(freeMoves.toInt()).append("\n")
-        for (i in 0..BiniaxSimulator.WIDTH - 1) {
+        for (i in 0 until BiniaxSimulator.WIDTH) {
             output.append("----")
         }
         output.append("-\n")
-        for (j in 0..BiniaxSimulator.HEIGHT - 1) {
+        for (j in 0 until BiniaxSimulator.HEIGHT) {
             output.append(":")
-            for (i in 0..BiniaxSimulator.WIDTH - 1) {
+            for (i in 0 until BiniaxSimulator.WIDTH) {
                 val location = locations[i + j * BiniaxSimulator.WIDTH].toInt()
                 if (i != 0) {
                     output.append(" ")
                 }
-                if (location == 0) {
-                    output.append("   ")
-                } else if (location in 1..(maxElements - 1)) {
-                    output.append("[")
-                    output.append((0x40 + location).toChar())
-                    output.append("]")
-                } else {
-                    output.append((0x40 + location / (maxElements)).toChar())
-                    output.append("-")
-                    output.append((0x40 + location % (maxElements)).toChar())
+                when (location) {
+                    0 -> output.append("   ")
+                    in 1..(maxElements - 1) -> {
+                        output.append("[")
+                        output.append((0x40 + location).toChar())
+                        output.append("]")
+                    }
+                    else -> {
+                        output.append((0x40 + location / (maxElements)).toChar())
+                        output.append("-")
+                        output.append((0x40 + location % (maxElements)).toChar())
+                    }
                 }
             }
             output.append(":\n")
         }
         output.append("-")
-        for (i in 0..BiniaxSimulator.WIDTH - 1) {
+        for (i in 0 until BiniaxSimulator.WIDTH) {
             output.append("----")
         }
         return output.toString()

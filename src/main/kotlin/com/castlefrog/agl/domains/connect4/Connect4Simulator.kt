@@ -60,9 +60,9 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         private fun calculateLegalActions(state: Connect4State,
                                           rewards: IntArray,
                                           columnHeights: IntArray): List<List<Connect4Action>> {
-            val legalActions = arrayListOf(ArrayList<Connect4Action>(), ArrayList<Connect4Action>())
+            val legalActions = arrayListOf(ArrayList(), ArrayList<Connect4Action>())
             if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
-                (0..Connect4State.WIDTH - 1)
+                (0 until Connect4State.WIDTH)
                         .filter { 1L shl columnHeights[it] and ABOVE_TOP_ROW == 0L }
                         .forEach { legalActions[state.agentTurn].add(Connect4Action.valueOf(it)) }
             }
@@ -71,7 +71,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
         private fun calculateRewards(state: Connect4State): IntArray {
             val height = Connect4State.HEIGHT
-            for (i in 0..N_PLAYERS - 1) {
+            for (i in 0 until N_PLAYERS) {
                 val bitBoard = state.bitBoards[i]
                 val diagonal1 = bitBoard and (bitBoard shr height)
                 val horizontal = bitBoard and (bitBoard shr height + 1)
@@ -81,11 +81,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
                         (horizontal and (horizontal shr 2 * (height + 1))) or
                         (diagonal2 and (diagonal2 shr 2 * (height + 2))) or
                         (vertical and (vertical shr 2)) != 0L) {
-                    if (i == 0) {
-                        return ADVERSARIAL_REWARDS_BLACK_WINS
-                    } else {
-                        return ADVERSARIAL_REWARDS_WHITE_WINS
-                    }
+                    return if (i == 0) ADVERSARIAL_REWARDS_BLACK_WINS else ADVERSARIAL_REWARDS_WHITE_WINS
                 }
             }
             return ADVERSARIAL_REWARDS_NEUTRAL
@@ -94,7 +90,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         private fun calculateColumnHeights(state: Connect4State): IntArray {
             val columnHeights = IntArray(Connect4State.WIDTH)
             val bitBoard = state.bitBoards[0] or state.bitBoards[1]
-            for (i in 0..Connect4State.WIDTH - 1) {
+            for (i in 0 until Connect4State.WIDTH) {
                 columnHeights[i] = (Connect4State.HEIGHT + 1) * i
                 while (bitBoard and (1L shl columnHeights[i]) != 0L) {
                     columnHeights[i] += 1

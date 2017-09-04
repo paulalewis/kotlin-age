@@ -17,7 +17,7 @@ data class HavannahState(val base: Int,
 
     override fun copy(): HavannahState {
         val copyLocations = Array(locations.size) { ByteArray(locations.size) }
-        for (i in 0..locations.size - 1) {
+        for (i in 0 until locations.size) {
             copyLocations[i] = locations[i].copyOf()
         }
         return HavannahState(base, copyLocations, agentTurn)
@@ -30,8 +30,8 @@ data class HavannahState(val base: Int,
     val nPieces: Int
         get() {
             var nPieces = 0
-            for (i in 0..locations.size - 1) {
-                for (j in 0..locations[0].size - 1) {
+            for (i in 0 until locations.size) {
+                for (j in 0 until locations[0].size) {
                     if (locations[i][j] != LOCATION_EMPTY) {
                         nPieces += 1
                     }
@@ -43,8 +43,8 @@ data class HavannahState(val base: Int,
     override fun hashCode(): Int {
         var hashCode = 17 + agentTurn
         hashCode = hashCode * 31 + base
-        for (i in 0..locations.size - 1) {
-            for (j in 0..locations.size - 1) {
+        for (i in 0 until locations.size) {
+            for (j in 0 until locations.size) {
                 hashCode = hashCode * 31 + locations[i][j]
             }
         }
@@ -55,8 +55,8 @@ data class HavannahState(val base: Int,
         if (other !is HavannahState) {
             return false
         }
-        for (i in 0..locations.size - 1) {
-            for (j in 0..locations.size - 1) {
+        for (i in 0 until locations.size) {
+            for (j in 0 until locations.size) {
                 if (locations[i][j] != other.locations[i][j]) {
                     return false
                 }
@@ -78,13 +78,11 @@ data class HavannahState(val base: Int,
             } else {
                 xMax = base + i
             }
-            for (j in xMin..xMax - 1) {
-                if (locations[j][i] == LOCATION_BLACK) {
-                    output.append("X")
-                } else if (locations[j][i] == LOCATION_WHITE) {
-                    output.append("O")
-                } else {
-                    output.append("-")
+            for (j in xMin until xMax) {
+                when {
+                    locations[j][i] == LOCATION_BLACK -> output.append("X")
+                    locations[j][i] == LOCATION_WHITE -> output.append("O")
+                    else -> output.append("-")
                 }
                 if (j != xMax - 1) {
                     output.append(" ")

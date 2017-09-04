@@ -17,11 +17,7 @@ class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4Sta
 
     val agentTurn: Int
             get() {
-                if (java.lang.Long.bitCount(bitBoards[0]) <= java.lang.Long.bitCount(bitBoards[1])) {
-                    return 0
-                } else {
-                    return 1
-                }
+                return if (java.lang.Long.bitCount(bitBoards[0]) <= java.lang.Long.bitCount(bitBoards[1])) 0 else 1
             }
 
     override fun copy(): Connect4State {
@@ -49,12 +45,10 @@ class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4Sta
             var j = i
             while (j < (HEIGHT + 1) * WIDTH) {
                 val mask = 1L shl j
-                if ((bitBoards[0] and mask) != 0L) {
-                    output.append("X")
-                } else if ((bitBoards[1] and mask) != 0L) {
-                    output.append("O")
-                } else {
-                    output.append("-")
+                when {
+                    (bitBoards[0] and mask) != 0L -> output.append("X")
+                    (bitBoards[1] and mask) != 0L -> output.append("O")
+                    else -> output.append("-")
                 }
                 output.append(" ")
                 j += HEIGHT + 1

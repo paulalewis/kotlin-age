@@ -38,7 +38,7 @@ data class YahtzeeState(val diceValues: ByteArray,
         }
         output.append("]\n")
         val scoreCategories = YahtzeeScoreCategory.values()
-        for (i in 0..N_SCORES - 1) {
+        for (i in 0 until N_SCORES) {
             output.append(scoreCategories[i].name).append(": ")
             output.append(if (scores[i] != -1) scores[i] else "-")
             if (i != N_SCORES - 1) {
