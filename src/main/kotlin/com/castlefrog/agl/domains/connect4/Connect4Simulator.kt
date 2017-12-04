@@ -1,9 +1,7 @@
 package com.castlefrog.agl.domains.connect4
 
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_BLACK_WINS
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_NEUTRAL
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
+import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.util.LruCache
 
 import java.util.ArrayList
@@ -61,7 +59,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
                                           rewards: IntArray,
                                           columnHeights: IntArray): List<List<Connect4Action>> {
             val legalActions = arrayListOf(ArrayList(), ArrayList<Connect4Action>())
-            if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
+            if (Arrays.equals(rewards, AdversarialRewards.NEUTRAL)) {
                 (0 until Connect4State.WIDTH)
                         .filter { 1L shl columnHeights[it] and ABOVE_TOP_ROW == 0L }
                         .forEach { legalActions[state.agentTurn].add(Connect4Action.valueOf(it)) }
@@ -81,10 +79,10 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
                         (horizontal and (horizontal shr 2 * (height + 1))) or
                         (diagonal2 and (diagonal2 shr 2 * (height + 2))) or
                         (vertical and (vertical shr 2)) != 0L) {
-                    return if (i == 0) ADVERSARIAL_REWARDS_BLACK_WINS else ADVERSARIAL_REWARDS_WHITE_WINS
+                    return if (i == 0) AdversarialRewards.BLACK_WINS else AdversarialRewards.WHITE_WINS
                 }
             }
-            return ADVERSARIAL_REWARDS_NEUTRAL
+            return AdversarialRewards.NEUTRAL
         }
 
         private fun calculateColumnHeights(state: Connect4State): IntArray {

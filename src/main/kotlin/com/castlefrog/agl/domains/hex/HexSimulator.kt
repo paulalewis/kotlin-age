@@ -1,9 +1,7 @@
 package com.castlefrog.agl.domains.hex
 
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_BLACK_WINS
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_NEUTRAL
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
+import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
 import java.util.ArrayList
 import java.util.Arrays
@@ -30,16 +28,16 @@ class HexSimulator(
         for (i in 0 until state.boardSize) {
             if (locations[0][i].toInt() == HexState.LOCATION_BLACK && !visited[0][i]) {
                 if (dfsSides(0, i, locations, visited, state.boardSize) and 3 == 3) {
-                    return ADVERSARIAL_REWARDS_BLACK_WINS
+                    return AdversarialRewards.BLACK_WINS
                 }
             }
             if (locations[i][0].toInt() == HexState.LOCATION_WHITE && !visited[i][0]) {
                 if (dfsSides(i, 0, locations, visited, state.boardSize) and 12 == 12) {
-                    return ADVERSARIAL_REWARDS_WHITE_WINS
+                    return AdversarialRewards.WHITE_WINS
                 }
             }
         }
-        return ADVERSARIAL_REWARDS_NEUTRAL
+        return AdversarialRewards.NEUTRAL
     }
 
     override fun calculateLegalActions(state: HexState): List<MutableList<HexAction>> {
@@ -47,7 +45,7 @@ class HexSimulator(
         legalActions.add(ArrayList())
         legalActions.add(ArrayList())
         val rewards = calculateRewards(state)
-        if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
+        if (Arrays.equals(rewards, AdversarialRewards.NEUTRAL)) {
             for (i in 0 until state.boardSize) {
                 for (j in 0 until state.boardSize) {
                     if (state.isLocationEmpty(i, j) || (pieRule && isSecondMove(state))) {

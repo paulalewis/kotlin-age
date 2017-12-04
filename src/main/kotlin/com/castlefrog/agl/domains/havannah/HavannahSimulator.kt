@@ -1,9 +1,7 @@
 package com.castlefrog.agl.domains.havannah
 
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_BLACK_WINS
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_NEUTRAL
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
+import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
 import com.castlefrog.agl.util.LruCache
 import java.util.Arrays
@@ -88,9 +86,9 @@ class HavannahSimulator(
                     }
                     if (nCorners >= 2 || nSides >= 3) {
                         return if (state.locations[x][y] == HavannahState.LOCATION_BLACK) {
-                            ADVERSARIAL_REWARDS_BLACK_WINS
+                            AdversarialRewards.BLACK_WINS
                         } else {
-                            ADVERSARIAL_REWARDS_WHITE_WINS
+                            AdversarialRewards.WHITE_WINS
                         }
                     }
                 }
@@ -126,21 +124,21 @@ class HavannahSimulator(
                 if (!otherState.isLocationEmpty(x, y) && !visited2[x][y]) {
                     if (dfsCornersSides(x, y, otherState, visited2, corners, sides) == 0) {
                         return if (otherState.agentTurn == HavannahState.TURN_BLACK) {
-                            ADVERSARIAL_REWARDS_WHITE_WINS
+                            AdversarialRewards.WHITE_WINS
                         } else {
-                            ADVERSARIAL_REWARDS_BLACK_WINS
+                            AdversarialRewards.BLACK_WINS
                         }
                     }
                 }
             }
         }
-        return ADVERSARIAL_REWARDS_NEUTRAL
+        return AdversarialRewards.NEUTRAL
     }
 
     override fun calculateLegalActions(state: HavannahState): List<List<HavannahAction>> {
         val legalActions = arrayListOf<MutableList<HavannahAction>>(arrayListOf(), arrayListOf())
         val rewards = calculateRewards(state)
-        if (Arrays.equals(rewards, ADVERSARIAL_REWARDS_NEUTRAL)) {
+        if (Arrays.equals(rewards, AdversarialRewards.NEUTRAL)) {
             var count = 0
             var tempAction: HavannahAction? = null
             for (y in 0 until size) {

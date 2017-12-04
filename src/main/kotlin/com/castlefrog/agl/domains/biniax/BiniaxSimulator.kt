@@ -8,7 +8,7 @@ import java.util.Random
  * Biniax is a single agent stochastic domain
  */
 class BiniaxSimulator(
-        val random: Random = Random(),
+        private val random: Random = Random(),
         val buffer: Int = 3,
         val initialElements: Int = 4,
         val maxElements: Int = 10,

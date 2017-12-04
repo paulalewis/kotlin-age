@@ -3,7 +3,7 @@ package com.castlefrog.agl.domains.yahtzee
 import com.castlefrog.agl.Simulator
 import java.util.Random
 
-class YahtzeeSimulator(val random: Random = Random()) : Simulator<YahtzeeState, YahtzeeAction> {
+class YahtzeeSimulator(private val random: Random = Random()) : Simulator<YahtzeeState, YahtzeeAction> {
 
     override val nPlayers: Int = 1
 

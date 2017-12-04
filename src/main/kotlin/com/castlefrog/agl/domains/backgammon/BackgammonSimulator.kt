@@ -1,10 +1,7 @@
 package com.castlefrog.agl.domains.backgammon
 
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_BLACK_WINS
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_NEUTRAL
-import com.castlefrog.agl.domains.ADVERSARIAL_REWARDS_WHITE_WINS
 import com.castlefrog.agl.Simulator
-import com.castlefrog.agl.domains.nextPlayerTurnSequential
+import com.castlefrog.agl.domains.*
 import java.util.ArrayList
 import java.util.LinkedList
 import java.util.Random
@@ -12,7 +9,7 @@ import java.util.Random
 /**
  * Classic game of Backgammon
  */
-class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonState, BackgammonAction> {
+class BackgammonSimulator(private val random: Random = Random()) : Simulator<BackgammonState, BackgammonAction> {
 
     override val nPlayers: Int = 2
 
@@ -42,11 +39,11 @@ class BackgammonSimulator(val random: Random = Random()) : Simulator<BackgammonS
             }
         }
         return if (!pos) {
-            ADVERSARIAL_REWARDS_BLACK_WINS
+            AdversarialRewards.BLACK_WINS
         } else if (!neg) {
-            ADVERSARIAL_REWARDS_WHITE_WINS
+            AdversarialRewards.WHITE_WINS
         } else {
-            ADVERSARIAL_REWARDS_NEUTRAL
+            AdversarialRewards.NEUTRAL
         }
     }
 
