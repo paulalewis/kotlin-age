@@ -49,11 +49,11 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
     }
 
     companion object {
-        private val N_PLAYERS = 2
-        private val ALL_LOCATIONS = (1L shl (Connect4State.HEIGHT + 1) * Connect4State.WIDTH) - 1
-        private val FIRST_COLUMN = (1L shl Connect4State.HEIGHT + 1) - 1
-        private val BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN
-        private val ABOVE_TOP_ROW = BOTTOM_ROW shl Connect4State.HEIGHT
+        private const val N_PLAYERS = 2
+        private const val ALL_LOCATIONS = (1L shl (Connect4State.HEIGHT + 1) * Connect4State.WIDTH) - 1
+        private const val FIRST_COLUMN = (1L shl Connect4State.HEIGHT + 1) - 1
+        private const val BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN
+        private const val ABOVE_TOP_ROW = BOTTOM_ROW shl Connect4State.HEIGHT
 
         private fun calculateLegalActions(state: Connect4State,
                                           rewards: IntArray,

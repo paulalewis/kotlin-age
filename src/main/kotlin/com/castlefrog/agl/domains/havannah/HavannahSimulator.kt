@@ -177,8 +177,8 @@ class HavannahSimulator(
     }
 
     companion object {
-        private val N_PLAYERS = 2
-        private val MIN_BASE = 2
+        private const val N_PLAYERS = 2
+        private const val MIN_BASE = 2
 
         private fun dfsCornersSides(x0: Int,
                                     y0: Int,

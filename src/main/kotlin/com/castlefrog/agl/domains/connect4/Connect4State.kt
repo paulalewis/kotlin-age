@@ -20,9 +20,7 @@ class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4Sta
                 return if (java.lang.Long.bitCount(bitBoards[0]) <= java.lang.Long.bitCount(bitBoards[1])) 0 else 1
             }
 
-    override fun copy(): Connect4State {
-        return Connect4State(bitBoards.copyOf())
-    }
+    override fun copy(): Connect4State = Connect4State(bitBoards.copyOf())
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -62,7 +60,7 @@ class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4Sta
     }
 
     companion object {
-        val WIDTH = 7
-        val HEIGHT = 6
+        const val WIDTH = 7
+        const val HEIGHT = 6
     }
 }

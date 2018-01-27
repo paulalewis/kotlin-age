@@ -25,7 +25,7 @@ data class BiniaxState(
     override fun copy(): BiniaxState {
         val copyLocations = ByteArray(locations.size)
         System.arraycopy(locations, 0, copyLocations, 0, locations.size)
-        return copy(copyLocations, maxElements, freeMoves, nTurns)
+        return copy(locations = copyLocations, maxElements = maxElements, freeMoves = freeMoves, nTurns = nTurns)
     }
 
     override fun hashCode(): Int {

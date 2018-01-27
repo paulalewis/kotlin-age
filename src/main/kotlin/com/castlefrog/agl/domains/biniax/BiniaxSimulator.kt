@@ -176,9 +176,9 @@ class BiniaxSimulator(
     }
 
     companion object {
-        private val N_PLAYERS = 1
-        val WIDTH = 5
-        val HEIGHT = 7
+        private const val N_PLAYERS = 1
+        const val WIDTH = 5
+        const val HEIGHT = 7
 
         private fun BiniaxState.elementLocation(): IntArray {
             for (i in 0 until WIDTH) {

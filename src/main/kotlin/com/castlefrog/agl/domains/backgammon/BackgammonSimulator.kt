@@ -111,7 +111,7 @@ class BackgammonSimulator(private val random: Random = Random()) : Simulator<Bac
 
     companion object {
 
-        private val TURN_PLAYER_1 = 0
+        private const val TURN_PLAYER_1 = 0
 
         private fun dfs(locations: ByteArray,
                         moves: LinkedList<BackgammonMove>,

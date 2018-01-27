@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.State
+import java.util.*
 
 data class HexState(
         val boardSize: Int,
@@ -10,12 +11,12 @@ data class HexState(
         var agentTurn: Byte = TURN_BLACK) : State<HexState> {
 
     companion object {
-        val LOCATION_EMPTY = 0
-        val LOCATION_BLACK = 1
-        val LOCATION_WHITE = 2
+        const val LOCATION_EMPTY = 0
+        const val LOCATION_BLACK = 1
+        const val LOCATION_WHITE = 2
 
-        val TURN_BLACK: Byte = 0
-        val TURN_WHITE: Byte = 1
+        const val TURN_BLACK: Byte = 0
+        const val TURN_WHITE: Byte = 1
     }
 
     override fun copy(): HexState {
@@ -94,8 +95,7 @@ data class HexState(
 
     override fun hashCode(): Int {
         var hashCode = 17 + boardSize
-        hashCode = hashCode * 19 + bitBoards[0].hashCode()
-        hashCode = hashCode * 29 + bitBoards[1].hashCode()
+        hashCode = hashCode * 19 + Arrays.hashCode(bitBoards)
         hashCode = hashCode * 31 + agentTurn
         return hashCode
     }

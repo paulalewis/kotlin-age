@@ -6,7 +6,7 @@ import java.util.HashSet
 data class BackgammonAction(val moves: Set<BackgammonMove>) : Action<BackgammonAction> {
 
     override fun copy(): BackgammonAction {
-        return copy(HashSet<BackgammonMove>(this.moves))
+        return copy(moves = HashSet<BackgammonMove>(this.moves))
     }
 
     override fun toString(): String {

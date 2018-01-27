@@ -4,11 +4,9 @@ import java.util.Vector
 
 import com.castlefrog.agl.Action
 
-data class HavannahAction private constructor(val x: Byte, val y: Byte) : Action<HavannahAction> {
+data class HavannahAction(val x: Byte, val y: Byte) : Action<HavannahAction> {
 
-    override fun copy(): HavannahAction {
-        return this
-    }
+    override fun copy(): HavannahAction = this
 
     override fun toString(): String {
         return "" + (0x41 + x).toChar() + y
@@ -32,16 +30,14 @@ data class HavannahAction private constructor(val x: Byte, val y: Byte) : Action
 
         private fun generateActions(size: Int) {
             actions.setSize(size)
-            for (i in 0 until size) {
+            (0 until size).forEach { i ->
                 if (actions[i] == null) {
                     actions[i] = Vector()
                 }
                 actions[i].setSize(size)
-                for (j in 0 until size) {
-                    if (actions[i][j] == null) {
-                        actions[i][j] = HavannahAction(i.toByte(), j.toByte())
-                    }
-                }
+                (0 until size)
+                        .filter { j -> actions[i][j] == null }
+                        .forEach { actions[i][it] = HavannahAction(i.toByte(), it.toByte()) }
             }
         }
     }

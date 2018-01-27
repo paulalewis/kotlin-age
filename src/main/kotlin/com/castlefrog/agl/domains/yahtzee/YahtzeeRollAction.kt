@@ -9,19 +9,15 @@ import java.util.Arrays
  */
 data class YahtzeeRollAction(val selected: ByteArray = ByteArray(YahtzeeState.N_VALUES)) : YahtzeeAction {
 
+    override fun copy(): YahtzeeRollAction = copy(selected = selected)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
         return Arrays.equals(selected, (other as YahtzeeRollAction).selected)
     }
 
-    override fun hashCode(): Int {
-        return Arrays.hashCode(selected)
-    }
-
-    override fun copy(): YahtzeeRollAction {
-        return copy(selected)
-    }
+    override fun hashCode(): Int = Arrays.hashCode(selected)
 
     override fun toString(): String {
         val output = StringBuilder()

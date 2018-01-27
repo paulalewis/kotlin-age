@@ -46,12 +46,10 @@ class HexSimulator(
         legalActions.add(ArrayList())
         val rewards = calculateRewards(state)
         if (Arrays.equals(rewards, AdversarialRewards.NEUTRAL)) {
-            for (i in 0 until state.boardSize) {
-                for (j in 0 until state.boardSize) {
-                    if (state.isLocationEmpty(i, j) || (pieRule && isSecondMove(state))) {
-                        legalActions[state.agentTurn.toInt()].add(HexAction.valueOf(i, j))
-                    }
-                }
+            (0 until state.boardSize).forEach { i ->
+                (0 until state.boardSize)
+                        .filter { state.isLocationEmpty(i, it) || (pieRule && isSecondMove(state)) }
+                        .forEach { legalActions[state.agentTurn.toInt()].add(HexAction.valueOf(i, it)) }
             }
         }
         return legalActions
@@ -77,23 +75,8 @@ class HexSimulator(
     }
 
     companion object {
-        private val MIN_BOARD_SIZE = 3
-        private val MAX_BOARD_SIZE = 255
-
-        /*private fun computeRewards(action: HexAction, state: HexState): IntArray {
-            val locations = state.locations
-            val visited = Array(state.boardSize) { BooleanArray(state.boardSize) }
-            val x = action.x.toInt()
-            val y = action.y.toInt()
-            val value = dfsSides(x, y, locations, visited, state.boardSize)
-            if (locations[x][y].toInt() == HexState.LOCATION_BLACK && value and 3 == 3) {
-                return ADVERSARIAL_REWARDS_BLACK_WINS
-            } else if (locations[x][y].toInt() == HexState.LOCATION_WHITE && value and 12 == 12) {
-                return ADVERSARIAL_REWARDS_WHITE_WINS
-            } else {
-                return ADVERSARIAL_REWARDS_NEUTRAL
-            }
-        }*/
+        private const val MIN_BOARD_SIZE = 3
+        private const val MAX_BOARD_SIZE = 255
 
         private fun dfsSides(x0: Int,
                              y0: Int,

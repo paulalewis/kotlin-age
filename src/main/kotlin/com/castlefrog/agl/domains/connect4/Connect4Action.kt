@@ -5,11 +5,9 @@ import com.castlefrog.agl.Action
 /**
  * @param location slot location to place piece
  */
-class Connect4Action private constructor(val location: Int) : Action<Connect4Action> {
+data class Connect4Action(val location: Int) : Action<Connect4Action> {
 
-    override fun copy(): Connect4Action {
-        return this
-    }
+    override fun copy(): Connect4Action = this
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

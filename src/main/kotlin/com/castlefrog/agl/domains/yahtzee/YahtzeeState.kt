@@ -8,8 +8,8 @@ data class YahtzeeState(val diceValues: ByteArray,
                         val scores: IntArray = IntArray(N_SCORES) {-1}) : State<YahtzeeState> {
 
     companion object {
-        val N_DICE = 5
-        val N_VALUES = 6
+        const val N_DICE = 5
+        const val N_VALUES = 6
         val N_SCORES = YahtzeeScoreCategory.values().size
     }
 
@@ -27,7 +27,7 @@ data class YahtzeeState(val diceValues: ByteArray,
     }
 
     override fun copy(): YahtzeeState {
-        return copy(diceValues, nRolls, scores)
+        return copy(diceValues = diceValues, nRolls = nRolls, scores = scores)
     }
 
     override fun toString(): String {

@@ -8,7 +8,5 @@ enum class BiniaxAction : Action<BiniaxAction> {
     SOUTH,
     WEST;
 
-    override fun copy(): BiniaxAction {
-        return this
-    }
+    override fun copy(): BiniaxAction = this
 }

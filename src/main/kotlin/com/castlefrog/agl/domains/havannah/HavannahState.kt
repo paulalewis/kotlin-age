@@ -7,12 +7,12 @@ data class HavannahState(val base: Int,
                     var agentTurn: Byte) : State<HavannahState> {
 
     companion object {
-        val LOCATION_EMPTY: Byte = 0
-        val LOCATION_BLACK: Byte = 1
-        val LOCATION_WHITE: Byte = 2
+        const val LOCATION_EMPTY: Byte = 0
+        const val LOCATION_BLACK: Byte = 1
+        const val LOCATION_WHITE: Byte = 2
 
-        val TURN_BLACK: Byte = 0
-        val TURN_WHITE: Byte = 1
+        const val TURN_BLACK: Byte = 0
+        const val TURN_WHITE: Byte = 1
     }
 
     override fun copy(): HavannahState {
@@ -30,12 +30,11 @@ data class HavannahState(val base: Int,
     val nPieces: Int
         get() {
             var nPieces = 0
-            for (i in 0 until locations.size) {
-                for (j in 0 until locations[0].size) {
-                    if (locations[i][j] != LOCATION_EMPTY) {
-                        nPieces += 1
-                    }
-                }
+            (0 until locations.size).forEach { i ->
+                (0 until locations[0].size)
+                        .asSequence()
+                        .filter { j -> locations[i][j] != LOCATION_EMPTY }
+                        .forEach { nPieces += 1 }
             }
             return nPieces
         }

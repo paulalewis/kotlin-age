@@ -4,17 +4,12 @@ import java.util.ArrayList
 
 import com.castlefrog.agl.Action
 
-/**
- * Immutable object that represents a hex action.
- */
-data class HexAction private constructor(val x: Byte, val y: Byte) : Action<HexAction> {
+data class HexAction(val x: Byte, val y: Byte) : Action<HexAction> {
 
-    override fun copy(): HexAction {
-        return this
-    }
+    override fun copy(): HexAction = this
 
     override fun toString(): String {
-        return "" + (0x41 + x).toChar() + y
+        return (0x41 + x).toChar() + y.toString()
     }
 
     companion object {
