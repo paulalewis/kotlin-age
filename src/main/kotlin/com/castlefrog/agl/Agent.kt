@@ -1,7 +1,5 @@
 package com.castlefrog.agl
 
-import java.util.Optional
-
 /**
  * An agent interacts in a domain by selecting
  * an action from a list of legal actions for
@@ -17,7 +15,7 @@ interface Agent {
      * @return selected action from the current state or no action
      *         if the agent had no legal actions to choose
      */
-    fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>): Optional<A>
+    fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>): A
 
     companion object {
         /**
@@ -35,6 +33,13 @@ interface Agent {
                 return false
             }
             return true
+        }
+
+        fun <A : Action<A>> getPlayerActions(playerId: Int, legalActions: List<List<A>>): List<A> {
+            if (!playerHasLegalActions(playerId, legalActions)) {
+                throw IllegalStateException("Player $playerId has no legal actions")
+            }
+            return legalActions[playerId]
         }
     }
 }
