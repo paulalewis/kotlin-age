@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import org.assertj.core.api.Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class YahtzeeRollActionTest {
@@ -9,7 +9,7 @@ class YahtzeeRollActionTest {
     fun testCopy() {
         val action = YahtzeeRollAction()
         assertThat(action).isEqualTo(action.copy())
-        assertThat(action).isNotSameAs(action.copy())
+        assertThat(action).isNotSameInstanceAs(action.copy())
     }
 
     @Test

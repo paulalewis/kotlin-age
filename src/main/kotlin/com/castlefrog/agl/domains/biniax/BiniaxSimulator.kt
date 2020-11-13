@@ -1,19 +1,20 @@
 package com.castlefrog.agl.domains.biniax
 
 import com.castlefrog.agl.Simulator
-import java.util.ArrayList
-import java.util.Random
+import kotlin.math.min
+import kotlin.random.Random
 
 /**
  * Biniax is a single agent stochastic domain
  */
 class BiniaxSimulator(
-        private val random: Random = Random(),
-        val buffer: Int = 3,
-        val initialElements: Int = 4,
-        val maxElements: Int = 10,
-        val elementIncrementInterval: Int = 32,
-        val maxFreeMoves: Int = 2) : Simulator<BiniaxState, BiniaxAction> {
+    private val random: Random = Random,
+    val buffer: Int = 3,
+    val initialElements: Int = 4,
+    val maxElements: Int = 10,
+    val elementIncrementInterval: Int = 32,
+    val maxFreeMoves: Int = 2
+) : Simulator<BiniaxState, BiniaxAction> {
 
     override val nPlayers: Int = N_PLAYERS
 
@@ -24,7 +25,13 @@ class BiniaxSimulator(
                 val emptyLocation = random.nextInt(WIDTH)
                 for (j in 0 until WIDTH) {
                     if (j != emptyLocation && i < HEIGHT - buffer) {
-                        locations[i * WIDTH + j] = BiniaxSimulator.generateRandomElementPair(random, initialElements, 0, maxElements, elementIncrementInterval).toByte()
+                        locations[i * WIDTH + j] = generateRandomElementPair(
+                            random,
+                            initialElements,
+                            0,
+                            maxElements,
+                            elementIncrementInterval
+                        ).toByte()
                         if (i == HEIGHT - buffer - 1) {
                             locations[i * WIDTH + j] = (locations[i * WIDTH + j] % maxElements + maxElements).toByte()
                         }
@@ -32,7 +39,11 @@ class BiniaxSimulator(
                 }
             }
             locations[(HEIGHT - 1) * WIDTH + WIDTH / 2] = 1
-            return BiniaxState(locations = locations, maxElements = maxElements.toByte(), freeMoves = maxFreeMoves.toByte())
+            return BiniaxState(
+                locations = locations,
+                maxElements = maxElements.toByte(),
+                freeMoves = maxFreeMoves.toByte()
+            )
         }
 
     override fun calculateRewards(state: BiniaxState): IntArray {
@@ -54,8 +65,9 @@ class BiniaxSimulator(
         val locations = state.locations
 
         if (y != 0 && (locations[x + (y - 1) * WIDTH].toInt() == 0 ||
-                locations[x + (y - 1) * WIDTH] / state.maxElements == element ||
-                locations[x + (y - 1) * WIDTH] % state.maxElements == element)) {
+                    locations[x + (y - 1) * WIDTH] / state.maxElements == element ||
+                    locations[x + (y - 1) * WIDTH] % state.maxElements == element)
+        ) {
             legalActions[0].add(BiniaxAction.NORTH)
         }
 
@@ -63,24 +75,28 @@ class BiniaxSimulator(
             var nextElement = 0
             when {
                 locations[x + 1 + y * WIDTH].toInt() == 0 -> nextElement = element
-                locations[x + 1 + y * WIDTH] / state.maxElements == element -> nextElement = locations[x + 1 + y * WIDTH] % state.maxElements
-                locations[x + 1 + y * WIDTH] % 10 == element -> nextElement = locations[x + 1 + y * WIDTH] / state.maxElements
+                locations[x + 1 + y * WIDTH] / state.maxElements == element -> nextElement =
+                    locations[x + 1 + y * WIDTH] % state.maxElements
+                locations[x + 1 + y * WIDTH] % 10 == element -> nextElement =
+                    locations[x + 1 + y * WIDTH] / state.maxElements
             }
 
             if (nextElement != 0) {
                 if (state.freeMoves > 1 ||
-                        y < HEIGHT - 1 ||
-                        locations[x + 1 + (y - 1) * WIDTH].toInt() == 0 ||
-                        locations[x + 1 + (y - 1) * WIDTH] / state.maxElements == nextElement ||
-                        locations[x + 1 + (y - 1) * WIDTH] % state.maxElements == nextElement) {
+                    y < HEIGHT - 1 ||
+                    locations[x + 1 + (y - 1) * WIDTH].toInt() == 0 ||
+                    locations[x + 1 + (y - 1) * WIDTH] / state.maxElements == nextElement ||
+                    locations[x + 1 + (y - 1) * WIDTH] % state.maxElements == nextElement
+                ) {
                     legalActions[0].add(BiniaxAction.EAST)
                 }
             }
         }
 
         if (y != HEIGHT - 1 && (locations[x + (y + 1) * WIDTH].toInt() == 0 ||
-                locations[x + (y + 1) * WIDTH] / state.maxElements == element ||
-                locations[x + (y + 1) * WIDTH] % state.maxElements == element)) {
+                    locations[x + (y + 1) * WIDTH] / state.maxElements == element ||
+                    locations[x + (y + 1) * WIDTH] % state.maxElements == element)
+        ) {
             legalActions[0].add(BiniaxAction.SOUTH)
         }
 
@@ -88,16 +104,19 @@ class BiniaxSimulator(
             var nextElement = 0
             when {
                 locations[x - 1 + y * WIDTH].toInt() == 0 -> nextElement = element
-                locations[x - 1 + y * WIDTH] / state.maxElements == element -> nextElement = locations[x - 1 + y * WIDTH] % state.maxElements
-                locations[x - 1 + y * WIDTH] % state.maxElements == element -> nextElement = locations[x - 1 + y * WIDTH] / state.maxElements
+                locations[x - 1 + y * WIDTH] / state.maxElements == element -> nextElement =
+                    locations[x - 1 + y * WIDTH] % state.maxElements
+                locations[x - 1 + y * WIDTH] % state.maxElements == element -> nextElement =
+                    locations[x - 1 + y * WIDTH] / state.maxElements
             }
 
             if (nextElement != 0) {
                 if (state.freeMoves > 1 ||
-                        y < HEIGHT - 1 ||
-                        locations[x - 1 + (y - 1) * WIDTH].toInt() == 0 ||
-                        locations[x - 1 + (y - 1) * WIDTH] / state.maxElements == nextElement ||
-                        locations[x - 1 + (y - 1) * WIDTH] % state.maxElements == nextElement) {
+                    y < HEIGHT - 1 ||
+                    locations[x - 1 + (y - 1) * WIDTH].toInt() == 0 ||
+                    locations[x - 1 + (y - 1) * WIDTH] / state.maxElements == nextElement ||
+                    locations[x - 1 + (y - 1) * WIDTH] % state.maxElements == nextElement
+                ) {
                     legalActions[0].add(BiniaxAction.WEST)
                 }
             }
@@ -144,8 +163,10 @@ class BiniaxSimulator(
                 for (j in 0 until WIDTH) {
                     if (i == 0) {
                         if (j != emptyLocation) {
-                            locations[j + i * WIDTH] = generateRandomElementPair(random, initialElements, nTurns, maxElements,
-                                    elementIncrementInterval).toByte()
+                            locations[j + i * WIDTH] = generateRandomElementPair(
+                                random, initialElements, nTurns, maxElements,
+                                elementIncrementInterval
+                            ).toByte()
                         } else {
                             locations[j + i * WIDTH] = 0
                         }
@@ -183,7 +204,7 @@ class BiniaxSimulator(
         private fun BiniaxState.elementLocation(): IntArray {
             for (i in 0 until WIDTH) {
                 for (j in 0 until HEIGHT) {
-                    if (locations[i + j * WIDTH] in 1..(maxElements - 1)) {
+                    if (locations[i + j * WIDTH] in 1 until maxElements) {
                         return intArrayOf(i, j)
                     }
                 }
@@ -197,11 +218,12 @@ class BiniaxSimulator(
          * @return int of random values from 0 to numElements_ - 1
          */
         private fun generateRandomElementPair(
-                random: Random,
-                initialElements: Int,
-                nTurns: Int,
-                maxElements: Int,
-                elementIncrementInterval: Int): Int {
+            random: Random,
+            initialElements: Int,
+            nTurns: Int,
+            maxElements: Int,
+            elementIncrementInterval: Int
+        ): Int {
             val nElementTypes = getNElementTypes(initialElements, nTurns, maxElements, elementIncrementInterval)
             val element1 = random.nextInt(nElementTypes) + 1
             val element2 = random.nextInt(nElementTypes - 1) + 1
@@ -213,11 +235,12 @@ class BiniaxSimulator(
         }
 
         private fun getNElementTypes(
-                initialElements: Int,
-                nTurns: Int,
-                maxElements: Int,
-                elementIncrementInterval: Int): Int {
-            return Math.min(initialElements + nTurns / elementIncrementInterval, maxElements - 1)
+            initialElements: Int,
+            nTurns: Int,
+            maxElements: Int,
+            elementIncrementInterval: Int
+        ): Int {
+            return min(initialElements + nTurns / elementIncrementInterval, maxElements - 1)
         }
     }
 }

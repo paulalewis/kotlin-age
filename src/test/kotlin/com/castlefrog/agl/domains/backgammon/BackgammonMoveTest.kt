@@ -1,43 +1,37 @@
 package com.castlefrog.agl.domains.backgammon
 
-import org.assertj.core.api.Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
-
 
 class BackgammonMoveTest {
 
     @Test
-    fun testCompare() {
-        assertThat(BackgammonMove.valueOf(1, 1)).isEqualByComparingTo(BackgammonMove.valueOf(1, 1))
+    fun `compareTo is equal`() {
+        assertThat(BackgammonMove.valueOf(1, 1)).isEquivalentAccordingToCompareTo(BackgammonMove.valueOf(1, 1))
     }
 
     @Test
-    fun testCompareLessThan() {
+    fun `compareTo is less than`() {
         assertThat(BackgammonMove.valueOf(1, 1)).isLessThan(BackgammonMove.valueOf(2, 1))
     }
 
     @Test
-    fun testCompareLessThan2() {
+    fun `compareTo is less than 2`() {
         assertThat(BackgammonMove.valueOf(1, 1)).isLessThan(BackgammonMove.valueOf(1, 2))
     }
 
     @Test
-    fun testCompareGreaterThan() {
+    fun `compareTo is greater than`() {
         assertThat(BackgammonMove.valueOf(2, 1)).isGreaterThan(BackgammonMove.valueOf(1, 2))
     }
 
     @Test
-    fun testCompareGreaterThan2() {
+    fun `compareTo is greater than 2`() {
         assertThat(BackgammonMove.valueOf(1, 4)).isGreaterThan(BackgammonMove.valueOf(1, 2))
     }
 
     @Test
-    fun testValueOf() {
-        assertThat(BackgammonMove.valueOf(3, 3)).isSameAs(BackgammonMove.valueOf(3, 3))
-    }
-
-    @Test
-    fun testToString() {
-        assertThat(BackgammonMove.valueOf(1, 3).toString()).isEqualTo("1/3")
+    fun valueOf() {
+        assertThat(BackgammonMove.valueOf(3, 3)).isSameInstanceAs(BackgammonMove.valueOf(3, 3))
     }
 }

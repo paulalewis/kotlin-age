@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import org.assertj.core.api.Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class YahtzeeStateTest {
@@ -9,7 +9,7 @@ class YahtzeeStateTest {
     fun testCopy() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte))
         assertThat(yahtzeeState).isEqualTo(yahtzeeState.copy())
-        assertThat(yahtzeeState).isNotSameAs(yahtzeeState.copy())
+        assertThat(yahtzeeState).isNotSameInstanceAs(yahtzeeState.copy())
     }
 
     @Test
@@ -21,10 +21,13 @@ class YahtzeeStateTest {
 
     @Test
     fun testToString() {
-        val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte),
-                nRolls = 1, scores = IntArray(YahtzeeState.N_SCORES))
+        val yahtzeeState = YahtzeeState(
+            diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte),
+            nRolls = 1, scores = IntArray(YahtzeeState.N_SCORES)
+        )
         assertThat(yahtzeeState.toString())
-                .isEqualTo("""
+            .isEqualTo(
+                """
                     |1 - [ 0 1 2 3 4 ]
                     |ONES: 0
                     |TWOS: 0
@@ -39,14 +42,16 @@ class YahtzeeStateTest {
                     |LARGE_STRAIGHT: 0
                     |YAHTZEE: 0
                     |CHANCE: 0
-                    """.trimMargin())
+                    """.trimMargin()
+            )
     }
 
     @Test
     fun testToString2() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte), nRolls = 1)
         assertThat(yahtzeeState.toString())
-                .isEqualTo("""
+            .isEqualTo(
+                """
                     |1 - [ 0 1 2 3 4 ]
                     |ONES: -
                     |TWOS: -
@@ -61,7 +66,7 @@ class YahtzeeStateTest {
                     |LARGE_STRAIGHT: -
                     |YAHTZEE: -
                     |CHANCE: -
-                    """.trimMargin())
+                    """.trimMargin()
+            )
     }
-
 }

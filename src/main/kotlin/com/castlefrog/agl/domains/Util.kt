@@ -1,6 +1,6 @@
 package com.castlefrog.agl.domains
 
-import java.util.Random
+import kotlin.random.Random
 
 object AdversarialRewards {
     val NEUTRAL = intArrayOf(0, 0)

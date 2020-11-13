@@ -5,6 +5,7 @@ data class YahtzeeSelectAction(val scoreCategory: YahtzeeScoreCategory) : Yahtze
     override fun toString(): String {
         return scoreCategory.toString()
     }
+
     override fun copy(): YahtzeeSelectAction = this
 
     companion object {

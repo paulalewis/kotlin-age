@@ -1,34 +1,34 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import org.assertj.core.api.Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class YahtzeeSelectActionTest {
 
     @Test
-    fun testValueOfIdentical() {
-        assertThat(YahtzeeSelectAction.valueOf(1)).isSameAs(YahtzeeSelectAction.valueOf(1))
+    fun valueOfIdentical() {
+        assertThat(YahtzeeSelectAction.valueOf(1)).isSameInstanceAs(YahtzeeSelectAction.valueOf(1))
     }
 
     @Test
-    fun testValueOfIdentical2() {
+    fun valueOfIdentical2() {
         assertThat(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.CHANCE))
-                .isSameAs(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.CHANCE))
+            .isSameInstanceAs(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.CHANCE))
     }
 
     @Test
-    fun testValueOfUpperBound() {
-        assertThrows(IndexOutOfBoundsException::class.java, { YahtzeeSelectAction.valueOf(20) })
+    fun valueOfUpperBound() {
+        assertThrows(IndexOutOfBoundsException::class.java) { YahtzeeSelectAction.valueOf(20) }
     }
 
     @Test
-    fun testValueOfLowerBound() {
-        assertThrows(IndexOutOfBoundsException::class.java, { YahtzeeSelectAction.valueOf(-1) })
+    fun valueOfLowerBound() {
+        assertThrows(IndexOutOfBoundsException::class.java) { YahtzeeSelectAction.valueOf(-1) }
     }
 
     @Test
-    fun testToString() {
+    fun `toString value`() {
         assertThat(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.FIVES).toString()).isEqualTo("FIVES")
     }
 }

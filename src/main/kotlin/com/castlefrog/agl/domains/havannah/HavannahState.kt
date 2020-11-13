@@ -1,10 +1,13 @@
 package com.castlefrog.agl.domains.havannah
 
 import com.castlefrog.agl.State
+import kotlin.math.max
 
-data class HavannahState(val base: Int,
-                    val locations: Array<ByteArray>,
-                    var agentTurn: Byte) : State<HavannahState> {
+data class HavannahState(
+    val base: Int,
+    val locations: Array<ByteArray>,
+    var agentTurn: Byte
+) : State<HavannahState> {
 
     companion object {
         const val LOCATION_EMPTY: Byte = 0
@@ -17,7 +20,7 @@ data class HavannahState(val base: Int,
 
     override fun copy(): HavannahState {
         val copyLocations = Array(locations.size) { ByteArray(locations.size) }
-        for (i in 0 until locations.size) {
+        for (i in locations.indices) {
             copyLocations[i] = locations[i].copyOf()
         }
         return HavannahState(base, copyLocations, agentTurn)
@@ -30,11 +33,11 @@ data class HavannahState(val base: Int,
     val nPieces: Int
         get() {
             var nPieces = 0
-            (0 until locations.size).forEach { i ->
-                (0 until locations[0].size)
-                        .asSequence()
-                        .filter { j -> locations[i][j] != LOCATION_EMPTY }
-                        .forEach { nPieces += 1 }
+            (locations.indices).forEach { i ->
+                (locations[0].indices)
+                    .asSequence()
+                    .filter { j -> locations[i][j] != LOCATION_EMPTY }
+                    .forEach { _ -> nPieces += 1 }
             }
             return nPieces
         }
@@ -42,8 +45,8 @@ data class HavannahState(val base: Int,
     override fun hashCode(): Int {
         var hashCode = 17 + agentTurn
         hashCode = hashCode * 31 + base
-        for (i in 0 until locations.size) {
-            for (j in 0 until locations.size) {
+        for (i in locations.indices) {
+            for (j in locations[i].indices) {
                 hashCode = hashCode * 31 + locations[i][j]
             }
         }
@@ -54,8 +57,8 @@ data class HavannahState(val base: Int,
         if (other !is HavannahState) {
             return false
         }
-        for (i in 0 until locations.size) {
-            for (j in 0 until locations.size) {
+        for (i in locations.indices) {
+            for (j in locations[i].indices) {
                 if (locations[i][j] != other.locations[i][j]) {
                     return false
                 }
@@ -67,7 +70,7 @@ data class HavannahState(val base: Int,
     override fun toString(): String {
         val output = StringBuilder()
         for (i in locations.size - 1 downTo 0) {
-            for (j in 0..Math.max(base - i - 2, i - base)) {
+            for (j in 0..max(base - i - 2, i - base)) {
                 output.append(" ")
             }
             var xMin = 0

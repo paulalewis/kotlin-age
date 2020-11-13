@@ -1,75 +1,130 @@
 package com.castlefrog.agl.domains.backgammon
 
-import org.assertj.core.api.Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
-import java.util.Random
+import kotlin.random.Random
 
 class BackgammonSimulatorTest {
 
     @Test
-    fun testGetNPlayers() {
+    fun getNPlayers() {
         assertThat(BackgammonSimulator().nPlayers).isEqualTo(2)
     }
 
     @Test
-    fun testGetInitialStatePlayer1First() {
+    fun getInitialStatePlayer1First() {
         val simulator = BackgammonSimulator(Random(381582))
-        assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(4, 0), agentTurn = 0))
+        assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(3, 0), agentTurn = 0))
     }
 
     @Test
-    fun testGetInitialStatePlayer2First() {
-        val simulator = BackgammonSimulator(Random(5311224))
-        assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(4, 5), agentTurn = 1))
+    fun getInitialStatePlayer2First() {
+        val simulator = BackgammonSimulator(Random(5331224))
+        assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(1, 4), agentTurn = 1))
     }
 
     @Test
-    fun testCalculateRewardsInitialState() {
+    fun calculateRewardsInitialState() {
         val simulator = BackgammonSimulator(Random(111))
         assertThat(simulator.calculateRewards(simulator.initialState)).isEqualTo(intArrayOf(0, 0))
     }
 
     @Test
-    fun testCalculateRewardsPlayer1Wins() {
+    fun calculateRewardsPlayer1Wins() {
         val simulator = BackgammonSimulator(Random(111))
-        val state = BackgammonState(locations = byteArrayOf(0, 0, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 0))
+        val state = BackgammonState(
+            locations = byteArrayOf(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                -5,
+                0,
+                -3,
+                0,
+                0,
+                0,
+                0,
+                -5,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                -2,
+                0
+            )
+        )
         assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
     }
 
     @Test
-    fun testCalculateRewardsPlayer2Wins() {
+    fun calculateRewardsPlayer2Wins() {
         val simulator = BackgammonSimulator(Random(111))
-        val state = BackgammonState(locations = byteArrayOf(0, 0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0))
+        val state = BackgammonState(
+            locations = byteArrayOf(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5,
+                0,
+                3,
+                0,
+                0,
+                0,
+                0,
+                5,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                2,
+                0
+            )
+        )
         assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(-1, 1))
     }
 
     @Test
-    fun testCalculateLegalActionsInitialState() {
+    fun calculateLegalActionsInitialState() {
         val simulator = BackgammonSimulator(Random(111))
-        val expectedLegalActions = arrayListOf<List<BackgammonAction>>(emptyList(),
-                arrayListOf(
-                        BackgammonAction(setOf(BackgammonMove.valueOf(6, 2), BackgammonMove.valueOf(6, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(8, 4), BackgammonMove.valueOf(4, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(8, 4), BackgammonMove.valueOf(6, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(8, 4), BackgammonMove.valueOf(8, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(8, 2), BackgammonMove.valueOf(6, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(6, 2), BackgammonMove.valueOf(13, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(8, 2), BackgammonMove.valueOf(13, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(9, 2), BackgammonMove.valueOf(13, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(13, 2), BackgammonMove.valueOf(13, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(13, 2), BackgammonMove.valueOf(6, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(8, 4), BackgammonMove.valueOf(13, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(13, 2), BackgammonMove.valueOf(11, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(24, 4), BackgammonMove.valueOf(6, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(24, 4), BackgammonMove.valueOf(8, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(24, 4), BackgammonMove.valueOf(13, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(24, 4), BackgammonMove.valueOf(20, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(24, 4), BackgammonMove.valueOf(24, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(24, 2), BackgammonMove.valueOf(6, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(8, 4), BackgammonMove.valueOf(24, 2))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(24, 2), BackgammonMove.valueOf(13, 4))),
-                        BackgammonAction(setOf(BackgammonMove.valueOf(24, 2), BackgammonMove.valueOf(22, 4)))
-                ))
+        val expectedLegalActions = arrayListOf(
+            arrayListOf(
+                BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(7, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(1, 6))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(17, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(19, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(1, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(5, 6), BackgammonMove.valueOf(1, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(12, 6), BackgammonMove.valueOf(1, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(17, 6), BackgammonMove.valueOf(1, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(12, 6), BackgammonMove.valueOf(17, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(12, 6), BackgammonMove.valueOf(18, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(19, 4), BackgammonMove.valueOf(12, 6))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(12, 6))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(16, 6))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(17, 6))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(17, 6), BackgammonMove.valueOf(19, 4))),
+                BackgammonAction(setOf(BackgammonMove.valueOf(17, 6), BackgammonMove.valueOf(17, 4))),
+            ),
+            emptyList(),
+        )
         assertThat(simulator.calculateLegalActions(simulator.initialState)).isEqualTo(expectedLegalActions)
     }
 }

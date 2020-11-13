@@ -1,24 +1,24 @@
 package com.castlefrog.agl.domains.biniax
 
-import org.assertj.core.api.Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class BiniaxStateTest {
 
     @Test
-    fun testIllegalBiniaxStateSize() {
-        assertThrows(IllegalArgumentException::class.java, { BiniaxState(locations = byteArrayOf()) })
+    fun illegalBiniaxStateSize() {
+        assertThrows(IllegalArgumentException::class.java) { BiniaxState(locations = byteArrayOf()) }
     }
 
     @Test
-    fun testCopy() {
+    fun copy() {
         val state = BiniaxSimulator().initialState
         assertThat(state).isEqualTo(state.copy())
     }
 
     @Test
-    fun testCopyModification() {
+    fun copyModification() {
         val state = BiniaxSimulator().initialState
         val copyState = state.copy()
         state.locations[0] = -8
@@ -26,22 +26,24 @@ class BiniaxStateTest {
     }
 
     @Test
-    fun testHashCode() {
+    fun `hashCode value`() {
         assertThat(BiniaxState().hashCode()).isEqualTo(BiniaxState().hashCode())
     }
 
     @Test
-    fun testToString() {
+    fun `toString value`() {
         val locations = byteArrayOf(
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                28, 28, 28, 0, 28,
-                18, 18, 18, 18, 18,
-                0, 0, 0, 0, 0,
-                0, 0, 4, 0, 0)
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            28, 28, 28, 0, 28,
+            18, 18, 18, 18, 18,
+            0, 0, 0, 0, 0,
+            0, 0, 4, 0, 0
+        )
         val state = BiniaxState(locations = locations)
-        assertThat(state.toString()).isEqualTo("""
+        assertThat(state.toString()).isEqualTo(
+            """
         |Turns: 0
         |Free Moves: 2
         |---------------------
@@ -53,7 +55,7 @@ class BiniaxStateTest {
         |:                   :
         |:        [D]        :
         |---------------------
-        """.trimMargin())
+        """.trimMargin()
+        )
     }
-
 }

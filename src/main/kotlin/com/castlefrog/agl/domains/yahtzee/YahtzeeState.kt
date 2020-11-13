@@ -1,11 +1,12 @@
 package com.castlefrog.agl.domains.yahtzee
 
 import com.castlefrog.agl.State
-import java.util.Arrays
 
-data class YahtzeeState(val diceValues: ByteArray,
-                        var nRolls: Byte = 1,
-                        val scores: IntArray = IntArray(N_SCORES) {-1}) : State<YahtzeeState> {
+data class YahtzeeState(
+    val diceValues: ByteArray,
+    var nRolls: Byte = 1,
+    val scores: IntArray = IntArray(N_SCORES) { -1 }
+) : State<YahtzeeState> {
 
     companion object {
         const val N_DICE = 5
@@ -18,12 +19,12 @@ data class YahtzeeState(val diceValues: ByteArray,
         if (other?.javaClass != javaClass) return false
         other as YahtzeeState
         return nRolls == other.nRolls &&
-                Arrays.equals(diceValues, other.diceValues) &&
-                Arrays.equals(scores, other.scores)
+                diceValues.contentEquals(other.diceValues) &&
+                scores.contentEquals(other.scores)
     }
 
     override fun hashCode(): Int {
-        return (nRolls.toInt() * 17 + Arrays.hashCode(diceValues)) * 19 + Arrays.hashCode(scores)
+        return (nRolls.toInt() * 17 + diceValues.contentHashCode()) * 19 + scores.contentHashCode()
     }
 
     override fun copy(): YahtzeeState {
@@ -47,5 +48,4 @@ data class YahtzeeState(val diceValues: ByteArray,
         }
         return output.toString()
     }
-
 }

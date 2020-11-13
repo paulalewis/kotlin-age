@@ -1,14 +1,14 @@
 package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.State
-import java.util.*
 
 data class HexState(
-        val boardSize: Int,
-        val bitBoards: Array<ByteArray> = Array(2) {
-            ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE)
-        },
-        var agentTurn: Byte = TURN_BLACK) : State<HexState> {
+    val boardSize: Int,
+    val bitBoards: Array<ByteArray> = Array(2) {
+        ByteArray((boardSize * boardSize + java.lang.Byte.SIZE - 1) / java.lang.Byte.SIZE)
+    },
+    var agentTurn: Byte = TURN_BLACK
+) : State<HexState> {
 
     companion object {
         const val LOCATION_EMPTY = 0
@@ -57,12 +57,12 @@ data class HexState(
     }
 
     fun isLocationOnBoard(x: Int, y: Int): Boolean {
-        return x in 0..(boardSize - 1) && y in 0..(boardSize - 1)
+        return x in 0 until boardSize && y in 0 until boardSize
     }
 
     val nPieces: Int
         get() {
-            return (0 until bitBoards[0].size).sumBy {
+            return (bitBoards[0].indices).sumBy {
                 Integer.bitCount((bitBoards[0][it].toInt() or bitBoards[1][it].toInt()) and 0xff)
             }
         }
@@ -74,15 +74,19 @@ data class HexState(
         val byteShift = bitLocation % java.lang.Byte.SIZE
         when (value) {
             LOCATION_EMPTY -> {
-                bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
-                bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+                bitBoards[0][byteLocation] =
+                    (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+                bitBoards[1][byteLocation] =
+                    (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
             }
             LOCATION_BLACK -> {
                 bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() or (1 shl byteShift)).toByte()
-                bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+                bitBoards[1][byteLocation] =
+                    (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
             }
             LOCATION_WHITE -> {
-                bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+                bitBoards[0][byteLocation] =
+                    (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
                 bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() or (1 shl byteShift)).toByte()
             }
         }
@@ -95,7 +99,7 @@ data class HexState(
 
     override fun hashCode(): Int {
         var hashCode = 17 + boardSize
-        hashCode = hashCode * 19 + Arrays.hashCode(bitBoards)
+        hashCode = hashCode * 19 + bitBoards.contentHashCode()
         hashCode = hashCode * 31 + agentTurn
         return hashCode
     }
@@ -112,8 +116,8 @@ data class HexState(
                 return false
             }
             bitBoards[i].indices
-                    .filter { other.bitBoards[i][it] != bitBoards[i][it] }
-                    .forEach { return false }
+                .filter { other.bitBoards[i][it] != bitBoards[i][it] }
+                .forEach { _ -> return false }
         }
         return other.boardSize == boardSize && other.agentTurn == agentTurn
     }
@@ -125,8 +129,7 @@ data class HexState(
                 output.append(" ")
             }
             for (j in 0 until boardSize) {
-                val location = getLocation(j, i)
-                when (location) {
+                when (getLocation(j, i)) {
                     LOCATION_BLACK -> output.append("X")
                     LOCATION_WHITE -> output.append("O")
                     else -> output.append("-")

@@ -4,9 +4,6 @@ import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.util.LruCache
 
-import java.util.ArrayList
-import java.util.Arrays
-
 class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
     private val columnHeightsCache = LruCache<Connect4State, IntArray>(1)
@@ -25,7 +22,11 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
     }
 
     override fun calculateLegalActions(state: Connect4State): List<List<Connect4Action>> {
-        val legalActions = legalActionsCache[state] ?: calculateLegalActions(state, calculateRewards(state), calculateColumnHeights(state))
+        val legalActions = legalActionsCache[state] ?: calculateLegalActions(
+            state,
+            calculateRewards(state),
+            calculateColumnHeights(state)
+        )
         legalActionsCache[state] = legalActions
         return legalActions
     }
@@ -55,14 +56,16 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         private const val BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN
         private const val ABOVE_TOP_ROW = BOTTOM_ROW shl Connect4State.HEIGHT
 
-        private fun calculateLegalActions(state: Connect4State,
-                                          rewards: IntArray,
-                                          columnHeights: IntArray): List<List<Connect4Action>> {
+        private fun calculateLegalActions(
+            state: Connect4State,
+            rewards: IntArray,
+            columnHeights: IntArray
+        ): List<List<Connect4Action>> {
             val legalActions = arrayListOf(ArrayList(), ArrayList<Connect4Action>())
-            if (Arrays.equals(rewards, AdversarialRewards.NEUTRAL)) {
+            if (rewards.contentEquals(AdversarialRewards.NEUTRAL)) {
                 (0 until Connect4State.WIDTH)
-                        .filter { 1L shl columnHeights[it] and ABOVE_TOP_ROW == 0L }
-                        .forEach { legalActions[state.agentTurn].add(Connect4Action.valueOf(it)) }
+                    .filter { 1L shl columnHeights[it] and ABOVE_TOP_ROW == 0L }
+                    .forEach { legalActions[state.agentTurn].add(Connect4Action.valueOf(it)) }
             }
             return legalActions
         }
@@ -76,9 +79,10 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
                 val diagonal2 = bitBoard and (bitBoard shr height + 2)
                 val vertical = bitBoard and (bitBoard shr 1)
                 if (diagonal1 and (diagonal1 shr 2 * height) or
-                        (horizontal and (horizontal shr 2 * (height + 1))) or
-                        (diagonal2 and (diagonal2 shr 2 * (height + 2))) or
-                        (vertical and (vertical shr 2)) != 0L) {
+                    (horizontal and (horizontal shr 2 * (height + 1))) or
+                    (diagonal2 and (diagonal2 shr 2 * (height + 2))) or
+                    (vertical and (vertical shr 2)) != 0L
+                ) {
                     return if (i == 0) AdversarialRewards.BLACK_WINS else AdversarialRewards.WHITE_WINS
                 }
             }

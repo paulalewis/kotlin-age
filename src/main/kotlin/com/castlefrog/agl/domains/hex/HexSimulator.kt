@@ -3,17 +3,17 @@ package com.castlefrog.agl.domains.hex
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Stack
 
 class HexSimulator(
-        val boardSize: Int = 11,
-        val pieRule: Boolean = true) : Simulator<HexState, HexAction> {
+    val boardSize: Int = 11,
+    val pieRule: Boolean = true
+) : Simulator<HexState, HexAction> {
+
+    val actions = HexAction.generateActions(boardSize)
 
     init {
         if (boardSize !in MIN_BOARD_SIZE until MAX_BOARD_SIZE) {
-            throw IllegalArgumentException("Invalid board size: " + boardSize)
+            throw IllegalArgumentException("Invalid board size: $boardSize")
         }
     }
 
@@ -27,12 +27,12 @@ class HexSimulator(
         val visited = Array(state.boardSize) { BooleanArray(state.boardSize) }
         for (i in 0 until state.boardSize) {
             if (locations[0][i].toInt() == HexState.LOCATION_BLACK && !visited[0][i]) {
-                if (dfsSides(0, i, locations, visited, state.boardSize) and 3 == 3) {
+                if (dfsSides(0, i, locations, visited, actions) and 3 == 3) {
                     return AdversarialRewards.BLACK_WINS
                 }
             }
             if (locations[i][0].toInt() == HexState.LOCATION_WHITE && !visited[i][0]) {
-                if (dfsSides(i, 0, locations, visited, state.boardSize) and 12 == 12) {
+                if (dfsSides(i, 0, locations, visited, actions) and 12 == 12) {
                     return AdversarialRewards.WHITE_WINS
                 }
             }
@@ -45,11 +45,11 @@ class HexSimulator(
         legalActions.add(ArrayList())
         legalActions.add(ArrayList())
         val rewards = calculateRewards(state)
-        if (Arrays.equals(rewards, AdversarialRewards.NEUTRAL)) {
+        if (rewards.contentEquals(AdversarialRewards.NEUTRAL)) {
             (0 until state.boardSize).forEach { i ->
                 (0 until state.boardSize)
-                        .filter { state.isLocationEmpty(i, it) || (pieRule && isSecondMove(state)) }
-                        .forEach { legalActions[state.agentTurn.toInt()].add(HexAction.valueOf(i, it)) }
+                    .filter { state.isLocationEmpty(i, it) || (pieRule && isSecondMove(state)) }
+                    .forEach { legalActions[state.agentTurn.toInt()].add(actions[i][it]) }
             }
         }
         return legalActions
@@ -78,20 +78,22 @@ class HexSimulator(
         private const val MIN_BOARD_SIZE = 3
         private const val MAX_BOARD_SIZE = 255
 
-        private fun dfsSides(x0: Int,
-                             y0: Int,
-                             locations: Array<ByteArray>,
-                             visited: Array<BooleanArray>,
-                             boardSize: Int): Int {
+        private fun dfsSides(
+            x0: Int,
+            y0: Int,
+            locations: Array<ByteArray>,
+            visited: Array<BooleanArray>,
+            actions: Array<Array<HexAction>>
+        ): Int {
             var value = 0
-            val stack = Stack<HexAction>()
-            stack.push(HexAction.valueOf(x0, y0))
+            val stack = ArrayDeque<HexAction>()
+            stack.addFirst(actions[x0][y0])
             visited[x0][y0] = true
-            while (!stack.empty()) {
-                val v = stack.pop()
+            while (!stack.isEmpty()) {
+                val v = stack.removeFirst()
                 val x = v.x.toInt()
                 val y = v.y.toInt()
-                value = value or getLocationMask(x, y, boardSize)
+                value = value or getLocationMask(x, y, actions.size)
                 var i = -1
                 while (i <= 1) {
                     var j = -1
@@ -99,9 +101,10 @@ class HexSimulator(
                         val xi = x + i
                         val yi = y + j
                         if (i + j != 0 && xi >= 0 && yi >= 0 &&
-                                xi < boardSize && yi < boardSize) {
+                            xi < actions.size && yi < actions.size
+                        ) {
                             if (!visited[xi][yi] && locations[xi][yi] == locations[x][y]) {
-                                stack.push(HexAction.valueOf(xi, yi))
+                                stack.addFirst(actions[xi][yi])
                                 visited[xi][yi] = true
                             }
                         }
@@ -131,6 +134,5 @@ class HexSimulator(
         private fun isSecondMove(state: HexState): Boolean {
             return state.nPieces == 1 && state.agentTurn == HexState.TURN_WHITE
         }
-
     }
 }

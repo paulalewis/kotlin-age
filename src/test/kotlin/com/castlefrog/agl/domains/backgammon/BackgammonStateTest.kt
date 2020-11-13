@@ -1,19 +1,19 @@
 package com.castlefrog.agl.domains.backgammon
 
-import org.assertj.core.api.Assertions.assertThat
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class BackgammonStateTest {
 
     @Test
-    fun testCopy() {
+    fun copy() {
         val state = BackgammonState()
         assertThat(state).isEqualTo(state.copy())
-        assertThat(state).isNotSameAs(state.copy())
+        assertThat(state).isNotSameInstanceAs(state.copy())
     }
 
     @Test
-    fun testCopyModification() {
+    fun copyModification() {
         val state = BackgammonState()
         val stateCopy = state.copy()
         state.locations[0] = -1
@@ -21,19 +21,19 @@ class BackgammonStateTest {
     }
 
     @Test
-    fun testEqualsDiceOrderDifferent() {
+    fun equalsDiceOrderDifferent() {
         assertThat(BackgammonState(dice = byteArrayOf(0, 4)))
-                .isEqualTo(BackgammonState(dice = byteArrayOf(4, 0)))
+            .isEqualTo(BackgammonState(dice = byteArrayOf(4, 0)))
     }
 
     @Test
-    fun testHashCodeDiceOrderDifferent() {
+    fun hashCodeDiceOrderDifferent() {
         assertThat(BackgammonState(dice = byteArrayOf(0, 4)).hashCode())
-                .isEqualTo(BackgammonState(dice = byteArrayOf(4, 0)).hashCode())
+            .isEqualTo(BackgammonState(dice = byteArrayOf(4, 0)).hashCode())
     }
 
     @Test
-    fun testToString() {
+    fun `toString value`() {
         val state = BackgammonState()
         state.dice[0] = 1
         state.dice[1] = 2
@@ -42,7 +42,7 @@ class BackgammonStateTest {
         | 5 0 0 0-3 0|-5 0 0 0 0 2 [0]
         |------------|------------
         |-5 0 0 0 3 0| 5 0 0 0 0-2 [0]
-        """.trimMargin())
+        """.trimMargin()
+        )
     }
-
 }

@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.biniax
 
 import com.castlefrog.agl.State
-import java.util.Arrays
 
 /**
  * Defines a Biniax state.
@@ -11,10 +10,11 @@ import java.util.Arrays
  * xy: element pair 0 < x <= MAX_ELEMENTS and 0 < y <= MAX_ELEMENTS and x < y
  */
 data class BiniaxState(
-        val locations: ByteArray = ByteArray(BiniaxSimulator.WIDTH * BiniaxSimulator.HEIGHT),
-        val maxElements: Byte = 10,
-        var freeMoves: Byte = 2,
-        var nTurns: Int = 0) : State<BiniaxState> {
+    val locations: ByteArray = ByteArray(BiniaxSimulator.WIDTH * BiniaxSimulator.HEIGHT),
+    val maxElements: Byte = 10,
+    var freeMoves: Byte = 2,
+    var nTurns: Int = 0
+) : State<BiniaxState> {
 
     init {
         if (locations.size != BiniaxSimulator.WIDTH * BiniaxSimulator.HEIGHT) {
@@ -29,14 +29,14 @@ data class BiniaxState(
     }
 
     override fun hashCode(): Int {
-        return 11 * (17 * freeMoves + Arrays.hashCode(locations)) + nTurns
+        return 11 * (17 * freeMoves + locations.contentHashCode()) + nTurns
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
         return other is BiniaxState
-                && Arrays.equals(locations, other.locations)
+                && locations.contentEquals(other.locations)
                 && freeMoves == other.freeMoves
                 && nTurns == other.nTurns
     }
@@ -58,7 +58,7 @@ data class BiniaxState(
                 }
                 when (location) {
                     0 -> output.append("   ")
-                    in 1..(maxElements - 1) -> {
+                    in 1 until maxElements -> {
                         output.append("[")
                         output.append((0x40 + location).toChar())
                         output.append("]")

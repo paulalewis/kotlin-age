@@ -1,7 +1,5 @@
 package com.castlefrog.agl.domains.backgammon
 
-import java.util.ArrayList
-
 /**
  * Represents moving a single piece from one location to another. It is a
  * partial action as an action may be made up of multiple moves.
@@ -19,7 +17,7 @@ data class BackgammonMove(val from: Int, val distance: Int) : Comparable<Backgam
     }
 
     override fun toString(): String {
-        return from.toString() + "/" + distance.toString()
+        return "$from/$distance"
     }
 
     companion object {

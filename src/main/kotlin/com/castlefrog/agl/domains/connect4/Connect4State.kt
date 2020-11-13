@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.connect4
 
 import com.castlefrog.agl.State
-import java.util.Arrays
 
 /**
  * State represented by a bitBoard described below:
@@ -16,20 +15,20 @@ import java.util.Arrays
 class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4State> {
 
     val agentTurn: Int
-            get() {
-                return if (java.lang.Long.bitCount(bitBoards[0]) <= java.lang.Long.bitCount(bitBoards[1])) 0 else 1
-            }
+        get() {
+            return if (java.lang.Long.bitCount(bitBoards[0]) <= java.lang.Long.bitCount(bitBoards[1])) 0 else 1
+        }
 
     override fun copy(): Connect4State = Connect4State(bitBoards.copyOf())
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
-        return Arrays.equals(bitBoards, (other as Connect4State).bitBoards)
+        return bitBoards.contentEquals((other as Connect4State).bitBoards)
     }
 
     override fun hashCode(): Int {
-        return Arrays.hashCode(bitBoards)
+        return bitBoards.contentHashCode()
     }
 
     override fun toString(): String {

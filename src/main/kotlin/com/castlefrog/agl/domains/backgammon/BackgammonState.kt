@@ -1,7 +1,6 @@
 package com.castlefrog.agl.domains.backgammon
 
 import com.castlefrog.agl.State
-import java.util.Arrays
 
 /**
  * Represents a backgammon state as an array of byte locations.
@@ -12,9 +11,37 @@ import java.util.Arrays
  * @param agentTurn current players turn
  */
 class BackgammonState(
-        val locations: ByteArray = byteArrayOf(0, 2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2, 0),
-        val dice: ByteArray = ByteArray(BackgammonState.N_DICE),
-        var agentTurn: Int = 0) : State<BackgammonState> {
+    val locations: ByteArray = byteArrayOf(
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        -5,
+        0,
+        -3,
+        0,
+        0,
+        0,
+        5,
+        -5,
+        0,
+        0,
+        0,
+        3,
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        -2,
+        0
+    ),
+    val dice: ByteArray = ByteArray(N_DICE),
+    var agentTurn: Int = 0
+) : State<BackgammonState> {
 
     override fun copy(): BackgammonState {
         val locations = ByteArray(N_LOCATIONS)
@@ -31,7 +58,7 @@ class BackgammonState(
         if (other !is BackgammonState) {
             return false
         }
-        return Arrays.equals(locations, other.locations) &&
+        return locations.contentEquals(other.locations) &&
                 ((dice[0] == other.dice[0] && dice[1] == other.dice[1]) ||
                         (dice[0] == other.dice[1] && dice[1] == other.dice[0])) &&
                 agentTurn == other.agentTurn
@@ -43,7 +70,7 @@ class BackgammonState(
         } else {
             intArrayOf(dice[0].toInt(), dice[1].toInt())
         }
-        return (agentTurn * 11 + Arrays.hashCode(locations)) * 17 + Arrays.hashCode(dice)
+        return (agentTurn * 11 + locations.contentHashCode()) * 17 + dice.contentHashCode()
     }
 
     override fun toString(): String {

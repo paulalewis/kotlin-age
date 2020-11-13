@@ -1,9 +1,19 @@
 package com.castlefrog.agl.domains.yahtzee
 
 import com.castlefrog.agl.Simulator
-import java.util.Random
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.any
+import kotlin.collections.filter
+import kotlin.collections.firstOrNull
+import kotlin.collections.forEach
+import kotlin.collections.indices
+import kotlin.collections.sumBy
+import kotlin.random.Random
 
-class YahtzeeSimulator(private val random: Random = Random()) : Simulator<YahtzeeState, YahtzeeAction> {
+class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeState, YahtzeeAction> {
 
     override val nPlayers: Int = 1
 
@@ -39,8 +49,14 @@ class YahtzeeSimulator(private val random: Random = Random()) : Simulator<Yahtze
                             for (l in 0..diceValues[3]) {
                                 for (m in 0..diceValues[4]) {
                                     for (n in 0..diceValues[5]) {
-                                        legalActions[0].add(YahtzeeRollAction(byteArrayOf(i.toByte(), j.toByte(),
-                                                k.toByte(), l.toByte(), m.toByte(), n.toByte())))
+                                        legalActions[0].add(
+                                            YahtzeeRollAction(
+                                                byteArrayOf(
+                                                    i.toByte(), j.toByte(),
+                                                    k.toByte(), l.toByte(), m.toByte(), n.toByte()
+                                                )
+                                            )
+                                        )
                                     }
                                 }
                             }
@@ -51,8 +67,8 @@ class YahtzeeSimulator(private val random: Random = Random()) : Simulator<Yahtze
                 val yahtzee = checkYahtzee(state.diceValues)
                 if (yahtzee == -1 || state.scores[yahtzee] != -1) {
                     (0 until YahtzeeState.N_SCORES)
-                            .filter { state.scores[it] == -1 }
-                            .forEach { legalActions[0].add(YahtzeeSelectAction.valueOf(it)) }
+                        .filter { state.scores[it] == -1 }
+                        .forEach { legalActions[0].add(YahtzeeSelectAction.valueOf(it)) }
                 } else {
                     legalActions[0].add(YahtzeeSelectAction.valueOf(yahtzee))
                     if (state.scores[YahtzeeScoreCategory.YAHTZEE.ordinal] == -1) {
@@ -160,8 +176,8 @@ class YahtzeeSimulator(private val random: Random = Random()) : Simulator<Yahtze
                     }
                 }
                 YahtzeeScoreCategory.YAHTZEE -> (0 until YahtzeeState.N_VALUES)
-                        .filter { diceValues[it].toInt() == 5 }
-                        .forEach { scores[category.ordinal] = 50 }
+                    .filter { diceValues[it].toInt() == 5 }
+                    .forEach { _ -> scores[category.ordinal] = 50 }
                 YahtzeeScoreCategory.CHANCE -> for (i in 0 until YahtzeeState.N_VALUES) {
                     scores[category.ordinal] += diceValues[i] * (i + 1)
                 }
@@ -191,7 +207,7 @@ class YahtzeeSimulator(private val random: Random = Random()) : Simulator<Yahtze
         }
 
         fun YahtzeeState.hasCategoriesLeft(): Boolean {
-            return (0 until scores.size).any { scores[it] == -1 }
+            return (scores.indices).any { scores[it] == -1 }
         }
 
     }
