@@ -6,7 +6,7 @@ version = "0.1.0"
 buildscript {
     ext {
         junitJupiterVersion  = '5.1.0-M1'
-        kotlinVersion = '1.2.21'
+        kotlinVersion = '1.4.10'
     }
 
     repositories {
@@ -43,8 +43,4 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
     testImplementation "org.assertj:assertj-core:3.9.0"
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = "4.5"
 }

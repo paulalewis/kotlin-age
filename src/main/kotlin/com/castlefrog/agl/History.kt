@@ -1,6 +1,6 @@
 package com.castlefrog.agl
 
-import java.util.LinkedList
+import java.util.*
 
 /**
  * Keeps track of state transition history.
@@ -26,5 +26,4 @@ data class History<S : State<S>, A : Action<A>>(val nodes: MutableList<Node<S, A
     fun add(state: S, actions: Map<Int, A>) {
         nodes.add(Node(state, actions))
     }
-
 }

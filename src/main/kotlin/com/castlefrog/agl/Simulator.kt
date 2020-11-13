@@ -45,7 +45,6 @@ interface Simulator<S : State<S>, A : Action<A>> {
      */
     fun isTerminalState(state: S): Boolean {
         val legalActions = calculateLegalActions(state)
-        return (0 until legalActions.size).all { legalActions[it].isEmpty() }
+        return (legalActions.indices).all { legalActions[it].isEmpty() }
     }
-
 }

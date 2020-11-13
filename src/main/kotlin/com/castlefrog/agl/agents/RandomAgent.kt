@@ -18,5 +18,4 @@ class RandomAgent(private val random: Random = Random()) : Agent {
     }
 
     override fun toString(): String = RandomAgent::class.java.simpleName
-
 }
