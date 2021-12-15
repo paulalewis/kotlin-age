@@ -11,6 +11,8 @@ data class HexState(
 ) : State<HexState> {
 
     companion object {
+        const val N_PLAYERS = 2
+
         const val LOCATION_EMPTY = 0
         const val LOCATION_BLACK = 1
         const val LOCATION_WHITE = 2

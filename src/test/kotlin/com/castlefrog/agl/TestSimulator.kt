@@ -1,7 +1,6 @@
 package com.castlefrog.agl
 
 class TestSimulator(
-    override val nPlayers: Int = 2,
     override val initialState: TestState,
     private val legalActions: List<List<TestAction>>,
     private val rewards: IntArray,

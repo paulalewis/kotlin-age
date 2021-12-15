@@ -116,6 +116,7 @@ class BackgammonState(
     }
 
     companion object {
+        const val N_PLAYERS = 2
         const val N_DICE = 2
         const val N_DIE_FACES = 6
         const val N_LOCATIONS = 26

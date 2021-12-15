@@ -7,12 +7,6 @@ import org.junit.jupiter.api.Test
 class Connect4SimulatorTest {
 
     @Test
-    fun nPlayersIs2() {
-        val simulator = Connect4Simulator()
-        assertThat(simulator.nPlayers).isEqualTo(2)
-    }
-
-    @Test
     fun getInitialState() {
         val simulator = Connect4Simulator()
         val initialState = simulator.initialState

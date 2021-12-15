@@ -16,8 +16,6 @@ class BiniaxSimulator(
     val maxFreeMoves: Int = 2
 ) : Simulator<BiniaxState, BiniaxAction> {
 
-    override val nPlayers: Int = N_PLAYERS
-
     override val initialState: BiniaxState
         get() {
             val locations = ByteArray(WIDTH * HEIGHT)

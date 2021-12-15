@@ -7,11 +7,6 @@ import kotlin.random.Random
 class BackgammonSimulatorTest {
 
     @Test
-    fun getNPlayers() {
-        assertThat(BackgammonSimulator().nPlayers).isEqualTo(2)
-    }
-
-    @Test
     fun getInitialStatePlayer1First() {
         val simulator = BackgammonSimulator(Random(381582))
         assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(3, 0), agentTurn = 0))

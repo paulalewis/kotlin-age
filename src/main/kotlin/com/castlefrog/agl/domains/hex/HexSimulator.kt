@@ -17,8 +17,6 @@ class HexSimulator(
         }
     }
 
-    override val nPlayers: Int = 2
-
     override val initialState: HexState
         get() = HexState(boardSize = boardSize)
 
@@ -65,11 +63,11 @@ class HexSimulator(
         val y = action.y.toInt()
         if (state.isLocationEmpty(x, y)) {
             state.setLocation(x, y, state.agentTurn + 1)
-            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), nPlayers).toByte()
+            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), HexState.N_PLAYERS).toByte()
         } else {
             state.setLocation(x, y, 0)
             state.setLocation(y, x, state.agentTurn + 1)
-            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), nPlayers).toByte()
+            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), HexState.N_PLAYERS).toByte()
         }
         return state
     }

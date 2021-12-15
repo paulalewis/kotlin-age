@@ -10,8 +10,6 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
     private val rewardsCache = LruCache<Connect4State, IntArray>(1)
     private val legalActionsCache = LruCache<Connect4State, List<List<Connect4Action>>>(1)
 
-    override val nPlayers: Int = N_PLAYERS
-
     override val initialState: Connect4State
         get() = Connect4State()
 

@@ -51,8 +51,6 @@ class HavannahSimulator(
         }
     }
 
-    override val nPlayers: Int = N_PLAYERS
-
     override val initialState: HavannahState
         get() = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
 
@@ -181,12 +179,11 @@ class HavannahSimulator(
         }
         prevActionCache[state] = action
         state.locations[action.x.toInt()][action.y.toInt()] = (state.agentTurn + 1).toByte()
-        state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), nPlayers).toByte()
+        state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), HavannahState.N_PLAYERS).toByte()
         return state
     }
 
     companion object {
-        private const val N_PLAYERS = 2
         private const val MIN_BASE = 2
 
         private fun dfsCornersSides(

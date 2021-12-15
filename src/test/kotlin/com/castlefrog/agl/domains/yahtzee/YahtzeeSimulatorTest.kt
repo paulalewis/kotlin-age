@@ -9,11 +9,6 @@ internal class YahtzeeSimulatorTest {
     private val simulator: YahtzeeSimulator = YahtzeeSimulator(Random(322))
 
     @Test
-    fun getNPlayers() {
-        assertThat(simulator.nPlayers).isEqualTo(1)
-    }
-
-    @Test
     fun getInitialState() {
         val state = YahtzeeState(byteArrayOf(0, 1, 2, 0, 1, 1))
         assertThat(simulator.initialState).isEqualTo(state)

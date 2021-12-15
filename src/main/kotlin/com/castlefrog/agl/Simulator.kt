@@ -6,12 +6,6 @@ package com.castlefrog.agl
  * type.
  */
 interface Simulator<S : State<S>, A : Action<A>> {
-
-    /**
-     * @return the number of players in the domain
-     */
-    val nPlayers: Int
-
     /**
      * @return an initial state in the domain
      */
@@ -35,16 +29,4 @@ interface Simulator<S : State<S>, A : Action<A>> {
      * @param actions map of actions to be performed by each player
      */
     fun stateTransition(state: S, actions: Map<Int, A>): S
-
-    /**
-     * A state is terminal if no player has any
-     * legal actions from the current state.
-     * @param state check if this state is terminal
-     * @return true if no player has any legal actions
-     *         from the state
-     */
-    fun isTerminalState(state: S): Boolean {
-        val legalActions = calculateLegalActions(state)
-        return (legalActions.indices).all { legalActions[it].isEmpty() }
-    }
 }

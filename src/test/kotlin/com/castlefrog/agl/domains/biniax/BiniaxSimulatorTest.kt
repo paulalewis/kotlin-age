@@ -7,12 +7,6 @@ import kotlin.random.Random
 class BiniaxSimulatorTest {
 
     @Test
-    fun nPlayers() {
-        val simulator = BiniaxSimulator()
-        assertThat(simulator.nPlayers).isEqualTo(1)
-    }
-
-    @Test
     fun initialState() {
         val simulator = BiniaxSimulator(random = Random(1234))
         val state = BiniaxState(

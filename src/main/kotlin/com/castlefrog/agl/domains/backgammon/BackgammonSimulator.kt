@@ -12,8 +12,6 @@ import kotlin.random.Random
  */
 class BackgammonSimulator(private val random: Random = Random) : Simulator<BackgammonState, BackgammonAction> {
 
-    override val nPlayers: Int = 2
-
     override val initialState: BackgammonState
         get() {
             val agentTurn: Int = random.nextInt(2)
@@ -112,7 +110,7 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
             random.nextInt(BackgammonState.N_DIE_FACES).toByte(),
             random.nextInt(BackgammonState.N_DIE_FACES).toByte()
         )
-        return BackgammonState(locations, dice, nextPlayerTurnSequential(state.agentTurn, nPlayers))
+        return BackgammonState(locations, dice, nextPlayerTurnSequential(state.agentTurn, BackgammonState.N_PLAYERS))
     }
 
     companion object {

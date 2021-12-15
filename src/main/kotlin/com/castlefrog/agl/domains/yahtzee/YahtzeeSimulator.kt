@@ -15,8 +15,6 @@ import kotlin.random.Random
 
 class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeState, YahtzeeAction> {
 
-    override val nPlayers: Int = 1
-
     override val initialState: YahtzeeState
         get() = YahtzeeState(diceValues = rollDice(random))
 
