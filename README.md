@@ -6,8 +6,8 @@ This software is available under the MIT license. See LICENSE.md.
 About
 -----
 
-This software was originally created for my thesis to test the UCT
-algorithm in various domains.
+This library is a framework for creating turn based
+domains and custom agents to play in those domains.
 
 Domains:
 - [backgammon](https://en.wikipedia.org/wiki/Backgammon)
@@ -29,15 +29,9 @@ Setup
 Build
 -----
 
-Create a jar file with no main so it can be used as library.
-
     ./gradlew clean build
 
-Run Domain Test
+Run Tests
 ---------------
 
-Build jar with com.castlefrog.agl.DomainTest.java as main to test software from console.
-
-1. run `java -jar agl.jar <test_filepath> [output_filepath]`
-
-Some example test files are located in domainTests/resources.
+    ./gradlew test
