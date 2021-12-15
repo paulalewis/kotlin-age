@@ -100,7 +100,7 @@ class BackgammonSimulatorTest {
     fun calculateLegalActionsInitialState() {
         val simulator = BackgammonSimulator(Random(111))
         val expectedLegalActions = arrayListOf(
-            arrayListOf(
+            setOf(
                 BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(7, 4))),
                 BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(1, 6))),
                 BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(17, 4))),
@@ -118,7 +118,7 @@ class BackgammonSimulatorTest {
                 BackgammonAction(setOf(BackgammonMove.valueOf(17, 6), BackgammonMove.valueOf(19, 4))),
                 BackgammonAction(setOf(BackgammonMove.valueOf(17, 6), BackgammonMove.valueOf(17, 4))),
             ),
-            emptyList(),
+            emptySet(),
         )
         assertThat(simulator.calculateLegalActions(simulator.initialState)).isEqualTo(expectedLegalActions)
     }

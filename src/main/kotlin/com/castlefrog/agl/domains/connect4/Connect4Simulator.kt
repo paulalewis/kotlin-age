@@ -8,7 +8,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
     private val columnHeightsCache = LruCache<Connect4State, IntArray>(1)
     private val rewardsCache = LruCache<Connect4State, IntArray>(1)
-    private val legalActionsCache = LruCache<Connect4State, List<List<Connect4Action>>>(1)
+    private val legalActionsCache = LruCache<Connect4State, List<Set<Connect4Action>>>(1)
 
     override val initialState: Connect4State
         get() = Connect4State()
@@ -19,7 +19,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         return rewards
     }
 
-    override fun calculateLegalActions(state: Connect4State): List<List<Connect4Action>> {
+    override fun calculateLegalActions(state: Connect4State): List<Set<Connect4Action>> {
         val legalActions = legalActionsCache[state] ?: calculateLegalActions(
             state,
             calculateRewards(state),
@@ -58,8 +58,8 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
             state: Connect4State,
             rewards: IntArray,
             columnHeights: IntArray
-        ): List<List<Connect4Action>> {
-            val legalActions = arrayListOf(ArrayList(), ArrayList<Connect4Action>())
+        ): List<Set<Connect4Action>> {
+            val legalActions: List<MutableSet<Connect4Action>> = listOf(mutableSetOf(), mutableSetOf())
             if (rewards.contentEquals(AdversarialRewards.NEUTRAL)) {
                 (0 until Connect4State.WIDTH)
                     .filter { 1L shl columnHeights[it] and ABOVE_TOP_ROW == 0L }

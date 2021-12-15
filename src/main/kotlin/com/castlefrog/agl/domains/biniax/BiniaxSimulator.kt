@@ -53,9 +53,9 @@ class BiniaxSimulator(
      * an element pair that contains that element and avoids being pushed off
      * the board.
      */
-    override fun calculateLegalActions(state: BiniaxState): List<List<BiniaxAction>> {
-        val legalActions = ArrayList<MutableList<BiniaxAction>>()
-        legalActions.add(ArrayList())
+    override fun calculateLegalActions(state: BiniaxState): List<Set<BiniaxAction>> {
+        val legalActions = ArrayList<MutableSet<BiniaxAction>>()
+        legalActions.add(mutableSetOf())
         val elementLocation = state.elementLocation()
         val x = elementLocation[0]
         val y = elementLocation[1]
@@ -195,7 +195,6 @@ class BiniaxSimulator(
     }
 
     companion object {
-        private const val N_PLAYERS = 1
         const val WIDTH = 5
         const val HEIGHT = 7
 

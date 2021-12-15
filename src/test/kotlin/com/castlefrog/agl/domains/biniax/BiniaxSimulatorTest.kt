@@ -34,6 +34,6 @@ class BiniaxSimulatorTest {
     fun calculateLegalActions() {
         val simulator = BiniaxSimulator(random = Random(1234))
         assertThat(simulator.calculateLegalActions(simulator.initialState))
-            .isEqualTo(arrayListOf(arrayListOf(BiniaxAction.NORTH, BiniaxAction.EAST, BiniaxAction.WEST)))
+            .isEqualTo(arrayListOf(setOf(BiniaxAction.NORTH, BiniaxAction.EAST, BiniaxAction.WEST)))
     }
 }

@@ -26,7 +26,7 @@ class RandomAgentTest {
         val agent = RandomAgent(Random(5555))
         val state = TestState()
         val simulator =
-            TestSimulator(initialState = state, legalActions = arrayListOf(ArrayList()), rewards = intArrayOf(0))
+            TestSimulator(initialState = state, legalActions = arrayListOf(setOf()), rewards = intArrayOf(0))
 
         val exception = assertThrows(IllegalStateException::class.java) {
             agent.selectAction(0, state, simulator)
@@ -49,7 +49,7 @@ class RandomAgentTest {
         val agent = RandomAgent(Random(6345))
         val simulator = TestSimulator(
             initialState = TestState(0),
-            legalActions = arrayListOf(arrayListOf(TestAction(1), TestAction(2), TestAction(3))),
+            legalActions = arrayListOf(setOf(TestAction(1), TestAction(2), TestAction(3))),
             rewards = intArrayOf(0)
         )
 

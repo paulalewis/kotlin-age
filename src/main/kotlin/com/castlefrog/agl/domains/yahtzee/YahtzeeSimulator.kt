@@ -1,16 +1,13 @@
 package com.castlefrog.agl.domains.yahtzee
 
 import com.castlefrog.agl.Simulator
-import kotlin.collections.ArrayList
 import kotlin.collections.List
 import kotlin.collections.Map
-import kotlin.collections.MutableList
 import kotlin.collections.any
 import kotlin.collections.filter
 import kotlin.collections.firstOrNull
 import kotlin.collections.forEach
 import kotlin.collections.indices
-import kotlin.collections.sumBy
 import kotlin.random.Random
 
 class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeState, YahtzeeAction> {
@@ -35,9 +32,8 @@ class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeS
         return rewards
     }
 
-    override fun calculateLegalActions(state: YahtzeeState): List<MutableList<YahtzeeAction>> {
-        val legalActions = ArrayList<MutableList<YahtzeeAction>>()
-        legalActions.add(ArrayList())
+    override fun calculateLegalActions(state: YahtzeeState): List<Set<YahtzeeAction>> {
+        val legalActions = mutableSetOf<YahtzeeAction>()
         if (state.hasCategoriesLeft()) {
             if (state.nRolls < 3) {
                 val diceValues = state.diceValues
@@ -47,7 +43,7 @@ class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeS
                             for (l in 0..diceValues[3]) {
                                 for (m in 0..diceValues[4]) {
                                     for (n in 0..diceValues[5]) {
-                                        legalActions[0].add(
+                                        legalActions.add(
                                             YahtzeeRollAction(
                                                 byteArrayOf(
                                                     i.toByte(), j.toByte(),
@@ -66,16 +62,16 @@ class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeS
                 if (yahtzee == -1 || state.scores[yahtzee] != -1) {
                     (0 until YahtzeeState.N_SCORES)
                         .filter { state.scores[it] == -1 }
-                        .forEach { legalActions[0].add(YahtzeeSelectAction.valueOf(it)) }
+                        .forEach { legalActions.add(YahtzeeSelectAction.valueOf(it)) }
                 } else {
-                    legalActions[0].add(YahtzeeSelectAction.valueOf(yahtzee))
+                    legalActions.add(YahtzeeSelectAction.valueOf(yahtzee))
                     if (state.scores[YahtzeeScoreCategory.YAHTZEE.ordinal] == -1) {
-                        legalActions[0].add(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.YAHTZEE))
+                        legalActions.add(YahtzeeSelectAction.valueOf(YahtzeeScoreCategory.YAHTZEE))
                     }
                 }
             }
         }
-        return legalActions
+        return listOf(legalActions)
     }
 
     override fun stateTransition(state: YahtzeeState, actions: Map<Int, YahtzeeAction>): YahtzeeState {

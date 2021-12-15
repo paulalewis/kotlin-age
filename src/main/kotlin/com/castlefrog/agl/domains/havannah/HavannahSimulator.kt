@@ -142,8 +142,8 @@ class HavannahSimulator(
         return AdversarialRewards.NEUTRAL
     }
 
-    override fun calculateLegalActions(state: HavannahState): List<List<HavannahAction>> {
-        val legalActions = arrayListOf<MutableList<HavannahAction>>(arrayListOf(), arrayListOf())
+    override fun calculateLegalActions(state: HavannahState): List<Set<HavannahAction>> {
+        val legalActions = arrayListOf<MutableSet<HavannahAction>>(mutableSetOf(), mutableSetOf())
         val rewards = calculateRewards(state)
         if (rewards.contentEquals(AdversarialRewards.NEUTRAL)) {
             var count = 0

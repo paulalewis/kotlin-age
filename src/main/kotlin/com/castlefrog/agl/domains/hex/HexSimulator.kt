@@ -38,10 +38,10 @@ class HexSimulator(
         return AdversarialRewards.NEUTRAL
     }
 
-    override fun calculateLegalActions(state: HexState): List<MutableList<HexAction>> {
-        val legalActions = ArrayList<MutableList<HexAction>>()
-        legalActions.add(ArrayList())
-        legalActions.add(ArrayList())
+    override fun calculateLegalActions(state: HexState): List<Set<HexAction>> {
+        val legalActions = ArrayList<MutableSet<HexAction>>()
+        legalActions.add(mutableSetOf())
+        legalActions.add(mutableSetOf())
         val rewards = calculateRewards(state)
         if (rewards.contentEquals(AdversarialRewards.NEUTRAL)) {
             (0 until state.boardSize).forEach { i ->

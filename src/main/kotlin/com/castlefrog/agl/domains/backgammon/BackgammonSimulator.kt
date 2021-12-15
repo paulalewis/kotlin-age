@@ -47,8 +47,8 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
         }
     }
 
-    override fun calculateLegalActions(state: BackgammonState): List<List<BackgammonAction>> {
-        val legalActions = arrayListOf<MutableList<BackgammonAction>>(ArrayList(), ArrayList())
+    override fun calculateLegalActions(state: BackgammonState): List<Set<BackgammonAction>> {
+        val legalActions = listOf<MutableSet<BackgammonAction>>(mutableSetOf(), mutableSetOf())
 
         val rewards = calculateRewards(state)
         if (rewards[0] == 0) {

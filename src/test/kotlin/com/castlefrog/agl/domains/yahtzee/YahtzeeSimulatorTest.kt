@@ -68,7 +68,7 @@ internal class YahtzeeSimulatorTest {
 
     @Test
     fun calculateLegalActionsChooseToReRoll() {
-        val expectedActions = arrayListOf(
+        val expectedActions = setOf(
             YahtzeeRollAction(byteArrayOf(0, 0, 0, 0, 0, 0)),
             YahtzeeRollAction(byteArrayOf(0, 0, 0, 0, 0, 1)),
             YahtzeeRollAction(byteArrayOf(0, 0, 0, 0, 1, 0)),
@@ -101,7 +101,7 @@ internal class YahtzeeSimulatorTest {
     @Test
     fun calculateLegalActionsSelectScore() {
         val state = YahtzeeState(diceValues = byteArrayOf(1, 1, 3, 0, 0, 0), nRolls = 3)
-        val expectedActions = ArrayList<YahtzeeAction>()
+        val expectedActions = mutableSetOf<YahtzeeAction>()
         (YahtzeeScoreCategory.values().indices)
             .forEach { expectedActions.add(YahtzeeSelectAction.valueOf(it)) }
         assertThat(simulator.calculateLegalActions(state))

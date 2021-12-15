@@ -10,7 +10,7 @@ class SimulatorTest {
     fun isTerminalStateFalse() {
         val simulator = TestSimulator(
             initialState = TestState(),
-            legalActions = arrayListOf(arrayListOf(TestAction()), arrayListOf()),
+            legalActions = arrayListOf(setOf(TestAction()), setOf()),
             rewards = intArrayOf(0, 0)
         )
         assertThat(simulator.isTerminalState(TestState())).isFalse()
@@ -20,7 +20,7 @@ class SimulatorTest {
     fun isTerminalStateTrue() {
         val simulator = TestSimulator(
             initialState = TestState(),
-            legalActions = arrayListOf(arrayListOf(), arrayListOf()),
+            legalActions = arrayListOf(setOf(), setOf()),
             rewards = intArrayOf(0, 0)
         )
         assertThat(simulator.isTerminalState(TestState())).isTrue()

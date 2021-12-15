@@ -24,7 +24,7 @@ interface Agent {
          * @param legalActions list of legal actions from a given state in the simulator
          * @return true if the given player has at least 1 legal action
          */
-        fun <A : Action<A>> playerHasLegalActions(playerId: Int, legalActions: List<List<A>>): Boolean {
+        fun <A : Action<A>> playerHasLegalActions(playerId: Int, legalActions: List<Set<A>>): Boolean {
             if (playerId < 0 || playerId >= legalActions.size) {
                 return false
             }
@@ -35,7 +35,7 @@ interface Agent {
             return true
         }
 
-        fun <A : Action<A>> getPlayerActions(playerId: Int, legalActions: List<List<A>>): List<A> {
+        fun <A : Action<A>> getPlayerActions(playerId: Int, legalActions: List<Set<A>>): Set<A> {
             if (!playerHasLegalActions(playerId, legalActions)) {
                 throw IllegalStateException("Player $playerId has no legal actions")
             }

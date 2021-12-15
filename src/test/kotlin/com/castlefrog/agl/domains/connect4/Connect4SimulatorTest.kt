@@ -72,7 +72,7 @@ class Connect4SimulatorTest {
         val state = simulator.initialState
         assertThat(simulator.calculateLegalActions(state)).isEqualTo(
             arrayListOf(
-                arrayListOf(
+                setOf(
                     Connect4Action.valueOf(0),
                     Connect4Action.valueOf(1),
                     Connect4Action.valueOf(2),
@@ -81,7 +81,7 @@ class Connect4SimulatorTest {
                     Connect4Action.valueOf(5),
                     Connect4Action.valueOf(6)
                 ),
-                arrayListOf()
+                setOf()
             )
         )
     }
@@ -92,8 +92,8 @@ class Connect4SimulatorTest {
         val state = Connect4State(longArrayOf(1, 0))
         assertThat(simulator.calculateLegalActions(state)).isEqualTo(
             arrayListOf(
-                arrayListOf(),
-                arrayListOf(
+                setOf(),
+                setOf(
                     Connect4Action.valueOf(0),
                     Connect4Action.valueOf(1),
                     Connect4Action.valueOf(2),
@@ -112,7 +112,7 @@ class Connect4SimulatorTest {
         val state = Connect4State(longArrayOf(2688, 5376))
         assertThat(simulator.calculateLegalActions(state)).isEqualTo(
             arrayListOf(
-                arrayListOf(
+                setOf(
                     Connect4Action.valueOf(0),
                     Connect4Action.valueOf(2),
                     Connect4Action.valueOf(3),
@@ -120,7 +120,7 @@ class Connect4SimulatorTest {
                     Connect4Action.valueOf(5),
                     Connect4Action.valueOf(6)
                 ),
-                arrayListOf()
+                setOf()
             )
         )
     }

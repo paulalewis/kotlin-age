@@ -21,7 +21,7 @@ interface Simulator<S : State<S>, A : Action<A>> {
      * @param state the state from which to calculate rewards
      * @return list of legal actions for each player
      */
-    fun calculateLegalActions(state: S): List<List<A>>
+    fun calculateLegalActions(state: S): List<Set<A>>
 
     /**
      * Transition from the current state to the next state

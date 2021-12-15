@@ -14,7 +14,7 @@ class RandomAgent(private val random: Random = Random) : Agent {
 
     override fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>): A {
         val actions = Agent.getPlayerActions(playerId, simulator.calculateLegalActions(state))
-        return actions[random.nextInt(actions.size)]
+        return actions.random(random)
     }
 
     override fun toString(): String = RandomAgent::class.java.simpleName
