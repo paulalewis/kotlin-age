@@ -93,101 +93,102 @@ class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeS
             scores[YahtzeeScoreCategory.YAHTZEE.ordinal] += 100
         }
 
-        if (action is YahtzeeRollAction) {
-            diceValues = action.selected
-            val numSelected = diceValues.sumBy { it.toInt() }
-            for (i in numSelected until YahtzeeState.N_DICE) {
-                val roll = random.nextInt(diceValues.size)
-                diceValues[roll] = diceValues[roll].inc()
+        when (action) {
+            is YahtzeeRollAction -> {
+                diceValues = action.selected
+                val numSelected = diceValues.sumBy { it.toInt() }
+                for (i in numSelected until YahtzeeState.N_DICE) {
+                    val roll = random.nextInt(diceValues.size)
+                    diceValues[roll] = diceValues[roll].inc()
+                }
+                rolls += 1
             }
-            rolls += 1
-        } else {
-            val selectAction = action as YahtzeeSelectAction
-            val category = selectAction.scoreCategory
-            scores[category.ordinal] = 0
+            is YahtzeeSelectAction -> {
+                val category = action.scoreCategory
+                scores[category.ordinal] = 0
 
-            when (category) {
-                YahtzeeScoreCategory.ONES -> scores[category.ordinal] = diceValues[0].toInt()
-                YahtzeeScoreCategory.TWOS -> scores[category.ordinal] = diceValues[1] * 2
-                YahtzeeScoreCategory.THREES -> scores[category.ordinal] = diceValues[2] * 3
-                YahtzeeScoreCategory.FOURS -> scores[category.ordinal] = diceValues[3] * 4
-                YahtzeeScoreCategory.FIVES -> scores[category.ordinal] = diceValues[4] * 5
-                YahtzeeScoreCategory.SIXES -> scores[category.ordinal] = diceValues[5] * 6
-                YahtzeeScoreCategory.THREE_OF_KIND -> for (i in 0 until YahtzeeState.N_VALUES) {
-                    if (diceValues[i] >= 3) {
-                        for (j in diceValues.indices) {
-                            scores[category.ordinal] += diceValues[j] * (j + 1)
-                        }
-                        break
-                    }
-                }
-                YahtzeeScoreCategory.FOUR_OF_KIND -> for (i in 0 until YahtzeeState.N_VALUES) {
-                    if (diceValues[i] >= 4) {
-                        for (j in diceValues.indices) {
-                            scores[category.ordinal] += diceValues[j] * (j + 1)
-                        }
-                        break
-                    }
-                }
-                YahtzeeScoreCategory.FULL_HOUSE -> {
-                    var two = false
-                    var three = false
-                    for (i in 0 until YahtzeeState.N_VALUES) {
-                        if (diceValues[i].toInt() == 2) {
-                            two = true
-                        } else if (diceValues[i].toInt() == 3) {
-                            three = true
-                        }
-                    }
-                    if (two && three) {
-                        scores[category.ordinal] = 25
-                    }
-                }
-                YahtzeeScoreCategory.SMALL_STRAIGHT -> {
-                    var count = 0
-                    for (i in 0 until YahtzeeState.N_VALUES) {
-                        if (diceValues[i] > 0) {
-                            count++
-                        } else if (count >= 4) {
+                when (category) {
+                    YahtzeeScoreCategory.ONES -> scores[category.ordinal] = diceValues[0].toInt()
+                    YahtzeeScoreCategory.TWOS -> scores[category.ordinal] = diceValues[1] * 2
+                    YahtzeeScoreCategory.THREES -> scores[category.ordinal] = diceValues[2] * 3
+                    YahtzeeScoreCategory.FOURS -> scores[category.ordinal] = diceValues[3] * 4
+                    YahtzeeScoreCategory.FIVES -> scores[category.ordinal] = diceValues[4] * 5
+                    YahtzeeScoreCategory.SIXES -> scores[category.ordinal] = diceValues[5] * 6
+                    YahtzeeScoreCategory.THREE_OF_KIND -> for (i in 0 until YahtzeeState.N_VALUES) {
+                        if (diceValues[i] >= 3) {
+                            for (j in diceValues.indices) {
+                                scores[category.ordinal] += diceValues[j] * (j + 1)
+                            }
                             break
-                        } else {
-                            count = 0
                         }
                     }
-                    if (count >= 4) {
-                        scores[category.ordinal] = 30
-                    }
-                }
-                YahtzeeScoreCategory.LARGE_STRAIGHT -> {
-                    var count = 0
-                    for (i in 0 until YahtzeeState.N_VALUES) {
-                        if (diceValues[i] > 0) {
-                            count++
-                        } else if (count >= 5) {
+                    YahtzeeScoreCategory.FOUR_OF_KIND -> for (i in 0 until YahtzeeState.N_VALUES) {
+                        if (diceValues[i] >= 4) {
+                            for (j in diceValues.indices) {
+                                scores[category.ordinal] += diceValues[j] * (j + 1)
+                            }
                             break
-                        } else {
-                            count = 0
                         }
                     }
-                    if (count == 5) {
-                        scores[category.ordinal] = 40
+                    YahtzeeScoreCategory.FULL_HOUSE -> {
+                        var two = false
+                        var three = false
+                        for (i in 0 until YahtzeeState.N_VALUES) {
+                            if (diceValues[i].toInt() == 2) {
+                                two = true
+                            } else if (diceValues[i].toInt() == 3) {
+                                three = true
+                            }
+                        }
+                        if (two && three) {
+                            scores[category.ordinal] = 25
+                        }
+                    }
+                    YahtzeeScoreCategory.SMALL_STRAIGHT -> {
+                        var count = 0
+                        for (i in 0 until YahtzeeState.N_VALUES) {
+                            if (diceValues[i] > 0) {
+                                count++
+                            } else if (count >= 4) {
+                                break
+                            } else {
+                                count = 0
+                            }
+                        }
+                        if (count >= 4) {
+                            scores[category.ordinal] = 30
+                        }
+                    }
+                    YahtzeeScoreCategory.LARGE_STRAIGHT -> {
+                        var count = 0
+                        for (i in 0 until YahtzeeState.N_VALUES) {
+                            if (diceValues[i] > 0) {
+                                count++
+                            } else if (count >= 5) {
+                                break
+                            } else {
+                                count = 0
+                            }
+                        }
+                        if (count == 5) {
+                            scores[category.ordinal] = 40
+                        }
+                    }
+                    YahtzeeScoreCategory.YAHTZEE -> (0 until YahtzeeState.N_VALUES)
+                        .filter { diceValues[it].toInt() == 5 }
+                        .forEach { _ -> scores[category.ordinal] = 50 }
+                    YahtzeeScoreCategory.CHANCE -> for (i in 0 until YahtzeeState.N_VALUES) {
+                        scores[category.ordinal] += diceValues[i] * (i + 1)
                     }
                 }
-                YahtzeeScoreCategory.YAHTZEE -> (0 until YahtzeeState.N_VALUES)
-                    .filter { diceValues[it].toInt() == 5 }
-                    .forEach { _ -> scores[category.ordinal] = 50 }
-                YahtzeeScoreCategory.CHANCE -> for (i in 0 until YahtzeeState.N_VALUES) {
-                    scores[category.ordinal] += diceValues[i] * (i + 1)
-                }
+                diceValues = rollDice(random)
+                rolls = 1
             }
-            diceValues = rollDice(random)
-            rolls = 1
         }
         return YahtzeeState(diceValues, rolls.toByte(), scores)
     }
 
     companion object {
-
         private fun rollDice(random: Random): ByteArray {
             val diceValues = ByteArray(YahtzeeState.N_VALUES)
             for (i in 0 until YahtzeeState.N_DICE) {
@@ -207,7 +208,5 @@ class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeS
         fun YahtzeeState.hasCategoriesLeft(): Boolean {
             return (scores.indices).any { scores[it] == -1 }
         }
-
     }
-
 }
