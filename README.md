@@ -13,10 +13,8 @@ Domains:
 - [backgammon](https://en.wikipedia.org/wiki/Backgammon)
 - [biniax](https://en.wikipedia.org/wiki/Biniax)
 - [connect4](https://en.wikipedia.org/wiki/Connect4)
-- [draughts](https://en.wikipedia.org/wiki/Draughts)
 - [havannah](https://en.wikipedia.org/wiki/Havannah)
 - [hex](https://en.wikipedia.org/wiki/Hex_%28board_game%29)
-- [hexdame](https://en.wikipedia.org/wiki/Hexdame)
 - [yahtzee](https://en.wikipedia.org/wiki/Yahtzee)
 
 Agents:
