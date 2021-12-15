@@ -64,7 +64,7 @@ data class HexState(
 
     val nPieces: Int
         get() {
-            return (bitBoards[0].indices).sumBy {
+            return (bitBoards[0].indices).sumOf {
                 Integer.bitCount((bitBoards[0][it].toInt() or bitBoards[1][it].toInt()) and 0xff)
             }
         }

@@ -5,7 +5,7 @@ import com.castlefrog.agl.TestSimulator
 import com.castlefrog.agl.TestState
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertThrows
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import kotlin.random.Random
 
 class RandomAgentTest {

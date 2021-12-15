@@ -1,9 +1,9 @@
 package com.castlefrog.agl.domains.havannah
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.Assert.assertThrows
+import org.junit.Before
+import org.junit.Test
 
 class HavannahStateTest {
 
@@ -12,7 +12,7 @@ class HavannahStateTest {
         HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
     private val state = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
 
-    @BeforeEach
+    @Before
     fun setup() {
         state.locations[2][1] = HavannahState.LOCATION_BLACK
         state.locations[1][1] = HavannahState.LOCATION_BLACK

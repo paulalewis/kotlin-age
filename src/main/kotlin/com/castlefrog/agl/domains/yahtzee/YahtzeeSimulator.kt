@@ -96,7 +96,7 @@ class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeS
         when (action) {
             is YahtzeeRollAction -> {
                 diceValues = action.selected
-                val numSelected = diceValues.sumBy { it.toInt() }
+                val numSelected = diceValues.sumOf { it.toInt() }
                 for (i in numSelected until YahtzeeState.N_DICE) {
                     val roll = random.nextInt(diceValues.size)
                     diceValues[roll] = diceValues[roll].inc()

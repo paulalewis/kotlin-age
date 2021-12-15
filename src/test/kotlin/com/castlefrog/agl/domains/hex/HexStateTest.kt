@@ -1,16 +1,16 @@
 package com.castlefrog.agl.domains.hex
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.Assert.assertThrows
+import org.junit.Before
+import org.junit.Test
 
 class HexStateTest {
 
     private val emptyState: HexState = HexState(boardSize = 5)
     private val hexState: HexState = HexState(boardSize = 5)
 
-    @BeforeEach
+    @Before
     fun setup() {
         hexState.setLocation(2, 1, HexState.LOCATION_BLACK)
         hexState.setLocation(1, 1, HexState.LOCATION_BLACK)

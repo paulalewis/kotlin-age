@@ -4,7 +4,7 @@ import com.castlefrog.agl.domains.hex.HexAction
 import com.castlefrog.agl.domains.hex.HexSimulator
 import com.castlefrog.agl.domains.hex.HexState
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Test
+import org.junit.Test
 
 internal class HistoryTest {
 

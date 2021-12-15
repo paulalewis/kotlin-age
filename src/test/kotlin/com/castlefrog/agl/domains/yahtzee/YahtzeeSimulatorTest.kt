@@ -1,7 +1,7 @@
 package com.castlefrog.agl.domains.yahtzee
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import kotlin.random.Random
 
 internal class YahtzeeSimulatorTest {

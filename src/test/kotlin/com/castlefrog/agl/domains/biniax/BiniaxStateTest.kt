@@ -1,8 +1,8 @@
 package com.castlefrog.agl.domains.biniax
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Test
+import org.junit.Assert.assertThrows
+import org.junit.Test
 
 class BiniaxStateTest {
 
