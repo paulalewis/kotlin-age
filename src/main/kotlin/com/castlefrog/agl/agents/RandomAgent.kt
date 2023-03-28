@@ -1,9 +1,7 @@
 package com.castlefrog.agl.agents
 
-import com.castlefrog.agl.Action
-import com.castlefrog.agl.Agent
-import com.castlefrog.agl.Simulator
-import com.castlefrog.agl.State
+import arrow.core.Either
+import com.castlefrog.agl.*
 import com.castlefrog.agl.util.getPlayerActions
 import kotlin.random.Random
 
@@ -13,9 +11,13 @@ import kotlin.random.Random
  */
 class RandomAgent(private val random: Random = Random) : Agent {
 
-    override fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>): A {
-        val actions = simulator.calculateLegalActions(state).getPlayerActions(playerId)
-        return actions.random(random)
+    override fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>): Either<ResultError, A> {
+        val result = simulator.calculateLegalActions(state).getPlayerActions(playerId)
+        return result.fold({
+            Either.Left(it)
+        }, {
+            Either.Right(it.random(random))
+        })
     }
 
     override fun toString(): String = RandomAgent::class.java.simpleName

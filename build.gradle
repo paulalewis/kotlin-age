@@ -18,10 +18,10 @@ buildscript {
 
 jar {
     manifest {
-        attributes 'Specification-Title': 'Abstract Game Library',
-                'Specification-Version': version,
+        attributes 'Specification-Title': 'Abstract Game Engine',
+                'Specification-Version': archiveVersion,
                 'Implementation-Title': 'com.castlefrog.agl',
-                'Implementation-Version': version
+                'Implementation-Version': archiveVersion
     }
 }
 
@@ -30,6 +30,9 @@ repositories {
 }
 
 dependencies {
+    implementation(platform("io.arrow-kt:arrow-stack:1.1.2"))
+    implementation("io.arrow-kt:arrow-core")
+    
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
     testImplementation 'junit:junit:4.13.2'

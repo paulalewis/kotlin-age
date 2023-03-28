@@ -1,29 +1,19 @@
 package com.castlefrog.agl.util
 
+import arrow.core.Either
 import com.castlefrog.agl.Action
+import com.castlefrog.agl.ResultError
 
 typealias LegalActions<A> = List<Set<A>>
 
 /**
- * Helper method for checking if a player has at least 1 legal action
- * @receiver legalActions list of legal actions from a given state in the simulator
- * @param playerId id of the player to select
- * @return true if the given player has at least 1 legal action
+ * Helper method for checking if a player has at least 1 legal action.
  */
-fun <A : Action<A>> LegalActions<A>.playerHasLegalActions(playerId: Int): Boolean {
-    if (playerId < 0 || playerId >= this.size) {
-        return false
-    }
-    val actions = this[playerId]
-    if (actions.isEmpty()) {
-        return false
-    }
-    return true
-}
+fun <A : Action<A>> LegalActions<A>.playerHasLegalActions(playerId: Int) =
+    playerId in 0 until size && this[playerId].isNotEmpty()
 
-fun <A : Action<A>> LegalActions<A>.getPlayerActions(playerId: Int): Set<A> {
-    if (!playerHasLegalActions(playerId)) {
-        throw IllegalStateException("Player $playerId has no legal actions")
-    }
-    return this[playerId]
-}
+/**
+ * Helper method to get all legal actions of given player.
+ */
+fun <A : Action<A>> LegalActions<A>.getPlayerActions(playerId: Int): Either<ResultError, Set<A>> =
+    if (playerHasLegalActions(playerId)) Either.Right(this[playerId]) else Either.Left(ResultError("Player $playerId has no legal actions."))
