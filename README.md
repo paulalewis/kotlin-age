@@ -1,12 +1,6 @@
-Abstract Game Library
-=====================
+# Abstract Game Engine
 
-This software is available under the MIT license. See LICENSE.md.
-
-About
------
-
-This library is a framework for creating turn based
+This is a Kotlin framework for creating turn based
 domains and custom agents to play in those domains.
 
 Domains:
@@ -20,18 +14,15 @@ Domains:
 Agents:
 - random - agent randomly selects an action
 
-Setup
------
+## Setup
 
 1. Install gradle
 2. Install java sdk 1.8
 
-Build
------
+## Build
 
     ./gradlew clean build
 
-Run Tests
----------------
+## Run Tests
 
     ./gradlew test
