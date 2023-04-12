@@ -11,7 +11,11 @@ import kotlin.random.Random
  */
 class RandomAgent(private val random: Random = Random) : Agent {
 
-    override fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>): Either<ResultError, A> {
+    override fun <S : State<S>, A : Action<A>> selectAction(
+        playerId: Int,
+        state: S,
+        simulator: Simulator<S, A>
+    ): Either<ResultError, A> {
         val result = simulator.calculateLegalActions(state).getPlayerActions(playerId)
         return result.fold({
             Either.Left(it)
