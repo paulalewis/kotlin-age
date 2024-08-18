@@ -1,5 +1,6 @@
 package com.castlefrog.agl.domains.hex
 
+import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
@@ -53,8 +54,8 @@ class HexSimulator(
         return legalActions
     }
 
-    override fun stateTransition(state: HexState, actions: Map<Int, HexAction>): HexState {
-        val action = actions[state.agentTurn.toInt()]
+    override fun stateTransition(state: HexState, actions: List<Option<HexAction>>): HexState {
+        val action = actions[state.agentTurn.toInt()].orNull()
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
@@ -63,16 +64,19 @@ class HexSimulator(
         val y = action.y.toInt()
         if (state.isLocationEmpty(x, y)) {
             state.setLocation(x, y, state.agentTurn + 1)
-            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), HexState.N_PLAYERS).toByte()
+            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
         } else {
             state.setLocation(x, y, 0)
             state.setLocation(y, x, state.agentTurn + 1)
-            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), HexState.N_PLAYERS).toByte()
+            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
         }
         return state
     }
 
+    override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS
+
     companion object {
+        private const val NUMBER_OF_PLAYERS = 2
         private const val MIN_BOARD_SIZE = 3
         private const val MAX_BOARD_SIZE = 255
 

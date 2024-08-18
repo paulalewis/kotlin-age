@@ -10,8 +10,6 @@ data class HavannahState(
 ) : State<HavannahState> {
 
     companion object {
-        const val N_PLAYERS = 2
-
         const val LOCATION_EMPTY: Byte = 0
         const val LOCATION_BLACK: Byte = 1
         const val LOCATION_WHITE: Byte = 2

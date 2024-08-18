@@ -1,5 +1,6 @@
 package com.castlefrog.agl.domains.biniax
 
+import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import kotlin.math.min
 import kotlin.random.Random
@@ -122,8 +123,8 @@ class BiniaxSimulator(
         return legalActions
     }
 
-    override fun stateTransition(state: BiniaxState, actions: Map<Int, BiniaxAction>): BiniaxState {
-        val action = actions[0]
+    override fun stateTransition(state: BiniaxState, actions: List<Option<BiniaxAction>>): BiniaxState {
+        val action = actions[0].orNull()
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[0].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
@@ -193,6 +194,8 @@ class BiniaxSimulator(
         }
         return BiniaxState(locations, maxElements.toByte(), freeMoves, nTurns + 1)
     }
+
+    override fun numberOfPlayers(): Int = 1
 
     companion object {
         const val WIDTH = 5

@@ -1,5 +1,6 @@
 package com.castlefrog.agl.domains.havannah
 
+import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
@@ -171,20 +172,23 @@ class HavannahSimulator(
         return legalActions
     }
 
-    override fun stateTransition(state: HavannahState, actions: Map<Int, HavannahAction>): HavannahState {
-        val action = actions[state.agentTurn.toInt()]
+    override fun stateTransition(state: HavannahState, actions: List<Option<HavannahAction>>): HavannahState {
+        val action = actions[state.agentTurn.toInt()].orNull()
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
         prevActionCache[state] = action
         state.locations[action.x.toInt()][action.y.toInt()] = (state.agentTurn + 1).toByte()
-        state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), HavannahState.N_PLAYERS).toByte()
+        state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
         return state
     }
 
+    override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS
+
     companion object {
         private const val MIN_BASE = 2
+        private const val NUMBER_OF_PLAYERS = 2
 
         private fun dfsCornersSides(
             x0: Int,

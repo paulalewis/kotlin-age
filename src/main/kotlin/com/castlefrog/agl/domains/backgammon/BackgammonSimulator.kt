@@ -1,5 +1,6 @@
 package com.castlefrog.agl.domains.backgammon
 
+import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
@@ -80,8 +81,8 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
         return legalActions
     }
 
-    override fun stateTransition(state: BackgammonState, actions: Map<Int, BackgammonAction>): BackgammonState {
-        val action = actions[state.agentTurn]
+    override fun stateTransition(state: BackgammonState, actions: List<Option<BackgammonAction>>): BackgammonState {
+        val action = actions[state.agentTurn].orNull()
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
@@ -110,12 +111,15 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
             random.nextInt(BackgammonState.N_DIE_FACES).toByte(),
             random.nextInt(BackgammonState.N_DIE_FACES).toByte()
         )
-        return BackgammonState(locations, dice, nextPlayerTurnSequential(state.agentTurn, BackgammonState.N_PLAYERS))
+        return BackgammonState(locations, dice, nextPlayerTurnSequential(state.agentTurn, NUMBER_OF_PLAYERS))
     }
+
+    override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS
 
     companion object {
 
         private const val TURN_PLAYER_1 = 0
+        private const val NUMBER_OF_PLAYERS = 2
 
         private fun dfs(
             locations: ByteArray,

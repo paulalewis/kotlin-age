@@ -1,5 +1,6 @@
 package com.castlefrog.agl.domains.connect4
 
+import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.util.LruCache
@@ -29,9 +30,9 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         return legalActions
     }
 
-    override fun stateTransition(state: Connect4State, actions: Map<Int, Connect4Action>): Connect4State {
+    override fun stateTransition(state: Connect4State, actions: List<Option<Connect4Action>>): Connect4State {
         val agentTurn = state.agentTurn
-        val action = actions[agentTurn]
+        val action = actions[agentTurn].orNull()
         val legalActions = calculateLegalActions(state)
         val columnHeights = calculateColumnHeights(state)
         if (action === null || !legalActions[agentTurn].contains(action)) {
@@ -41,6 +42,8 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         return state
     }
 
+    override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS
+
     private fun calculateColumnHeights(state: Connect4State): IntArray {
         val columnHeights = columnHeightsCache[state] ?: Companion.calculateColumnHeights(state)
         columnHeightsCache[state] = columnHeights
@@ -48,7 +51,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
     }
 
     companion object {
-        private const val N_PLAYERS = 2
+        private const val NUMBER_OF_PLAYERS = 2
         private const val ALL_LOCATIONS = (1L shl (Connect4State.HEIGHT + 1) * Connect4State.WIDTH) - 1
         private const val FIRST_COLUMN = (1L shl Connect4State.HEIGHT + 1) - 1
         private const val BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN
@@ -70,7 +73,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
         private fun calculateRewards(state: Connect4State): IntArray {
             val height = Connect4State.HEIGHT
-            for (i in 0 until N_PLAYERS) {
+            for (i in 0 until NUMBER_OF_PLAYERS) {
                 val bitBoard = state.bitBoards[i]
                 val diagonal1 = bitBoard and (bitBoard shr height)
                 val horizontal = bitBoard and (bitBoard shr height + 1)
