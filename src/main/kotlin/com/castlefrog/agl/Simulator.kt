@@ -36,4 +36,13 @@ interface Simulator<S : State<S>, A : Action<A>> {
      * @return the number of players in the domain.
      */
     fun numberOfPlayers(): Int
+
+    /**
+     * @param state check if this state is terminal
+     * @return true if no player has any legal actions from the state
+     */
+    fun isTerminalState(state: S): Boolean {
+        val legalActions = calculateLegalActions(state)
+        return (legalActions.indices).all { legalActions[it].isEmpty() }
+    }
 }
