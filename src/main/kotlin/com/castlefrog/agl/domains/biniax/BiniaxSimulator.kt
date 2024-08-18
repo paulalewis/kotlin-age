@@ -10,11 +10,11 @@ import kotlin.random.Random
  */
 class BiniaxSimulator(
     private val random: Random = Random,
-    val buffer: Int = 3,
-    val initialElements: Int = 4,
-    val maxElements: Int = 10,
-    val elementIncrementInterval: Int = 32,
-    val maxFreeMoves: Int = 2
+    private val buffer: Int = 3,
+    private val initialElements: Int = 4,
+    private val maxElements: Int = 10,
+    private val elementIncrementInterval: Int = 32,
+    private val maxFreeMoves: Int = 2
 ) : Simulator<BiniaxState, BiniaxAction> {
 
     override val initialState: BiniaxState

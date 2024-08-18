@@ -6,11 +6,11 @@ import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
 
 class HexSimulator(
-    val boardSize: Int = 11,
-    val pieRule: Boolean = true
+    private val boardSize: Int = 11,
+    private val pieRule: Boolean = true
 ) : Simulator<HexState, HexAction> {
 
-    val actions = HexAction.generateActions(boardSize)
+    private val actions = HexAction.generateActions(boardSize)
 
     init {
         if (boardSize !in MIN_BOARD_SIZE until MAX_BOARD_SIZE) {
@@ -119,11 +119,10 @@ class HexSimulator(
         }
 
         private fun getLocationMask(x: Int, y: Int, boardSize: Int): Int {
-            var side = 0
-            if (x == 0) {
-                side = side or 1
-            } else if (x == boardSize - 1) {
-                side = side or 2
+            var side = when (x) {
+                0 -> { 1 }
+                boardSize - 1 -> { 2 }
+                else -> { 0 }
             }
             if (y == 0) {
                 side = side or 4

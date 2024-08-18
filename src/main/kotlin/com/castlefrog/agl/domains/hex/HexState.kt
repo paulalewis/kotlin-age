@@ -56,7 +56,7 @@ data class HexState(
         return bitBoards[0][byteLocation].toInt() or bitBoards[1][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) == LOCATION_EMPTY
     }
 
-    fun isLocationOnBoard(x: Int, y: Int): Boolean {
+    private fun isLocationOnBoard(x: Int, y: Int): Boolean {
         return x in 0 until boardSize && y in 0 until boardSize
     }
 

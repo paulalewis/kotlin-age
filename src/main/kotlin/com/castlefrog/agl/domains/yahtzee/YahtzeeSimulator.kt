@@ -3,7 +3,6 @@ package com.castlefrog.agl.domains.yahtzee
 import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import kotlin.collections.List
-import kotlin.collections.Map
 import kotlin.collections.any
 import kotlin.collections.filter
 import kotlin.collections.firstOrNull
