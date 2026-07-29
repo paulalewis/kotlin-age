@@ -170,7 +170,7 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
                     }
                 }
             }
-            if (legalActions.size == 0) {
+            if (legalActions.isEmpty()) {
                 legalActions.add(BackgammonAction(moves.toHashSet()))
             }
             return legalActions

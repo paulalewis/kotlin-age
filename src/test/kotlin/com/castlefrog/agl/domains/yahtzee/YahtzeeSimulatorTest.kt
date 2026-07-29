@@ -103,7 +103,7 @@ internal class YahtzeeSimulatorTest {
     fun calculateLegalActionsSelectScore() {
         val state = YahtzeeState(diceValues = byteArrayOf(1, 1, 3, 0, 0, 0), nRolls = 3)
         val expectedActions = mutableSetOf<YahtzeeAction>()
-        (YahtzeeScoreCategory.values().indices)
+        (YahtzeeScoreCategory.entries.indices)
             .forEach { expectedActions.add(YahtzeeSelectAction.valueOf(it)) }
         assertThat(simulator.calculateLegalActions(state))
             .isEqualTo(arrayListOf(expectedActions))

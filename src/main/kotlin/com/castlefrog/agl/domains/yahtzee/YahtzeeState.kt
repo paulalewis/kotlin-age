@@ -11,7 +11,7 @@ data class YahtzeeState(
     companion object {
         const val N_DICE = 5
         const val N_VALUES = 6
-        val N_SCORES = YahtzeeScoreCategory.values().size
+        val N_SCORES = YahtzeeScoreCategory.entries.size
     }
 
     override fun equals(other: Any?): Boolean {
@@ -38,7 +38,7 @@ data class YahtzeeState(
             output.append(diceValue).append(" ")
         }
         output.append("]\n")
-        val scoreCategories = YahtzeeScoreCategory.values()
+        val scoreCategories = YahtzeeScoreCategory.entries
         for (i in 0 until N_SCORES) {
             output.append(scoreCategories[i].name).append(": ")
             output.append(if (scores[i] != -1) scores[i] else "-")

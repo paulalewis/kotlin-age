@@ -53,7 +53,7 @@ data class YahtzeeSelectAction(val scoreCategory: YahtzeeScoreCategory) : Yahtze
         }
 
         private fun generateSelectActions(): List<YahtzeeSelectAction> {
-            return YahtzeeScoreCategory.values().map { YahtzeeSelectAction(it) }
+            return YahtzeeScoreCategory.entries.map { YahtzeeSelectAction(it) }
         }
     }
 }

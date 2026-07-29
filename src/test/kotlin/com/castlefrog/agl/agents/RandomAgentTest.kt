@@ -51,7 +51,7 @@ class RandomAgentTest {
             rewards = intArrayOf(0)
         )
 
-        for (i in 0 until expectedActions.size) {
+        for (i in expectedActions.indices) {
             actualActions.add(agent.selectAction(0, simulator.initialState, simulator))
         }
 
