@@ -4,12 +4,11 @@ This is a Kotlin framework for creating turn based
 domains and custom agents to play in those domains.
 
 Domains:
-- [backgammon](https://en.wikipedia.org/wiki/Backgammon)
-- [biniax](https://en.wikipedia.org/wiki/Biniax)
-- [connect4](https://en.wikipedia.org/wiki/Connect4)
-- [havannah](https://en.wikipedia.org/wiki/Havannah)
-- [hex](https://en.wikipedia.org/wiki/Hex_%28board_game%29)
-- [yahtzee](https://en.wikipedia.org/wiki/Yahtzee)
+- [Backgammon](https://en.wikipedia.org/wiki/Backgammon)
+- [Connect 4](https://en.wikipedia.org/wiki/Connect4)
+- [Havannah](https://en.wikipedia.org/wiki/Havannah)
+- [Hex](https://en.wikipedia.org/wiki/Hex_%28board_game%29)
+- [Yahtzee](https://en.wikipedia.org/wiki/Yahtzee)
 
 Agents:
 - random - agent randomly selects an action
