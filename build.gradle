@@ -17,13 +17,11 @@ dependencies {
     implementation platform('io.arrow-kt:arrow-stack:1.2.4')
     implementation 'io.arrow-kt:arrow-core'
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
     testImplementation 'com.google.truth:truth:1.4.4'
 }
 
-tasks.named('test') {
+tasks.named('test', Test) {
     useJUnit()
 }
 
