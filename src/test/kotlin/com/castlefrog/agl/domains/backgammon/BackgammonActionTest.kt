@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.backgammon
 
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotSame
 import org.junit.Test
 
 class BackgammonActionTest {
@@ -8,7 +9,7 @@ class BackgammonActionTest {
     @Test
     fun copy() {
         val action = BackgammonAction(hashSetOf(BackgammonMove.valueOf(1, 2), BackgammonMove.valueOf(2, 1)))
-        assertThat(action).isEqualTo(action.copy())
-        assertThat(action).isNotSameInstanceAs(action.copy())
+        assertEquals(action.copy(), action)
+        assertNotSame(action.copy(), action)
     }
 }

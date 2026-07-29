@@ -57,14 +57,23 @@ data class HavannahState(
         if (other !is HavannahState) {
             return false
         }
+        if (base != other.base || agentTurn != other.agentTurn) {
+            return false
+        }
+        if (locations.size != other.locations.size) {
+            return false
+        }
         for (i in locations.indices) {
+            if (locations[i].size != other.locations[i].size) {
+                return false
+            }
             for (j in locations[i].indices) {
                 if (locations[i][j] != other.locations[i][j]) {
                     return false
                 }
             }
         }
-        return base == other.base && agentTurn == other.agentTurn
+        return true
     }
 
     override fun toString(): String {

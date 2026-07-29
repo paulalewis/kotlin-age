@@ -1,6 +1,8 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotSame
 import org.junit.Test
 
 class YahtzeeStateTest {
@@ -8,15 +10,15 @@ class YahtzeeStateTest {
     @Test
     fun testCopy() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte))
-        assertThat(yahtzeeState).isEqualTo(yahtzeeState.copy())
-        assertThat(yahtzeeState).isNotSameInstanceAs(yahtzeeState.copy())
+        assertEquals(yahtzeeState.copy(), yahtzeeState)
+        assertNotSame(yahtzeeState.copy(), yahtzeeState)
     }
 
     @Test
     fun testEqualityNotEqual() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte))
         val otherYahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte), nRolls = 2)
-        assertThat(yahtzeeState).isNotEqualTo(otherYahtzeeState)
+        assertNotEquals(otherYahtzeeState, yahtzeeState)
     }
 
     @Test
@@ -25,9 +27,7 @@ class YahtzeeStateTest {
             diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte),
             nRolls = 1, scores = IntArray(YahtzeeState.N_SCORES)
         )
-        assertThat(yahtzeeState.toString())
-            .isEqualTo(
-                """
+        assertEquals("""
                     |1 - [ 0 1 2 3 4 ]
                     |ONES: 0
                     |TWOS: 0
@@ -42,16 +42,13 @@ class YahtzeeStateTest {
                     |LARGE_STRAIGHT: 0
                     |YAHTZEE: 0
                     |CHANCE: 0
-                    """.trimMargin()
-            )
+                    """.trimMargin(), yahtzeeState.toString())
     }
 
     @Test
     fun testToString2() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte), nRolls = 1)
-        assertThat(yahtzeeState.toString())
-            .isEqualTo(
-                """
+        assertEquals("""
                     |1 - [ 0 1 2 3 4 ]
                     |ONES: -
                     |TWOS: -
@@ -66,7 +63,6 @@ class YahtzeeStateTest {
                     |LARGE_STRAIGHT: -
                     |YAHTZEE: -
                     |CHANCE: -
-                    """.trimMargin()
-            )
+                    """.trimMargin(), yahtzeeState.toString())
     }
 }

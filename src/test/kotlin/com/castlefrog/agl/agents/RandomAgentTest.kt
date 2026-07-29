@@ -3,7 +3,8 @@ package com.castlefrog.agl.agents
 import com.castlefrog.agl.TestAction
 import com.castlefrog.agl.TestSimulator
 import com.castlefrog.agl.TestState
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import kotlin.random.Random
 
@@ -17,7 +18,7 @@ class RandomAgentTest {
 
         val result = agent.selectAction(0, state, simulator)
 
-        assertThat(result).isNull()
+        assertNull(result)
     }
 
     @Test
@@ -29,7 +30,7 @@ class RandomAgentTest {
 
         val result = agent.selectAction(0, state, simulator)
 
-        assertThat(result).isNull()
+        assertNull(result)
     }
 
     @Test
@@ -53,6 +54,6 @@ class RandomAgentTest {
             actualActions.add(agent.selectAction(0, simulator.initialState, simulator))
         }
 
-        assertThat(actualActions).isEqualTo(expectedActions)
+        assertEquals(expectedActions, actualActions)
     }
 }

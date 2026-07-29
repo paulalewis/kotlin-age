@@ -1,8 +1,11 @@
 package com.castlefrog.agl.domains.hex
 
-import com.google.common.truth.Truth.assertThat
-import org.junit.Assert.assertThrows
 import org.junit.Before
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class HexStateTest {
@@ -21,7 +24,7 @@ class HexStateTest {
 
     @Test
     fun testCopy() {
-        assertThat(hexState).isEqualTo(hexState.copy())
+        assertEquals(hexState.copy(), hexState)
     }
 
     @Test
@@ -32,7 +35,7 @@ class HexStateTest {
         otherHexState.setLocation(1, 0, HexState.LOCATION_BLACK)
         otherHexState.setLocation(3, 1, HexState.LOCATION_WHITE)
         otherHexState.setLocation(3, 3, HexState.LOCATION_WHITE)
-        assertThat(otherHexState).isEqualTo(hexState)
+        assertEquals(hexState, otherHexState)
     }
 
     @Test
@@ -43,7 +46,7 @@ class HexStateTest {
         otherHexState.setLocation(1, 0, HexState.LOCATION_BLACK)
         otherHexState.setLocation(3, 1, HexState.LOCATION_WHITE)
         otherHexState.setLocation(3, 3, HexState.LOCATION_WHITE)
-        assertThat(otherHexState).isNotEqualTo(hexState)
+        assertNotEquals(hexState, otherHexState)
     }
 
     @Test
@@ -79,22 +82,20 @@ class HexStateTest {
 
     @Test
     fun testGetLocation() {
-        assertThat(
-            hexState.getLocation(
+        assertEquals(HexState.LOCATION_EMPTY, hexState.getLocation(
                 hexState.boardSize - 1,
                 hexState.boardSize - 1
-            )
-        ).isEqualTo(HexState.LOCATION_EMPTY)
+            ))
     }
 
     @Test
     fun testLocationIsEmpty() {
-        assertThat(hexState.isLocationEmpty(0, 1)).isTrue()
+        assertTrue(hexState.isLocationEmpty(0, 1))
     }
 
     @Test
     fun testLocationIsNotEmpty() {
-        assertThat(hexState.isLocationEmpty(1, 1)).isFalse()
+        assertFalse(hexState.isLocationEmpty(1, 1))
     }
 
     @Test
@@ -111,25 +112,22 @@ class HexStateTest {
 
     @Test
     fun testGetNPiecesEmpty() {
-        assertThat(emptyState.nPieces).isEqualTo(0)
+        assertEquals(0, emptyState.nPieces)
     }
 
     @Test
     fun testGetNPieces() {
-        assertThat(hexState.nPieces).isEqualTo(5)
+        assertEquals(5, hexState.nPieces)
     }
 
     @Test
     fun testToString() {
-        assertThat(hexState.toString())
-            .isEqualTo(
-                """
+        assertEquals("""
                 |- - - - -
                 | - - - O -
                 |  - - - - -
                 |   - X X O -
                 |    - X - - -
-                """.trimMargin()
-            )
+                """.trimMargin(), hexState.toString())
     }
 }

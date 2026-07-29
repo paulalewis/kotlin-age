@@ -1,32 +1,34 @@
 package com.castlefrog.agl.domains.connect4
 
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotSame
 import org.junit.Test
 
 class Connect4StateTest {
 
     @Test
     fun emptyStateAgentTurn0() {
-        assertThat(Connect4State().agentTurn).isEqualTo(0)
+        assertEquals(0, Connect4State().agentTurn)
     }
 
     @Test
     fun stateOneMoveAgentTurn1() {
         val state = Connect4State(longArrayOf(1L, 0))
-        assertThat(state.agentTurn).isEqualTo(1)
+        assertEquals(1, state.agentTurn)
     }
 
     @Test
     fun stateTwoMoveAgentTurn0() {
         val state = Connect4State(longArrayOf(1L, 1L shl 14))
-        assertThat(state.agentTurn).isEqualTo(0)
+        assertEquals(0, state.agentTurn)
     }
 
     @Test
     fun copy() {
         val state = Connect4State(longArrayOf(1L, 1L shl 14))
-        assertThat(state).isEqualTo(state.copy())
-        assertThat(state).isNotSameInstanceAs(state.copy())
+        assertEquals(state.copy(), state)
+        assertNotSame(state.copy(), state)
     }
 
     @Test
@@ -34,33 +36,32 @@ class Connect4StateTest {
         val state = Connect4State()
         val copyState = state.copy()
         state.bitBoards[0] = 1L
-        assertThat(copyState).isEqualTo(Connect4State())
+        assertEquals(Connect4State(), copyState)
     }
 
     @Test
     fun notEqualsNull() {
-        assertThat(Connect4State()).isNotEqualTo(null)
+        assertNotEquals(null, Connect4State())
     }
 
     @Test
     fun notEqualsAny() {
-        assertThat(Connect4State()).isNotEqualTo(Any())
+        assertNotEquals(Any(), Connect4State())
     }
 
     @Test
     fun notEquals() {
-        assertThat(Connect4State()).isNotEqualTo(Connect4State(longArrayOf(1L, 0)))
+        assertNotEquals(Connect4State(longArrayOf(1L, 0)), Connect4State())
     }
 
     @Test
     fun `hashCode value`() {
-        assertThat(Connect4State().hashCode()).isEqualTo(961)
+        assertEquals(961, Connect4State().hashCode())
     }
 
     @Test
     fun `toString value`() {
-        assertThat(Connect4State(longArrayOf(1L, 1L shl 14)).toString()).isEqualTo(
-            """
+        assertEquals("""
         |-----------------
         |: - - - - - - - :
         |: - - - - - - - :
@@ -69,7 +70,6 @@ class Connect4StateTest {
         |: - - - - - - - :
         |: X - O - - - - :
         |-----------------
-        """.trimMargin()
-        )
+        """.trimMargin(), Connect4State(longArrayOf(1L, 1L shl 14)).toString())
     }
 }

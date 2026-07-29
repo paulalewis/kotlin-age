@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.havannah
 
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -13,7 +14,7 @@ class HavannahSimulatorTest {
         val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_BLACK
         expectedState.agentTurn = HavannahState.TURN_WHITE
-        assertThat(state2).isEqualTo(expectedState)
+        assertEquals(expectedState, state2)
     }
 
     @Test
@@ -33,7 +34,7 @@ class HavannahSimulatorTest {
         val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_WHITE
         expectedState.agentTurn = HavannahState.TURN_BLACK
-        assertThat(state3).isEqualTo(expectedState)
+        assertEquals(expectedState, state3)
     }
 
     @Test
@@ -54,7 +55,7 @@ class HavannahSimulatorTest {
         expectedState.locations[0][0] = HavannahState.LOCATION_BLACK
         expectedState.locations[0][1] = HavannahState.LOCATION_WHITE
         expectedState.agentTurn = HavannahState.TURN_BLACK
-        assertThat(state3).isEqualTo(expectedState)
+        assertEquals(expectedState, state3)
     }
 
     @Test
@@ -73,7 +74,7 @@ class HavannahSimulatorTest {
         locations[1][2] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_WHITE)
         val simulator = HavannahSimulator(base = 5, pieRule = false)
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
     }
 
     @Test
@@ -91,7 +92,7 @@ class HavannahSimulatorTest {
         locations[0][4] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_BLACK)
         val simulator = HavannahSimulator(base = 5, pieRule = false)
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(-1, 1))
+        assertArrayEquals(intArrayOf(-1, 1), simulator.calculateRewards(state))
     }
 
     @Test
@@ -110,6 +111,6 @@ class HavannahSimulatorTest {
         locations[3][3] = HavannahState.LOCATION_WHITE
         val state = HavannahState(5, locations, HavannahState.TURN_WHITE)
         val simulator = HavannahSimulator(base = 5, pieRule = false)
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
     }
 }

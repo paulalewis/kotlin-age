@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.backgammon
 
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.random.Random
 
@@ -9,19 +10,19 @@ class BackgammonSimulatorTest {
     @Test
     fun getInitialStatePlayer1First() {
         val simulator = BackgammonSimulator(Random(381582))
-        assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(3, 0), agentTurn = 0))
+        assertEquals(BackgammonState(dice = byteArrayOf(3, 0), agentTurn = 0), simulator.initialState)
     }
 
     @Test
     fun getInitialStatePlayer2First() {
         val simulator = BackgammonSimulator(Random(5331224))
-        assertThat(simulator.initialState).isEqualTo(BackgammonState(dice = byteArrayOf(1, 4), agentTurn = 1))
+        assertEquals(BackgammonState(dice = byteArrayOf(1, 4), agentTurn = 1), simulator.initialState)
     }
 
     @Test
     fun calculateRewardsInitialState() {
         val simulator = BackgammonSimulator(Random(111))
-        assertThat(simulator.calculateRewards(simulator.initialState)).isEqualTo(intArrayOf(0, 0))
+        assertArrayEquals(intArrayOf(0, 0), simulator.calculateRewards(simulator.initialState))
     }
 
     @Test
@@ -57,7 +58,7 @@ class BackgammonSimulatorTest {
                 0
             )
         )
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
     }
 
     @Test
@@ -93,7 +94,7 @@ class BackgammonSimulatorTest {
                 0
             )
         )
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(-1, 1))
+        assertArrayEquals(intArrayOf(-1, 1), simulator.calculateRewards(state))
     }
 
     @Test
@@ -120,6 +121,6 @@ class BackgammonSimulatorTest {
             ),
             emptySet(),
         )
-        assertThat(simulator.calculateLegalActions(simulator.initialState)).isEqualTo(expectedLegalActions)
+        assertEquals(expectedLegalActions, simulator.calculateLegalActions(simulator.initialState))
     }
 }

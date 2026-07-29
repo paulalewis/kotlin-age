@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.connect4
 
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -10,8 +11,7 @@ class Connect4SimulatorTest {
     fun getInitialState() {
         val simulator = Connect4Simulator()
         val initialState = simulator.initialState
-        assertThat(initialState.toString()).isEqualTo(
-            """
+        assertEquals("""
         |-----------------
         |: - - - - - - - :
         |: - - - - - - - :
@@ -20,58 +20,56 @@ class Connect4SimulatorTest {
         |: - - - - - - - :
         |: - - - - - - - :
         |-----------------
-        """.trimMargin()
-        )
+        """.trimMargin(), initialState.toString())
     }
 
     @Test
     fun calculateRewardsInitialState() {
         val simulator = Connect4Simulator()
         val state = simulator.initialState
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(0, 0))
+        assertArrayEquals(intArrayOf(0, 0), simulator.calculateRewards(state))
     }
 
     @Test
     fun calculateRewardsAfterSomeMovesNoWinner() {
         val simulator = Connect4Simulator()
         val state = Connect4State(longArrayOf(1, 16384))
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(0, 0))
+        assertArrayEquals(intArrayOf(0, 0), simulator.calculateRewards(state))
     }
 
     @Test
     fun calculateRewardsHorizontalWinnerPlayer1() {
         val simulator = Connect4Simulator()
         val state = Connect4State(longArrayOf(2113665, 33026))
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
     }
 
     @Test
     fun calculateRewardsHorizontalWinnerPlayer2() {
         val simulator = Connect4Simulator()
         val state = Connect4State(longArrayOf(57209232818176, 8865355661312))
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(-1, 1))
+        assertArrayEquals(intArrayOf(-1, 1), simulator.calculateRewards(state))
     }
 
     @Test
     fun calculateRewardsVerticalWinnerPlayer1() {
         val simulator = Connect4Simulator()
         val state = Connect4State(longArrayOf(31457280, 268451969))
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(1, -1))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
     }
 
     @Test
     fun calculateRewardsVerticalWinnerPlayer2() {
         val simulator = Connect4Simulator()
         val state = Connect4State(longArrayOf(17280, 15))
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(-1, 1))
+        assertArrayEquals(intArrayOf(-1, 1), simulator.calculateRewards(state))
     }
 
     @Test
     fun calculateLegalActionsInitialState() {
         val simulator = Connect4Simulator()
         val state = simulator.initialState
-        assertThat(simulator.calculateLegalActions(state)).isEqualTo(
-            arrayListOf(
+        assertEquals(arrayListOf(
                 setOf(
                     Connect4Action.valueOf(0),
                     Connect4Action.valueOf(1),
@@ -82,16 +80,14 @@ class Connect4SimulatorTest {
                     Connect4Action.valueOf(6)
                 ),
                 setOf()
-            )
-        )
+            ), simulator.calculateLegalActions(state))
     }
 
     @Test
     fun calculateLegalActionsOneMove() {
         val simulator = Connect4Simulator()
         val state = Connect4State(longArrayOf(1, 0))
-        assertThat(simulator.calculateLegalActions(state)).isEqualTo(
-            arrayListOf(
+        assertEquals(arrayListOf(
                 setOf(),
                 setOf(
                     Connect4Action.valueOf(0),
@@ -102,16 +98,14 @@ class Connect4SimulatorTest {
                     Connect4Action.valueOf(5),
                     Connect4Action.valueOf(6)
                 )
-            )
-        )
+            ), simulator.calculateLegalActions(state))
     }
 
     @Test
     fun calculateLegalActionsFullColumn() {
         val simulator = Connect4Simulator()
         val state = Connect4State(longArrayOf(2688, 5376))
-        assertThat(simulator.calculateLegalActions(state)).isEqualTo(
-            arrayListOf(
+        assertEquals(arrayListOf(
                 setOf(
                     Connect4Action.valueOf(0),
                     Connect4Action.valueOf(2),
@@ -121,8 +115,7 @@ class Connect4SimulatorTest {
                     Connect4Action.valueOf(6)
                 ),
                 setOf()
-            )
-        )
+            ), simulator.calculateLegalActions(state))
     }
 
     @Test
@@ -138,7 +131,7 @@ class Connect4SimulatorTest {
         val simulator = Connect4Simulator()
         val state = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(3), null))
         val expectedState = Connect4State(longArrayOf(2097152, 0))
-        assertThat(state).isEqualTo(expectedState)
+        assertEquals(expectedState, state)
     }
 
     @Test
@@ -156,6 +149,6 @@ class Connect4SimulatorTest {
         val state2 = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(2), null))
         val state3 = simulator.stateTransition(state2, listOf(null, Connect4Action.valueOf(2)))
         val expectedState = Connect4State(longArrayOf(16384, 32768))
-        assertThat(state3).isEqualTo(expectedState)
+        assertEquals(expectedState, state3)
     }
 }

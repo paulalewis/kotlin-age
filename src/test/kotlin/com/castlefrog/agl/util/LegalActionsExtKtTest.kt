@@ -1,7 +1,10 @@
 package com.castlefrog.agl.util
 
 import com.castlefrog.agl.TestAction
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class LegalActionsExtKtTest {
@@ -9,48 +12,48 @@ class LegalActionsExtKtTest {
     @Test
     fun `playerHasLegalActions empty actions`() {
         val legalActions = emptyList<Set<TestAction>>()
-        assertThat(legalActions.playerHasLegalActions(0)).isFalse()
+        assertFalse(legalActions.playerHasLegalActions(0))
     }
 
     @Test
     fun `playerHasLegalActions negative index`() {
         val legalActions = listOf(setOf(TestAction()), setOf(TestAction()))
-        assertThat(legalActions.playerHasLegalActions(-1)).isFalse()
+        assertFalse(legalActions.playerHasLegalActions(-1))
     }
 
     @Test
     fun `playerHasLegalActions upper bound out of bounds index`() {
         val legalActions = listOf(setOf(TestAction()), setOf(TestAction()))
-        assertThat(legalActions.playerHasLegalActions(2)).isFalse()
+        assertFalse(legalActions.playerHasLegalActions(2))
     }
 
     @Test
     fun `playerHasLegalActions valid index`() {
         val legalActions = listOf(setOf(TestAction()), setOf(TestAction()))
-        assertThat(legalActions.playerHasLegalActions(1)).isTrue()
+        assertTrue(legalActions.playerHasLegalActions(1))
     }
 
     @Test
     fun `getPlayerActions empty actions`() {
         val legalActions = emptyList<Set<TestAction>>()
-        assertThat(legalActions.getPlayerActions(0)).isNull()
+        assertNull(legalActions.getPlayerActions(0))
     }
 
     @Test
     fun `getPlayerActions out of bounds index`() {
         val legalActions = listOf(setOf(TestAction()), setOf(TestAction()))
-        assertThat(legalActions.getPlayerActions(-1)).isNull()
+        assertNull(legalActions.getPlayerActions(-1))
     }
 
     @Test
     fun `getPlayerActions valid index no actions`() {
         val legalActions = listOf(setOf<TestAction>(), setOf())
-        assertThat(legalActions.getPlayerActions(1)).isNull()
+        assertNull(legalActions.getPlayerActions(1))
     }
 
     @Test
     fun `getPlayerActions valid index`() {
         val legalActions = listOf(setOf(TestAction()), setOf(TestAction()))
-        assertThat(legalActions.getPlayerActions(1)).isEqualTo(setOf(TestAction()))
+        assertEquals(setOf(TestAction()), legalActions.getPlayerActions(1))
     }
 }

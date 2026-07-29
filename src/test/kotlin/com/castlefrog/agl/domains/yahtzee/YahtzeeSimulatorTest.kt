@@ -1,6 +1,7 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.random.Random
 
@@ -11,13 +12,13 @@ internal class YahtzeeSimulatorTest {
     @Test
     fun getInitialState() {
         val state = YahtzeeState(byteArrayOf(0, 1, 2, 0, 1, 1))
-        assertThat(simulator.initialState).isEqualTo(state)
+        assertEquals(state, simulator.initialState)
     }
 
     @Test
     fun calculateRewardsInitialState() {
         val state = simulator.initialState
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(0))
+        assertArrayEquals(intArrayOf(0), simulator.calculateRewards(state))
     }
 
     @Test
@@ -25,7 +26,7 @@ internal class YahtzeeSimulatorTest {
         val state = YahtzeeState(byteArrayOf(1, 1, 1, 1, 0, 0))
         state.scores[YahtzeeScoreCategory.ONES.ordinal] = 5
         state.scores[YahtzeeScoreCategory.TWOS.ordinal] = 6
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(0))
+        assertArrayEquals(intArrayOf(0), simulator.calculateRewards(state))
     }
 
     @Test
@@ -44,7 +45,7 @@ internal class YahtzeeSimulatorTest {
         state.scores[YahtzeeScoreCategory.LARGE_STRAIGHT.ordinal] = 6
         state.scores[YahtzeeScoreCategory.YAHTZEE.ordinal] = 0
         state.scores[YahtzeeScoreCategory.CHANCE.ordinal] = 6
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(71))
+        assertArrayEquals(intArrayOf(71), simulator.calculateRewards(state))
     }
 
     @Test
@@ -63,7 +64,7 @@ internal class YahtzeeSimulatorTest {
         state.scores[YahtzeeScoreCategory.LARGE_STRAIGHT.ordinal] = 6
         state.scores[YahtzeeScoreCategory.YAHTZEE.ordinal] = 0
         state.scores[YahtzeeScoreCategory.CHANCE.ordinal] = 6
-        assertThat(simulator.calculateRewards(state)).isEqualTo(intArrayOf(150))
+        assertArrayEquals(intArrayOf(150), simulator.calculateRewards(state))
     }
 
     @Test
@@ -94,8 +95,7 @@ internal class YahtzeeSimulatorTest {
             YahtzeeRollAction(byteArrayOf(0, 1, 2, 0, 1, 0)),
             YahtzeeRollAction(byteArrayOf(0, 1, 2, 0, 1, 1)),
         )
-        assertThat(simulator.calculateLegalActions(simulator.initialState))
-            .isEqualTo(arrayListOf(expectedActions))
+        assertEquals(arrayListOf(expectedActions), simulator.calculateLegalActions(simulator.initialState))
     }
 
     @Test
@@ -104,18 +104,15 @@ internal class YahtzeeSimulatorTest {
         val expectedActions = mutableSetOf<YahtzeeAction>()
         (YahtzeeScoreCategory.entries.indices)
             .forEach { expectedActions.add(YahtzeeSelectAction.valueOf(it)) }
-        assertThat(simulator.calculateLegalActions(state))
-            .isEqualTo(arrayListOf(expectedActions))
+        assertEquals(arrayListOf(expectedActions), simulator.calculateLegalActions(state))
     }
 
     @Test
     fun stateTransitionReRoll2Dice() {
         val expectedState = YahtzeeState(diceValues = byteArrayOf(0, 2, 3, 0, 0, 0), nRolls = 2)
-        assertThat(
-            simulator.stateTransition(
+        assertEquals(expectedState, simulator.stateTransition(
                 simulator.initialState,
                 listOf(YahtzeeRollAction(byteArrayOf(0, 1, 2, 0, 0, 0)))
-            )
-        ).isEqualTo(expectedState)
+            ))
     }
 }

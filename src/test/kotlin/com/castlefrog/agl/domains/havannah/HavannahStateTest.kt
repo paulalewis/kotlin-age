@@ -1,8 +1,12 @@
 package com.castlefrog.agl.domains.havannah
 
-import com.google.common.truth.Truth.assertThat
-import org.junit.Assert.assertThrows
 import org.junit.Before
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotSame
+import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class HavannahStateTest {
@@ -23,15 +27,15 @@ class HavannahStateTest {
 
     @Test
     fun copy() {
-        assertThat(state).isEqualTo(state.copy())
-        assertThat(state.locations).isNotSameInstanceAs(state.copy().locations)
+        assertEquals(state.copy(), state)
+        assertNotSame(state.copy().locations, state.locations)
     }
 
     @Test
     fun copyModifyNotEqual() {
         val stateCopy = state.copy()
         stateCopy.locations[2][1] = HavannahState.LOCATION_EMPTY
-        assertThat(state).isNotEqualTo(stateCopy)
+        assertNotEquals(stateCopy, state)
     }
 
     @Test
@@ -42,7 +46,7 @@ class HavannahStateTest {
         otherHavannahState.locations[1][0] = HavannahState.LOCATION_BLACK
         otherHavannahState.locations[3][1] = HavannahState.LOCATION_WHITE
         otherHavannahState.locations[3][3] = HavannahState.LOCATION_WHITE
-        assertThat(otherHavannahState).isEqualTo(state)
+        assertEquals(state, otherHavannahState)
     }
 
     @Test
@@ -53,7 +57,7 @@ class HavannahStateTest {
         otherHavannahState.locations[1][0] = HavannahState.LOCATION_BLACK
         otherHavannahState.locations[3][1] = HavannahState.LOCATION_WHITE
         otherHavannahState.locations[3][3] = HavannahState.LOCATION_WHITE
-        assertThat(otherHavannahState).isNotEqualTo(state)
+        assertNotEquals(state, otherHavannahState)
     }
 
     @Test
@@ -91,18 +95,17 @@ class HavannahStateTest {
 
     @Test
     fun getLocation() {
-        assertThat(state.locations[state.base - 1][state.base - 1])
-            .isEqualTo(HavannahState.LOCATION_EMPTY)
+        assertEquals(HavannahState.LOCATION_EMPTY, state.locations[state.base - 1][state.base - 1])
     }
 
     @Test
     fun locationIsEmpty() {
-        assertThat(state.isLocationEmpty(0, 1)).isTrue()
+        assertTrue(state.isLocationEmpty(0, 1))
     }
 
     @Test
     fun locationIsNotEmpty() {
-        assertThat(state.isLocationEmpty(1, 1)).isFalse()
+        assertFalse(state.isLocationEmpty(1, 1))
     }
 
     @Test
@@ -121,19 +124,17 @@ class HavannahStateTest {
 
     @Test
     fun getNPiecesEmpty() {
-        assertThat(emptyState.nPieces).isEqualTo(0)
+        assertEquals(0, emptyState.nPieces)
     }
 
     @Test
     fun getNPieces() {
-        assertThat(state.nPieces).isEqualTo(5)
+        assertEquals(5, state.nPieces)
     }
 
     @Test
     fun `toString value`() {
-        assertThat(state.toString())
-            .isEqualTo(
-                """
+        assertEquals("""
                 |    - - - - -
                 |   - - - - - -
                 |  - - - - - - -
@@ -143,7 +144,6 @@ class HavannahStateTest {
                 |  - - - - - - -
                 |   - X X O - -
                 |    - X - - -
-                """.trimMargin()
-            )
+                """.trimMargin(), state.toString())
     }
 }
