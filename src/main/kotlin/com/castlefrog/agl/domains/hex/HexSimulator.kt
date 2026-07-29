@@ -55,7 +55,7 @@ class HexSimulator(
     }
 
     override fun stateTransition(state: HexState, actions: List<Option<HexAction>>): HexState {
-        val action = actions[state.agentTurn.toInt()].orNull()
+        val action = actions[state.agentTurn.toInt()].getOrNull()
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")

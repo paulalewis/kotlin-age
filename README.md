@@ -16,8 +16,8 @@ Agents:
 
 ## Setup
 
-1. Install gradle
-2. Install java sdk 1.8
+1. Install a JDK 21+ (for example via Homebrew: `brew install openjdk@21`)
+2. The Gradle wrapper is included; no separate Gradle install is required
 
 ## Build
 

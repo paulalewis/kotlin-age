@@ -32,7 +32,12 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
     override fun stateTransition(state: Connect4State, actions: List<Option<Connect4Action>>): Connect4State {
         val agentTurn = state.agentTurn
-        val action = actions[agentTurn].orNull()
+        if (agentTurn !in actions.indices) {
+            throw IllegalArgumentException(
+                "Illegal actions size, ${actions.size}, expected at least ${agentTurn + 1} for state, $state"
+            )
+        }
+        val action = actions[agentTurn].getOrNull()
         val legalActions = calculateLegalActions(state)
         val columnHeights = calculateColumnHeights(state)
         if (action === null || !legalActions[agentTurn].contains(action)) {

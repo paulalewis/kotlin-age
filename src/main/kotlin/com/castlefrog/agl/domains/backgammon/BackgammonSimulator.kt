@@ -82,7 +82,7 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
     }
 
     override fun stateTransition(state: BackgammonState, actions: List<Option<BackgammonAction>>): BackgammonState {
-        val action = actions[state.agentTurn].orNull()
+        val action = actions[state.agentTurn].getOrNull()
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")

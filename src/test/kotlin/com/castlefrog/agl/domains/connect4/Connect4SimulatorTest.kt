@@ -1,5 +1,7 @@
 package com.castlefrog.agl.domains.connect4
 
+import arrow.core.None
+import arrow.core.Some
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -130,13 +132,13 @@ class Connect4SimulatorTest {
         val simulator = Connect4Simulator()
         assertThrows(
             IllegalArgumentException::class.java
-        ) { simulator.stateTransition(simulator.initialState, emptyMap()) }
+        ) { simulator.stateTransition(simulator.initialState, emptyList()) }
     }
 
     @Test
     fun stateTransitionMove1() {
         val simulator = Connect4Simulator()
-        val state = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, Connect4Action.valueOf(3))))
+        val state = simulator.stateTransition(simulator.initialState, listOf(Some(Connect4Action.valueOf(3)), None))
         val expectedState = Connect4State(longArrayOf(2097152, 0))
         assertThat(state).isEqualTo(expectedState)
     }
@@ -144,17 +146,17 @@ class Connect4SimulatorTest {
     @Test
     fun stateTransitionNullAction() {
         val simulator = Connect4Simulator()
-        val state = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, Connect4Action.valueOf(2))))
+        val state = simulator.stateTransition(simulator.initialState, listOf(Some(Connect4Action.valueOf(2)), None))
         assertThrows(
             IllegalArgumentException::class.java
-        ) { simulator.stateTransition(state, mapOf(Pair(0, Connect4Action.valueOf(2)))) }
+        ) { simulator.stateTransition(state, listOf(Some(Connect4Action.valueOf(2)), None)) }
     }
 
     @Test
     fun stateTransitionMove2() {
         val simulator = Connect4Simulator()
-        val state2 = simulator.stateTransition(simulator.initialState, mapOf(Pair(0, Connect4Action.valueOf(2))))
-        val state3 = simulator.stateTransition(state2, mapOf(Pair(1, Connect4Action.valueOf(2))))
+        val state2 = simulator.stateTransition(simulator.initialState, listOf(Some(Connect4Action.valueOf(2)), None))
+        val state3 = simulator.stateTransition(state2, listOf(None, Some(Connect4Action.valueOf(2))))
         val expectedState = Connect4State(longArrayOf(16384, 32768))
         assertThat(state3).isEqualTo(expectedState)
     }

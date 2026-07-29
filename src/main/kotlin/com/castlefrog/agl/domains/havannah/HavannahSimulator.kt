@@ -173,7 +173,7 @@ class HavannahSimulator(
     }
 
     override fun stateTransition(state: HavannahState, actions: List<Option<HavannahAction>>): HavannahState {
-        val action = actions[state.agentTurn.toInt()].orNull()
+        val action = actions[state.agentTurn.toInt()].getOrNull()
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")

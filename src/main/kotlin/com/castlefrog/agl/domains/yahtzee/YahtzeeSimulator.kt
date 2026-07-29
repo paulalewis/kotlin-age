@@ -75,7 +75,7 @@ class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeS
     }
 
     override fun stateTransition(state: YahtzeeState, actions: List<Option<YahtzeeAction>>): YahtzeeState {
-        val action = actions[0].orNull()
+        val action = actions[0].getOrNull()
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[0].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")

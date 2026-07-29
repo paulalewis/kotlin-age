@@ -19,7 +19,7 @@ class RandomAgentTest {
 
         val result = agent.selectAction(0, state, simulator)
 
-        assertThat(result.swap().orNull()).isEqualTo(ResultError("Player 0 has no legal actions."))
+        assertThat(result.swap().getOrNull()).isEqualTo(ResultError("Player 0 has no legal actions."))
     }
 
     @Test
@@ -31,7 +31,7 @@ class RandomAgentTest {
 
         val result = agent.selectAction(0, state, simulator)
 
-        assertThat(result.swap().orNull()).isEqualTo(ResultError("Player 0 has no legal actions."))
+        assertThat(result.swap().getOrNull()).isEqualTo(ResultError("Player 0 has no legal actions."))
     }
 
     @Test
