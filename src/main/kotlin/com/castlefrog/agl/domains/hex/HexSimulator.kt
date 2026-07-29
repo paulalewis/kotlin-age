@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.hex
 
-import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
@@ -54,8 +53,8 @@ class HexSimulator(
         return legalActions
     }
 
-    override fun stateTransition(state: HexState, actions: List<Option<HexAction>>): HexState {
-        val action = actions[state.agentTurn.toInt()].getOrNull()
+    override fun stateTransition(state: HexState, actions: List<HexAction?>): HexState {
+        val action = actions[state.agentTurn.toInt()]
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")

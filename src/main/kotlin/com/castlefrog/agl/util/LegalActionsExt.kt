@@ -1,8 +1,6 @@
 package com.castlefrog.agl.util
 
-import arrow.core.Either
 import com.castlefrog.agl.Action
-import com.castlefrog.agl.ResultError
 
 typealias LegalActions<A> = List<Set<A>>
 
@@ -13,7 +11,9 @@ fun <A : Action<A>> LegalActions<A>.playerHasLegalActions(playerId: Int) =
     playerId in indices && this[playerId].isNotEmpty()
 
 /**
- * Helper method to get all legal actions of given player.
+ * Helper method to get all legal actions of a given player.
+ * @return the player's legal actions, or null if the player has none
+ *         (including out-of-bounds player ids)
  */
-fun <A : Action<A>> LegalActions<A>.getPlayerActions(playerId: Int): Either<ResultError, Set<A>> =
-    if (playerHasLegalActions(playerId)) Either.Right(this[playerId]) else Either.Left(ResultError("Player $playerId has no legal actions."))
+fun <A : Action<A>> LegalActions<A>.getPlayerActions(playerId: Int): Set<A>? =
+    if (playerHasLegalActions(playerId)) this[playerId] else null

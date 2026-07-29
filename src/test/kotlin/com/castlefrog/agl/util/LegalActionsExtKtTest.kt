@@ -1,7 +1,5 @@
 package com.castlefrog.agl.util
 
-import arrow.core.Either
-import com.castlefrog.agl.ResultError
 import com.castlefrog.agl.TestAction
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -35,28 +33,24 @@ class LegalActionsExtKtTest {
     @Test
     fun `getPlayerActions empty actions`() {
         val legalActions = emptyList<Set<TestAction>>()
-        assertThat(legalActions.getPlayerActions(0))
-            .isEqualTo(Either.Left(ResultError(message = "Player 0 has no legal actions.")))
+        assertThat(legalActions.getPlayerActions(0)).isNull()
     }
 
     @Test
     fun `getPlayerActions out of bounds index`() {
         val legalActions = listOf(setOf(TestAction()), setOf(TestAction()))
-        assertThat(legalActions.getPlayerActions(-1))
-            .isEqualTo(Either.Left(ResultError(message = "Player -1 has no legal actions.")))
+        assertThat(legalActions.getPlayerActions(-1)).isNull()
     }
 
     @Test
     fun `getPlayerActions valid index no actions`() {
         val legalActions = listOf(setOf<TestAction>(), setOf())
-        assertThat(legalActions.getPlayerActions(1))
-            .isEqualTo(Either.Left(ResultError(message = "Player 1 has no legal actions.")))
+        assertThat(legalActions.getPlayerActions(1)).isNull()
     }
 
     @Test
     fun `getPlayerActions valid index`() {
         val legalActions = listOf(setOf(TestAction()), setOf(TestAction()))
-        assertThat(legalActions.getPlayerActions(1))
-            .isEqualTo(Either.Right(setOf(TestAction())))
+        assertThat(legalActions.getPlayerActions(1)).isEqualTo(setOf(TestAction()))
     }
 }

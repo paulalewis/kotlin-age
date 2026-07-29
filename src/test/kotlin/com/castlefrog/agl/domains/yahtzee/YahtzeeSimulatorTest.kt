@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import arrow.core.Some
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import kotlin.random.Random
@@ -115,7 +114,7 @@ internal class YahtzeeSimulatorTest {
         assertThat(
             simulator.stateTransition(
                 simulator.initialState,
-                listOf(Some(YahtzeeRollAction(byteArrayOf(0, 1, 2, 0, 0, 0))))
+                listOf(YahtzeeRollAction(byteArrayOf(0, 1, 2, 0, 0, 0)))
             )
         ).isEqualTo(expectedState)
     }

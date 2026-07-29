@@ -16,9 +16,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(platform("io.arrow-kt:arrow-stack:1.2.4"))
-    implementation("io.arrow-kt:arrow-core")
-
     testImplementation(kotlin("test-junit"))
     testImplementation("com.google.truth:truth:1.4.4")
 }

@@ -1,7 +1,5 @@
 package com.castlefrog.agl
 
-import arrow.core.Option
-
 /**
  * A simulator controls the state transitions of a given domain.
  * A simulator is associated with a domain specific state and action
@@ -28,9 +26,10 @@ interface Simulator<S : State<S>, A : Action<A>> {
     /**
      * Transition from the current state to the next state
      * given a set of player actions.
-     * @param actions map of actions to be performed by each player
+     * @param actions list of actions to be performed by each player;
+     *        null entries mean that player takes no action
      */
-    fun stateTransition(state: S, actions: List<Option<A>>): S
+    fun stateTransition(state: S, actions: List<A?>): S
 
     /**
      * @return the number of players in the domain.

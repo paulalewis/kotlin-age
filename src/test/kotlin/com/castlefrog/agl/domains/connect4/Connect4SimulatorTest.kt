@@ -1,7 +1,5 @@
 package com.castlefrog.agl.domains.connect4
 
-import arrow.core.None
-import arrow.core.Some
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -138,7 +136,7 @@ class Connect4SimulatorTest {
     @Test
     fun stateTransitionMove1() {
         val simulator = Connect4Simulator()
-        val state = simulator.stateTransition(simulator.initialState, listOf(Some(Connect4Action.valueOf(3)), None))
+        val state = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(3), null))
         val expectedState = Connect4State(longArrayOf(2097152, 0))
         assertThat(state).isEqualTo(expectedState)
     }
@@ -146,17 +144,17 @@ class Connect4SimulatorTest {
     @Test
     fun stateTransitionNullAction() {
         val simulator = Connect4Simulator()
-        val state = simulator.stateTransition(simulator.initialState, listOf(Some(Connect4Action.valueOf(2)), None))
+        val state = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(2), null))
         assertThrows(
             IllegalArgumentException::class.java
-        ) { simulator.stateTransition(state, listOf(Some(Connect4Action.valueOf(2)), None)) }
+        ) { simulator.stateTransition(state, listOf(Connect4Action.valueOf(2), null)) }
     }
 
     @Test
     fun stateTransitionMove2() {
         val simulator = Connect4Simulator()
-        val state2 = simulator.stateTransition(simulator.initialState, listOf(Some(Connect4Action.valueOf(2)), None))
-        val state3 = simulator.stateTransition(state2, listOf(None, Some(Connect4Action.valueOf(2))))
+        val state2 = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(2), null))
+        val state3 = simulator.stateTransition(state2, listOf(null, Connect4Action.valueOf(2)))
         val expectedState = Connect4State(longArrayOf(16384, 32768))
         assertThat(state3).isEqualTo(expectedState)
     }

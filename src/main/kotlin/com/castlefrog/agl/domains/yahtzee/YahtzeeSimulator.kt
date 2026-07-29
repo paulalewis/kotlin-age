@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.yahtzee
 
-import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import kotlin.collections.List
 import kotlin.collections.any
@@ -74,8 +73,8 @@ class YahtzeeSimulator(private val random: Random = Random) : Simulator<YahtzeeS
         return listOf(legalActions)
     }
 
-    override fun stateTransition(state: YahtzeeState, actions: List<Option<YahtzeeAction>>): YahtzeeState {
-        val action = actions[0].getOrNull()
+    override fun stateTransition(state: YahtzeeState, actions: List<YahtzeeAction?>): YahtzeeState {
+        val action = actions[0]
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[0].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")

@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.connect4
 
-import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.util.LruCache
@@ -30,14 +29,14 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         return legalActions
     }
 
-    override fun stateTransition(state: Connect4State, actions: List<Option<Connect4Action>>): Connect4State {
+    override fun stateTransition(state: Connect4State, actions: List<Connect4Action?>): Connect4State {
         val agentTurn = state.agentTurn
         if (agentTurn !in actions.indices) {
             throw IllegalArgumentException(
                 "Illegal actions size, ${actions.size}, expected at least ${agentTurn + 1} for state, $state"
             )
         }
-        val action = actions[agentTurn].getOrNull()
+        val action = actions[agentTurn]
         val legalActions = calculateLegalActions(state)
         val columnHeights = calculateColumnHeights(state)
         if (action === null || !legalActions[agentTurn].contains(action)) {

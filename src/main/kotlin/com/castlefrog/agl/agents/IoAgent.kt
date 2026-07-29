@@ -1,9 +1,11 @@
 package com.castlefrog.agl.agents
 
-import arrow.core.Either
-import com.castlefrog.agl.*
+import com.castlefrog.agl.Action
+import com.castlefrog.agl.Agent
+import com.castlefrog.agl.Simulator
+import com.castlefrog.agl.State
 import com.castlefrog.agl.util.getPlayerActions
-import java.util.*
+import java.util.Scanner
 
 class IoAgent(
     private val scanner: Scanner = Scanner(System.`in`),
@@ -12,24 +14,25 @@ class IoAgent(
         playerId: Int,
         state: S,
         simulator: Simulator<S, A>
-    ): Either<ResultError, A> {
-        val result = simulator.calculateLegalActions(state).getPlayerActions(playerId)
-        return result.fold({
-            Either.Left(it)
-        }, {
-            getAction(it)
-        })
+    ): A? {
+        val actions = simulator.calculateLegalActions(state).getPlayerActions(playerId) ?: return null
+        return getAction(actions)
     }
 
-    private fun <A> getAction(actions: Set<A>): Either<ResultError, A> {
-        try {
-            do {
+    private fun <A> getAction(actions: Set<A>): A? {
+        return try {
+            while (true) {
                 println("Legal Actions: $actions")
                 val input = scanner.next()
-                actions.find { it.toString() == input }?.let { return Either.Right(it) }
-            } while (true)
-        } catch (e: Exception) {
-            return Either.Left(ResultError(e.message ?: ""))
+                val match = actions.find { it.toString() == input }
+                if (match != null) {
+                    return match
+                }
+            }
+            @Suppress("UNREACHABLE_CODE")
+            null
+        } catch (_: Exception) {
+            null
         }
     }
 }

@@ -1,7 +1,5 @@
 package com.castlefrog.agl.agents
 
-import arrow.core.*
-import com.castlefrog.agl.ResultError
 import com.castlefrog.agl.TestAction
 import com.castlefrog.agl.TestSimulator
 import com.castlefrog.agl.TestState
@@ -19,7 +17,7 @@ class RandomAgentTest {
 
         val result = agent.selectAction(0, state, simulator)
 
-        assertThat(result.swap().getOrNull()).isEqualTo(ResultError("Player 0 has no legal actions."))
+        assertThat(result).isNull()
     }
 
     @Test
@@ -31,19 +29,19 @@ class RandomAgentTest {
 
         val result = agent.selectAction(0, state, simulator)
 
-        assertThat(result.swap().getOrNull()).isEqualTo(ResultError("Player 0 has no legal actions."))
+        assertThat(result).isNull()
     }
 
     @Test
     fun selectAction() {
         val expectedActions = arrayListOf(
-            Either.Right(TestAction(2)),
-            Either.Right(TestAction(1)),
-            Either.Right(TestAction(3)),
-            Either.Right(TestAction(1)),
-            Either.Right(TestAction(2)),
+            TestAction(2),
+            TestAction(1),
+            TestAction(3),
+            TestAction(1),
+            TestAction(2),
         )
-        val actualActions = ArrayList<Either<ResultError, TestAction>>()
+        val actualActions = ArrayList<TestAction?>()
         val agent = RandomAgent(Random(6345))
         val simulator = TestSimulator(
             initialState = TestState(0),

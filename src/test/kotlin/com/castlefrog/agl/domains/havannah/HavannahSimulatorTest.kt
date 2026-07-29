@@ -1,7 +1,5 @@
 package com.castlefrog.agl.domains.havannah
 
-import arrow.core.None
-import arrow.core.Some
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -11,7 +9,7 @@ class HavannahSimulatorTest {
     @Test
     fun stateTransitionMove1() {
         val simulator = HavannahSimulator(5)
-        val state2 = simulator.stateTransition(simulator.initialState, listOf(Some(HavannahAction(0, 0)), None))
+        val state2 = simulator.stateTransition(simulator.initialState, listOf(HavannahAction(0, 0), null))
         val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_BLACK
         expectedState.agentTurn = HavannahState.TURN_WHITE
@@ -21,17 +19,17 @@ class HavannahSimulatorTest {
     @Test
     fun stateTransitionIllegalMove() {
         val simulator = HavannahSimulator(5)
-        val state2 = simulator.stateTransition(simulator.initialState, listOf(Some(HavannahAction(0, 0)), None))
+        val state2 = simulator.stateTransition(simulator.initialState, listOf(HavannahAction(0, 0), null))
         assertThrows(
             IllegalArgumentException::class.java
-        ) { simulator.stateTransition(state2, listOf(Some(HavannahAction(0, 0)), None)) }
+        ) { simulator.stateTransition(state2, listOf(HavannahAction(0, 0), null)) }
     }
 
     @Test
     fun stateTransitionMove2SameLocationPieRuleTrue() {
         val simulator = HavannahSimulator(base = 5, pieRule = true)
-        val state2 = simulator.stateTransition(simulator.initialState, listOf(Some(HavannahAction(0, 0)), None))
-        val state3 = simulator.stateTransition(state2, listOf(None, Some(HavannahAction(0, 0))))
+        val state2 = simulator.stateTransition(simulator.initialState, listOf(HavannahAction(0, 0), null))
+        val state3 = simulator.stateTransition(state2, listOf(null, HavannahAction(0, 0)))
         val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_WHITE
         expectedState.agentTurn = HavannahState.TURN_BLACK
@@ -41,17 +39,17 @@ class HavannahSimulatorTest {
     @Test
     fun stateTransitionMove2SameLocationPieRuleFalse() {
         val simulator = HavannahSimulator(base = 5, pieRule = false)
-        val state2 = simulator.stateTransition(simulator.initialState, listOf(Some(HavannahAction(0, 0)), None))
+        val state2 = simulator.stateTransition(simulator.initialState, listOf(HavannahAction(0, 0), null))
         assertThrows(
             IllegalArgumentException::class.java
-        ) { simulator.stateTransition(state2, listOf(None, Some(HavannahAction(0, 0)))) }
+        ) { simulator.stateTransition(state2, listOf(null, HavannahAction(0, 0))) }
     }
 
     @Test
     fun stateTransitionMove2DifferentLocation() {
         val simulator = HavannahSimulator(5)
-        val state2 = simulator.stateTransition(simulator.initialState, listOf(Some(HavannahAction(0, 0)), None))
-        val state3 = simulator.stateTransition(state2, listOf(None, Some(HavannahAction(0, 1))))
+        val state2 = simulator.stateTransition(simulator.initialState, listOf(HavannahAction(0, 0), null))
+        val state3 = simulator.stateTransition(state2, listOf(null, HavannahAction(0, 1)))
         val expectedState = simulator.initialState
         expectedState.locations[0][0] = HavannahState.LOCATION_BLACK
         expectedState.locations[0][1] = HavannahState.LOCATION_WHITE

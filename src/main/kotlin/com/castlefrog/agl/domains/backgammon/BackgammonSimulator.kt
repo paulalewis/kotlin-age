@@ -1,6 +1,5 @@
 package com.castlefrog.agl.domains.backgammon
 
-import arrow.core.Option
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
@@ -81,8 +80,8 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
         return legalActions
     }
 
-    override fun stateTransition(state: BackgammonState, actions: List<Option<BackgammonAction>>): BackgammonState {
-        val action = actions[state.agentTurn].getOrNull()
+    override fun stateTransition(state: BackgammonState, actions: List<BackgammonAction?>): BackgammonState {
+        val action = actions[state.agentTurn]
         val legalActions = calculateLegalActions(state)
         if (action === null || !legalActions[state.agentTurn].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")

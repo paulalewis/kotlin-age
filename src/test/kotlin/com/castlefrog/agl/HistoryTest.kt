@@ -1,7 +1,5 @@
 package com.castlefrog.agl
 
-import arrow.core.None
-import arrow.core.Some
 import com.castlefrog.agl.domains.hex.HexAction
 import com.castlefrog.agl.domains.hex.HexSimulator
 import com.castlefrog.agl.domains.hex.HexState
@@ -25,7 +23,7 @@ internal class HistoryTest {
         val nextActions = mapOf(0 to HexAction(2, 2))
         val nextState = simulator.stateTransition(
             simulator.initialState,
-            listOf(Some(HexAction(2, 2)), None)
+            listOf(HexAction(2, 2), null)
         )
         history.add(nextState, nextActions)
         assertThat(history.nodes)
