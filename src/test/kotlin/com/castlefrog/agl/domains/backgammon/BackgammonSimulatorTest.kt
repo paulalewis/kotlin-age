@@ -3,6 +3,7 @@ package com.castlefrog.agl.domains.backgammon
 import com.castlefrog.agl.IllegalActionException
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import kotlin.random.Random
@@ -124,6 +125,20 @@ class BackgammonSimulatorTest {
             emptySet(),
         )
         assertEquals(expectedLegalActions, simulator.calculateLegalActions(simulator.initialState))
+    }
+
+    @Test
+    fun stateTransitionDoesNotMutateInput() {
+        val simulator = BackgammonSimulator(Random(111))
+        val before = simulator.initialState
+        val snapshot = before.copy()
+        val legal = simulator.calculateLegalActions(before)[before.agentTurn].first()
+        val actions = if (before.agentTurn == 0) listOf(legal, null) else listOf(null, legal)
+        val after = simulator.stateTransition(before, actions)
+        assertEquals(snapshot, before)
+        assertNotSame(before, after)
+        // Nested arrays must not be shared with the input.
+        assertNotSame(before.locations, after.locations)
     }
 
     @Test

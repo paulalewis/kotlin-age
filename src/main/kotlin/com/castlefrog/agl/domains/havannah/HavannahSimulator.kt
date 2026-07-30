@@ -176,10 +176,12 @@ class HavannahSimulator(
         val agentTurn = state.agentTurn.toInt()
         val legalActions = calculateLegalActions(state)
         val action = requireLegalAction(actions, agentTurn, legalActions[agentTurn], state)
-        state.locations[action.x.toInt()][action.y.toInt()] = (state.agentTurn + 1).toByte()
-        state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
-        prevActionCache[state.copy()] = action
-        return state
+        val nextState = state.copy()
+        nextState.locations[action.x.toInt()][action.y.toInt()] = (nextState.agentTurn + 1).toByte()
+        nextState.agentTurn = nextPlayerTurnSequential(nextState.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
+        // Snapshot key so the cache entry stays valid even if the caller later mutates [nextState].
+        prevActionCache[nextState.copy()] = action
+        return nextState
     }
 
     override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS

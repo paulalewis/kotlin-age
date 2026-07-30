@@ -47,8 +47,9 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         val action = requireLegalAction(actions, agentTurn, legalActions[agentTurn], state)
         val columnHeights = calculateColumnHeights(state)
         val height = columnHeights[action.location]
-        state.bitBoards[agentTurn] = state.bitBoards[agentTurn] xor (1L shl height)
-        return state
+        val nextState = state.copy()
+        nextState.bitBoards[agentTurn] = nextState.bitBoards[agentTurn] xor (1L shl height)
+        return nextState
     }
 
     override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS

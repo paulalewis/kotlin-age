@@ -60,15 +60,16 @@ class HexSimulator(
         val action = requireLegalAction(actions, agentTurn, legalActions[agentTurn], state)
         val x = action.x.toInt()
         val y = action.y.toInt()
-        if (state.isLocationEmpty(x, y)) {
-            state.setLocation(x, y, state.agentTurn + 1)
-            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
+        val nextState = state.copy()
+        if (nextState.isLocationEmpty(x, y)) {
+            nextState.setLocation(x, y, nextState.agentTurn + 1)
+            nextState.agentTurn = nextPlayerTurnSequential(nextState.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
         } else {
-            state.setLocation(x, y, 0)
-            state.setLocation(y, x, state.agentTurn + 1)
-            state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
+            nextState.setLocation(x, y, 0)
+            nextState.setLocation(y, x, nextState.agentTurn + 1)
+            nextState.agentTurn = nextPlayerTurnSequential(nextState.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
         }
-        return state
+        return nextState
     }
 
     override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS

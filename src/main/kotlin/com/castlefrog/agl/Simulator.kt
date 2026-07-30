@@ -27,10 +27,16 @@ interface Simulator<S : State<S>, A : Action> {
      * Transition from the current state to the next state
      * given a set of player actions.
      *
-     * @param state the state to transition from (may be mutated in place)
+     * **Contract:** implementations must not mutate [state]. The input remains
+     * unchanged so callers can retain pre-transition states for history, tree
+     * search, and comparison. The returned value is a new state (typically via
+     * [State.copy]) reflecting the result of [actions].
+     *
+     * @param state the state to transition from (must not be modified)
      * @param actions list of actions to be performed by each player;
      *        null entries mean that player takes no action
-     * @return the resulting state after applying the actions
+     * @return a new state after applying the actions; never [state] itself when
+     *         a transition actually occurs
      * @throws IllegalActionException if [actions] has the wrong length for the
      *         player to move, the required action is null, or the action is not
      *         legal from [state]

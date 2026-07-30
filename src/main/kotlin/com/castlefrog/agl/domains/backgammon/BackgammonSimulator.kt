@@ -86,7 +86,8 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
         val legalActions = calculateLegalActions(state)
         val action = requireLegalAction(actions, agentTurn, legalActions[agentTurn], state)
 
-        val locations = state.locations
+        val nextState = state.copy()
+        val locations = nextState.locations
 
         for ((from, distance) in action.moves) {
             val piece: Byte = if (locations[from] > 0) 1 else -1

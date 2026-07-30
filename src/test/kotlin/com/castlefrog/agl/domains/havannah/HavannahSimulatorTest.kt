@@ -4,7 +4,9 @@ import com.castlefrog.agl.IllegalActionException
 import com.castlefrog.agl.util.LruCache
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -112,31 +114,38 @@ class HavannahSimulatorTest {
     }
 
     /**
-     * Further in-place mutation of the returned state must not destroy the cached entry
-     * for the previous post-move position (stable copy as key).
+     * Size-1 cache keeps the latest post-move entry; the input state is not mutated so
+     * earlier positions remain usable for history / search.
      */
     @Test
-    fun prevActionCacheSurvivesFurtherMutationOfReturnedState() {
+    fun prevActionCacheKeysPostMoveStateWithoutMutatingInput() {
         val simulator = HavannahSimulator(5)
         val firstAction = HavannahAction(0, 0)
         val afterFirst = simulator.stateTransition(simulator.initialState, listOf(firstAction, null))
         val snapshotAfterFirst = afterFirst.copy()
 
-        // Apply a second move by mutating the same state instance returned from the first.
         val secondAction = HavannahAction(1, 0)
-        simulator.stateTransition(afterFirst, listOf(null, secondAction))
+        val afterSecond = simulator.stateTransition(afterFirst, listOf(null, secondAction))
 
         @Suppress("UNCHECKED_CAST")
         val cache = prevActionCache(simulator) as LruCache<HavannahState, HavannahAction>
 
-        // Size-1 cache keeps only the latest entry (second move).
-        assertEquals(secondAction, cache[afterFirst])
-        // The first post-move snapshot is no longer the sole entry, but must not have been
-        // used as a live mutable key (which would corrupt the map). Latest entry still works.
+        assertEquals(secondAction, cache[afterSecond])
         assertEquals(1, cache.size)
-        assertEquals(secondAction, cache[afterFirst.copy()])
-        // Sanity: snapshot of first position is a different key than current state.
-        assertEquals(false, snapshotAfterFirst == afterFirst)
+        assertEquals(secondAction, cache[afterSecond.copy()])
+        assertEquals(snapshotAfterFirst, afterFirst)
+        assertNotEquals(afterFirst, afterSecond)
+    }
+
+    @Test
+    fun stateTransitionDoesNotMutateInput() {
+        val simulator = HavannahSimulator(5)
+        val before = simulator.initialState
+        val snapshot = before.copy()
+        val after = simulator.stateTransition(before, listOf(HavannahAction(0, 0), null))
+        assertEquals(snapshot, before)
+        assertNotSame(before, after)
+        assertNotEquals(before, after)
     }
 
     private fun prevActionCache(simulator: HavannahSimulator): Any {
