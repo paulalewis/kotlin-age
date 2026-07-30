@@ -5,7 +5,10 @@ domains and custom agents to play in those domains.
 
 Domains:
 - [Backgammon](https://en.wikipedia.org/wiki/Backgammon)
+- [Chess](https://en.wikipedia.org/wiki/Chess)
 - [Connect 4](https://en.wikipedia.org/wiki/Connect4)
+- [Draughts](https://en.wikipedia.org/wiki/Draughts)
+- [Go](https://en.wikipedia.org/wiki/Go_(board_game))
 - [Havannah](https://en.wikipedia.org/wiki/Havannah)
 - [Hex](https://en.wikipedia.org/wiki/Hex_%28board_game%29)
 
