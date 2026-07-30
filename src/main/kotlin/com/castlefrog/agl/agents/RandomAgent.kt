@@ -8,7 +8,7 @@ import com.castlefrog.agl.util.getPlayerActions
 import kotlin.random.Random
 
 /**
- * This agent selects an action at random (normal distribution)
+ * This agent selects an action at random (uniform distribution)
  * from the list of possible actions from a given state.
  */
 class RandomAgent(private val random: Random = Random) : Agent {
