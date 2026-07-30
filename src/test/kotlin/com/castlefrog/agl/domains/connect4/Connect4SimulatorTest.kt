@@ -3,6 +3,7 @@ package com.castlefrog.agl.domains.connect4
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class Connect4SimulatorTest {
@@ -150,5 +151,58 @@ class Connect4SimulatorTest {
         val state3 = simulator.stateTransition(state2, listOf(null, Connect4Action.valueOf(2)))
         val expectedState = Connect4State(longArrayOf(16384, 32768))
         assertEquals(expectedState, state3)
+    }
+
+    /**
+     * Tree-search style: warm the column-heights cache, transition an equal copy (which
+     * must not mutate cached heights via `columnHeights[location]++`), then drop on another
+     * equal copy. The piece must land at the true free height, not height+1.
+     */
+    @Test
+    fun stateTransitionOnCopyDoesNotCorruptCachedColumnHeights() {
+        // Column 0 rows 0..4 occupied (alternating), row 5 empty. 3 black, 2 white → white to move.
+        val state = Connect4State(longArrayOf(0b10101, 0b01010))
+        val simulator = Connect4Simulator()
+        val dropColumn0 = Connect4Action.valueOf(0)
+
+        // Populate column-heights cache for this position (true free height in col 0 is 5).
+        assertTrue(simulator.calculateLegalActions(state)[state.agentTurn].contains(dropColumn0))
+
+        // Branch explores dropping in column 0; must not increment the cached height array.
+        val branch = Connect4State(state.bitBoards.copyOf())
+        simulator.stateTransition(branch, listOf(null, dropColumn0))
+
+        // Independent line from the same position: drop in column 0 must still use height 5.
+        val other = Connect4State(state.bitBoards.copyOf())
+        val result = simulator.stateTransition(other, listOf(null, dropColumn0))
+
+        // White (player 1) at bit 5 → scores |= 1<<5. Corrupted height 6 would set bit 6 instead.
+        val expected = Connect4State(longArrayOf(0b10101, 0b01010 or (1 shl 5)))
+        assertEquals(expected, result)
+    }
+
+    /**
+     * Same cache-mutation hazard from the empty board: after one branch drops in a column,
+     * another branch from the same position must still drop at the bottom of that column.
+     */
+    @Test
+    fun stateTransitionOnCopyDoesNotCorruptSubsequentDropHeight() {
+        val simulator = Connect4Simulator()
+        val empty = simulator.initialState
+        // Warm cache for the empty board.
+        simulator.calculateLegalActions(empty)
+
+        // Branch A: drop in column 3 from a copy of empty.
+        val branchA = Connect4State(empty.bitBoards.copyOf())
+        simulator.stateTransition(branchA, listOf(Connect4Action.valueOf(3), null))
+
+        // Branch B: independent line from the same empty position; first drop in column 3
+        // must still use height 0 (bottom), not a corrupted cached height of 1.
+        val branchB = Connect4State(empty.bitBoards.copyOf())
+        val afterDrop = simulator.stateTransition(branchB, listOf(Connect4Action.valueOf(3), null))
+
+        // Correct bottom-row drop in column 3 is bit 21 → 2097152. A corrupted height of 22
+        // would place the piece one row higher instead.
+        assertEquals(Connect4State(longArrayOf(2097152, 0)), afterDrop)
     }
 }
