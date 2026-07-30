@@ -177,9 +177,9 @@ class HavannahSimulator(
         if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
             throw IllegalArgumentException("Illegal action, $action, from state, $state")
         }
-        prevActionCache[state] = action
         state.locations[action.x.toInt()][action.y.toInt()] = (state.agentTurn + 1).toByte()
         state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
+        prevActionCache[state.copy()] = action
         return state
     }
 
