@@ -28,7 +28,11 @@ data class YahtzeeState(
     }
 
     override fun copy(): YahtzeeState {
-        return copy(diceValues = diceValues, nRolls = nRolls, scores = scores)
+        return YahtzeeState(
+            diceValues = diceValues.copyOf(),
+            nRolls = nRolls,
+            scores = scores.copyOf()
+        )
     }
 
     override fun toString(): String {

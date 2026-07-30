@@ -28,6 +28,18 @@ class HexStateTest {
     }
 
     @Test
+    fun testCopyIsolation() {
+        val original = hexState.copy()
+        val copy = original.copy()
+        original.setLocation(0, 0, HexState.LOCATION_BLACK)
+        assertNotEquals(original, copy)
+        assertEquals(HexState.LOCATION_EMPTY, copy.getLocation(0, 0))
+
+        copy.setLocation(4, 4, HexState.LOCATION_WHITE)
+        assertEquals(HexState.LOCATION_EMPTY, original.getLocation(4, 4))
+    }
+
+    @Test
     fun testEquality() {
         val otherHexState = emptyState.copy()
         otherHexState.setLocation(2, 1, HexState.LOCATION_BLACK)

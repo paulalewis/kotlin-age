@@ -20,7 +20,8 @@ data class HexState(
     }
 
     override fun copy(): HexState {
-        return HexState(boardSize, bitBoards, agentTurn)
+        val copyBitBoards = Array(bitBoards.size) { bitBoards[it].copyOf() }
+        return HexState(boardSize, copyBitBoards, agentTurn)
     }
 
     val locations: Array<ByteArray>

@@ -15,6 +15,29 @@ class YahtzeeStateTest {
     }
 
     @Test
+    fun testCopyIsolation() {
+        val original = YahtzeeState(
+            diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte),
+            nRolls = 1,
+            scores = IntArray(YahtzeeState.N_SCORES) { -1 }
+        )
+        val copy = original.copy()
+
+        original.diceValues[0] = 6
+        original.scores[0] = 5
+        original.nRolls = 3
+
+        assertEquals(0.toByte(), copy.diceValues[0])
+        assertEquals(-1, copy.scores[0])
+        assertEquals(1.toByte(), copy.nRolls)
+
+        copy.diceValues[1] = 5
+        copy.scores[1] = 10
+        assertEquals(1.toByte(), original.diceValues[1])
+        assertEquals(-1, original.scores[1])
+    }
+
+    @Test
     fun testEqualityNotEqual() {
         val yahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte))
         val otherYahtzeeState = YahtzeeState(diceValues = ByteArray(YahtzeeState.N_DICE, Int::toByte), nRolls = 2)
