@@ -3,6 +3,7 @@ package com.castlefrog.agl.domains.backgammon
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
+import com.castlefrog.agl.requireLegalAction
 import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.random.Random
@@ -81,11 +82,9 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
     }
 
     override fun stateTransition(state: BackgammonState, actions: List<BackgammonAction?>): BackgammonState {
-        val action = actions[state.agentTurn]
+        val agentTurn = state.agentTurn
         val legalActions = calculateLegalActions(state)
-        if (action === null || !legalActions[state.agentTurn].contains(action)) {
-            throw IllegalArgumentException("Illegal action, $action, from state, $state")
-        }
+        val action = requireLegalAction(actions, agentTurn, legalActions[agentTurn], state)
 
         val locations = state.locations
 

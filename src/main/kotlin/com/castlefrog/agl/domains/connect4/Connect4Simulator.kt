@@ -2,6 +2,7 @@ package com.castlefrog.agl.domains.connect4
 
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
+import com.castlefrog.agl.requireLegalAction
 
 class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
     private val columnHeights: IntArray = IntArray(Connect4State.WIDTH)
@@ -42,17 +43,9 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
     override fun stateTransition(state: Connect4State, actions: List<Connect4Action?>): Connect4State {
         val agentTurn = state.agentTurn
-        if (agentTurn !in actions.indices) {
-            throw IllegalArgumentException(
-                "Illegal actions size, ${actions.size}, expected at least ${agentTurn + 1} for state, $state"
-            )
-        }
-        val action = actions[agentTurn]
         val legalActions = calculateLegalActions(state)
+        val action = requireLegalAction(actions, agentTurn, legalActions[agentTurn], state)
         val columnHeights = calculateColumnHeights(state)
-        if (action === null || !legalActions[agentTurn].contains(action)) {
-            throw IllegalArgumentException("Illegal action, $action, from state, $state")
-        }
         val height = columnHeights[action.location]
         state.bitBoards[agentTurn] = state.bitBoards[agentTurn] xor (1L shl height)
         return state

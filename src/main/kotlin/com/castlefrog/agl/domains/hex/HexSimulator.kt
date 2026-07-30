@@ -3,6 +3,7 @@ package com.castlefrog.agl.domains.hex
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
+import com.castlefrog.agl.requireLegalAction
 
 class HexSimulator(
     private val boardSize: Int = 11,
@@ -54,11 +55,9 @@ class HexSimulator(
     }
 
     override fun stateTransition(state: HexState, actions: List<HexAction?>): HexState {
-        val action = actions[state.agentTurn.toInt()]
+        val agentTurn = state.agentTurn.toInt()
         val legalActions = calculateLegalActions(state)
-        if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
-            throw IllegalArgumentException("Illegal action, $action, from state, $state")
-        }
+        val action = requireLegalAction(actions, agentTurn, legalActions[agentTurn], state)
         val x = action.x.toInt()
         val y = action.y.toInt()
         if (state.isLocationEmpty(x, y)) {

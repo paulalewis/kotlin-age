@@ -1,5 +1,6 @@
 package com.castlefrog.agl.domains.havannah
 
+import com.castlefrog.agl.IllegalActionException
 import com.castlefrog.agl.util.LruCache
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -8,6 +9,23 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class HavannahSimulatorTest {
+
+    @Test
+    fun stateTransitionEmptyActionsList() {
+        val simulator = HavannahSimulator(5)
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(simulator.initialState, emptyList())
+        }
+    }
+
+    @Test
+    fun stateTransitionWrongArityWhenSecondPlayerToMove() {
+        val simulator = HavannahSimulator(5)
+        val state = simulator.stateTransition(simulator.initialState, listOf(HavannahAction(0, 0), null))
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(state, listOf(null))
+        }
+    }
 
     @Test
     fun stateTransitionMove1() {
@@ -23,9 +41,17 @@ class HavannahSimulatorTest {
     fun stateTransitionIllegalMove() {
         val simulator = HavannahSimulator(5)
         val state2 = simulator.stateTransition(simulator.initialState, listOf(HavannahAction(0, 0), null))
-        assertThrows(
-            IllegalArgumentException::class.java
-        ) { simulator.stateTransition(state2, listOf(HavannahAction(0, 0), null)) }
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(state2, listOf(HavannahAction(0, 0), null))
+        }
+    }
+
+    @Test
+    fun stateTransitionNullActionForPlayerToMove() {
+        val simulator = HavannahSimulator(5)
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(simulator.initialState, listOf(null, null))
+        }
     }
 
     @Test
@@ -43,9 +69,9 @@ class HavannahSimulatorTest {
     fun stateTransitionMove2SameLocationPieRuleFalse() {
         val simulator = HavannahSimulator(base = 5, pieRule = false)
         val state2 = simulator.stateTransition(simulator.initialState, listOf(HavannahAction(0, 0), null))
-        assertThrows(
-            IllegalArgumentException::class.java
-        ) { simulator.stateTransition(state2, listOf(null, HavannahAction(0, 0))) }
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(state2, listOf(null, HavannahAction(0, 0)))
+        }
     }
 
     @Test

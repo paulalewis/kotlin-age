@@ -1,10 +1,28 @@
 package com.castlefrog.agl.domains.hex
 
+import com.castlefrog.agl.IllegalActionException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class HexSimulatorTest {
+
+    @Test
+    fun stateTransitionEmptyActionsList() {
+        val simulator = HexSimulator(boardSize = 5)
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(simulator.initialState, emptyList())
+        }
+    }
+
+    @Test
+    fun stateTransitionWrongArityWhenSecondPlayerToMove() {
+        val simulator = HexSimulator(boardSize = 5)
+        val state = simulator.stateTransition(simulator.initialState, listOf(HexAction(0, 0), null))
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(state, listOf(null))
+        }
+    }
 
     @Test
     fun stateTransitionMove1() {
@@ -20,9 +38,17 @@ class HexSimulatorTest {
     fun stateTransitionIllegalMove() {
         val simulator = HexSimulator(boardSize = 5)
         val state2 = simulator.stateTransition(simulator.initialState, listOf(HexAction(0, 0), null))
-        assertThrows(
-            IllegalArgumentException::class.java
-        ) { simulator.stateTransition(state2, listOf(HexAction(0, 0), null)) }
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(state2, listOf(HexAction(0, 0), null))
+        }
+    }
+
+    @Test
+    fun stateTransitionNullActionForPlayerToMove() {
+        val simulator = HexSimulator(boardSize = 5)
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(simulator.initialState, listOf(null, null))
+        }
     }
 
     @Test

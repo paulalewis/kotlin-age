@@ -3,6 +3,7 @@ package com.castlefrog.agl.domains.havannah
 import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
+import com.castlefrog.agl.requireLegalAction
 import com.castlefrog.agl.util.LruCache
 import kotlin.math.max
 import kotlin.math.min
@@ -172,11 +173,9 @@ class HavannahSimulator(
     }
 
     override fun stateTransition(state: HavannahState, actions: List<HavannahAction?>): HavannahState {
-        val action = actions[state.agentTurn.toInt()]
+        val agentTurn = state.agentTurn.toInt()
         val legalActions = calculateLegalActions(state)
-        if (action === null || !legalActions[state.agentTurn.toInt()].contains(action)) {
-            throw IllegalArgumentException("Illegal action, $action, from state, $state")
-        }
+        val action = requireLegalAction(actions, agentTurn, legalActions[agentTurn], state)
         state.locations[action.x.toInt()][action.y.toInt()] = (state.agentTurn + 1).toByte()
         state.agentTurn = nextPlayerTurnSequential(state.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
         prevActionCache[state.copy()] = action

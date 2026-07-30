@@ -1,5 +1,6 @@
 package com.castlefrog.agl.domains.connect4
 
+import com.castlefrog.agl.IllegalActionException
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
@@ -120,11 +121,38 @@ class Connect4SimulatorTest {
     }
 
     @Test
-    fun stateTransitionInvalidNumberOfActions() {
+    fun stateTransitionEmptyActionsList() {
         val simulator = Connect4Simulator()
-        assertThrows(
-            IllegalArgumentException::class.java
-        ) { simulator.stateTransition(simulator.initialState, emptyList()) }
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(simulator.initialState, emptyList())
+        }
+    }
+
+    @Test
+    fun stateTransitionWrongArityWhenSecondPlayerToMove() {
+        val simulator = Connect4Simulator()
+        val state = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(0), null))
+        // Only one entry; agent turn is 1 → size check must throw IllegalActionException (not IndexOutOfBounds).
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(state, listOf(null))
+        }
+    }
+
+    @Test
+    fun stateTransitionIllegalMove() {
+        val simulator = Connect4Simulator()
+        val state = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(2), null))
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(state, listOf(Connect4Action.valueOf(2), null))
+        }
+    }
+
+    @Test
+    fun stateTransitionNullActionForPlayerToMove() {
+        val simulator = Connect4Simulator()
+        assertThrows(IllegalActionException::class.java) {
+            simulator.stateTransition(simulator.initialState, listOf(null, null))
+        }
     }
 
     @Test
@@ -133,15 +161,6 @@ class Connect4SimulatorTest {
         val state = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(3), null))
         val expectedState = Connect4State(longArrayOf(2097152, 0))
         assertEquals(expectedState, state)
-    }
-
-    @Test
-    fun stateTransitionNullAction() {
-        val simulator = Connect4Simulator()
-        val state = simulator.stateTransition(simulator.initialState, listOf(Connect4Action.valueOf(2), null))
-        assertThrows(
-            IllegalArgumentException::class.java
-        ) { simulator.stateTransition(state, listOf(Connect4Action.valueOf(2), null)) }
     }
 
     @Test
