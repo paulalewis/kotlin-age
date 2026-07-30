@@ -8,7 +8,6 @@ Domains:
 - [Connect 4](https://en.wikipedia.org/wiki/Connect4)
 - [Havannah](https://en.wikipedia.org/wiki/Havannah)
 - [Hex](https://en.wikipedia.org/wiki/Hex_%28board_game%29)
-- [Yahtzee](https://en.wikipedia.org/wiki/Yahtzee)
 
 Agents:
 - random - agent randomly selects an action
