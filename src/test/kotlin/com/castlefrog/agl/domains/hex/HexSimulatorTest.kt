@@ -2,8 +2,6 @@ package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.IllegalActionException
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -24,17 +22,6 @@ class HexSimulatorTest {
         assertThrows(IllegalActionException::class.java) {
             simulator.stateTransition(state, listOf(null))
         }
-    }
-
-    @Test
-    fun stateTransitionDoesNotMutateInput() {
-        val simulator = HexSimulator(boardSize = 5)
-        val before = simulator.initialState
-        val snapshot = before.copy()
-        val after = simulator.stateTransition(before, listOf(HexAction(0, 0), null))
-        assertEquals(snapshot, before)
-        assertNotSame(before, after)
-        assertNotEquals(before, after)
     }
 
     @Test

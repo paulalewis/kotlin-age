@@ -1,0 +1,78 @@
+package com.castlefrog.agl
+
+import com.castlefrog.agl.domains.backgammon.BackgammonSimulator
+import com.castlefrog.agl.domains.backgammon.BackgammonState
+import com.castlefrog.agl.domains.connect4.Connect4Simulator
+import com.castlefrog.agl.domains.connect4.Connect4State
+import com.castlefrog.agl.domains.havannah.HavannahSimulator
+import com.castlefrog.agl.domains.havannah.HavannahState
+import com.castlefrog.agl.domains.hex.HexSimulator
+import com.castlefrog.agl.domains.hex.HexState
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+import kotlin.random.Random
+
+/**
+ * Parameterized harness: every domain must satisfy [SimulatorContract].
+ */
+@RunWith(Parameterized::class)
+class CrossDomainSimulatorContractTest(
+    @Suppress("unused") private val domainName: String,
+    private val runContracts: () -> Unit
+) {
+
+    @Test
+    fun stateTransitionAndCopyContracts() {
+        runContracts()
+    }
+
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters(name = "{0}")
+        fun domains(): Collection<Array<Any>> = listOf(
+            arrayOf(
+                "Connect4",
+                {
+                    SimulatorContract.assertDomainContracts(
+                        simulator = Connect4Simulator(),
+                        mutateNested = { state: Connect4State -> state.bitBoards[0] = state.bitBoards[0] xor 1L }
+                    )
+                }
+            ),
+            arrayOf(
+                "Hex",
+                {
+                    SimulatorContract.assertDomainContracts(
+                        simulator = HexSimulator(boardSize = 5),
+                        mutateNested = { state: HexState ->
+                            state.setLocation(0, 0, HexState.LOCATION_BLACK)
+                        }
+                    )
+                }
+            ),
+            arrayOf(
+                "Havannah",
+                {
+                    SimulatorContract.assertDomainContracts(
+                        simulator = HavannahSimulator(base = 5),
+                        mutateNested = { state: HavannahState ->
+                            state.locations[0][0] = HavannahState.LOCATION_BLACK
+                        }
+                    )
+                }
+            ),
+            arrayOf(
+                "Backgammon",
+                {
+                    SimulatorContract.assertDomainContracts(
+                        simulator = BackgammonSimulator(Random(111)),
+                        mutateNested = { state: BackgammonState ->
+                            state.locations[0] = (state.locations[0] - 1).toByte()
+                        }
+                    )
+                }
+            )
+        )
+    }
+}

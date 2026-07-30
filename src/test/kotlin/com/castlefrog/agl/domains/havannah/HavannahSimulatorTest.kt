@@ -6,7 +6,6 @@ import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -135,17 +134,6 @@ class HavannahSimulatorTest {
         assertEquals(secondAction, cache[afterSecond.copy()])
         assertEquals(snapshotAfterFirst, afterFirst)
         assertNotEquals(afterFirst, afterSecond)
-    }
-
-    @Test
-    fun stateTransitionDoesNotMutateInput() {
-        val simulator = HavannahSimulator(5)
-        val before = simulator.initialState
-        val snapshot = before.copy()
-        val after = simulator.stateTransition(before, listOf(HavannahAction(0, 0), null))
-        assertEquals(snapshot, before)
-        assertNotSame(before, after)
-        assertNotEquals(before, after)
     }
 
     private fun prevActionCache(simulator: HavannahSimulator): Any {

@@ -3,8 +3,6 @@ package com.castlefrog.agl.domains.connect4
 import com.castlefrog.agl.IllegalActionException
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -155,17 +153,6 @@ class Connect4SimulatorTest {
         assertThrows(IllegalActionException::class.java) {
             simulator.stateTransition(simulator.initialState, listOf(null, null))
         }
-    }
-
-    @Test
-    fun stateTransitionDoesNotMutateInput() {
-        val simulator = Connect4Simulator()
-        val before = simulator.initialState
-        val snapshot = before.copy()
-        val after = simulator.stateTransition(before, listOf(Connect4Action.valueOf(3), null))
-        assertEquals(snapshot, before)
-        assertNotSame(before, after)
-        assertNotEquals(before, after)
     }
 
     @Test
