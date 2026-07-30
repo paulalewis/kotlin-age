@@ -2,8 +2,14 @@ package com.castlefrog.agl
 
 import com.castlefrog.agl.domains.backgammon.BackgammonSimulator
 import com.castlefrog.agl.domains.backgammon.BackgammonState
+import com.castlefrog.agl.domains.chess.ChessSimulator
+import com.castlefrog.agl.domains.chess.ChessState
 import com.castlefrog.agl.domains.connect4.Connect4Simulator
 import com.castlefrog.agl.domains.connect4.Connect4State
+import com.castlefrog.agl.domains.draughts.DraughtsSimulator
+import com.castlefrog.agl.domains.draughts.DraughtsState
+import com.castlefrog.agl.domains.go.GoSimulator
+import com.castlefrog.agl.domains.go.GoState
 import com.castlefrog.agl.domains.havannah.HavannahSimulator
 import com.castlefrog.agl.domains.havannah.HavannahState
 import com.castlefrog.agl.domains.hex.HexSimulator
@@ -69,6 +75,39 @@ class CrossDomainSimulatorContractTest(
                         simulator = BackgammonSimulator(Random(111)),
                         mutateNested = { state: BackgammonState ->
                             state.locations[0] = (state.locations[0] - 1).toByte()
+                        }
+                    )
+                }
+            ),
+            arrayOf(
+                "Chess",
+                {
+                    SimulatorContract.assertDomainContracts(
+                        simulator = ChessSimulator(),
+                        mutateNested = { state: ChessState ->
+                            state.set(0, 1, ChessState.EMPTY)
+                        }
+                    )
+                }
+            ),
+            arrayOf(
+                "Draughts",
+                {
+                    SimulatorContract.assertDomainContracts(
+                        simulator = DraughtsSimulator(),
+                        mutateNested = { state: DraughtsState ->
+                            state.set(1, 2, DraughtsState.EMPTY)
+                        }
+                    )
+                }
+            ),
+            arrayOf(
+                "Go",
+                {
+                    SimulatorContract.assertDomainContracts(
+                        simulator = GoSimulator(boardSize = 5),
+                        mutateNested = { state: GoState ->
+                            state.set(0, 0, GoState.LOCATION_BLACK)
                         }
                     )
                 }

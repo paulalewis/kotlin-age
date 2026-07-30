@@ -27,12 +27,12 @@ class HexSimulator(
         for (i in 0 until state.boardSize) {
             if (locations[0][i].toInt() == HexState.LOCATION_BLACK && !visited[0][i]) {
                 if (dfsSides(0, i, locations, visited, actions) and 3 == 3) {
-                    return AdversarialRewards.blackWins()
+                    return AdversarialRewards.firstPlayerWins()
                 }
             }
             if (locations[i][0].toInt() == HexState.LOCATION_WHITE && !visited[i][0]) {
                 if (dfsSides(i, 0, locations, visited, actions) and 12 == 12) {
-                    return AdversarialRewards.whiteWins()
+                    return AdversarialRewards.secondPlayerWins()
                 }
             }
         }

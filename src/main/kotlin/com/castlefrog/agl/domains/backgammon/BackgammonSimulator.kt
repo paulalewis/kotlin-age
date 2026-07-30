@@ -40,9 +40,9 @@ class BackgammonSimulator(private val random: Random = Random) : Simulator<Backg
             }
         }
         return if (!pos) {
-            AdversarialRewards.blackWins()
+            AdversarialRewards.firstPlayerWins()
         } else if (!neg) {
-            AdversarialRewards.whiteWins()
+            AdversarialRewards.secondPlayerWins()
         } else {
             AdversarialRewards.neutral()
         }

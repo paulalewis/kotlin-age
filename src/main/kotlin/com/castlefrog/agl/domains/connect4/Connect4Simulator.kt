@@ -23,7 +23,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
                 (diagonal2 and (diagonal2 shr 2 * (height + 2))) or
                 (vertical and (vertical shr 2)) != 0L
             ) {
-                return if (i == 0) AdversarialRewards.blackWins() else AdversarialRewards.whiteWins()
+                return if (i == 0) AdversarialRewards.firstPlayerWins() else AdversarialRewards.secondPlayerWins()
             }
         }
         return AdversarialRewards.neutral()

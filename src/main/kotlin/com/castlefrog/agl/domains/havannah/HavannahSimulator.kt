@@ -89,9 +89,9 @@ class HavannahSimulator(
                     }
                     if (nCorners >= 2 || nSides >= 3) {
                         return if (state.locations[x][y] == HavannahState.LOCATION_BLACK) {
-                            AdversarialRewards.blackWins()
+                            AdversarialRewards.firstPlayerWins()
                         } else {
-                            AdversarialRewards.whiteWins()
+                            AdversarialRewards.secondPlayerWins()
                         }
                     }
                 }
@@ -131,9 +131,9 @@ class HavannahSimulator(
                 if (!otherState.isLocationEmpty(x, y) && !visited2[x][y]) {
                     if (dfsCornersSides(x, y, otherState, visited2, corners, sides, actions) == 0) {
                         return if (otherState.agentTurn == HavannahState.TURN_BLACK) {
-                            AdversarialRewards.whiteWins()
+                            AdversarialRewards.secondPlayerWins()
                         } else {
-                            AdversarialRewards.blackWins()
+                            AdversarialRewards.firstPlayerWins()
                         }
                     }
                 }
