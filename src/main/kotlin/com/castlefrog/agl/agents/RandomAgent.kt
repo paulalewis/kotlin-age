@@ -13,7 +13,7 @@ import kotlin.random.Random
  */
 class RandomAgent(private val random: Random = Random) : Agent {
 
-    override fun <S : State<S>, A : Action<A>> selectAction(
+    override fun <S : State<S>, A : Action> selectAction(
         playerId: Int,
         state: S,
         simulator: Simulator<S, A>

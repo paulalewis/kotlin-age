@@ -1,3 +1,5 @@
 package com.castlefrog.agl
 
-interface State<S : State<S>> : Copyable<S>
+interface State<out T : State<T>> {
+    fun copy(): T
+}

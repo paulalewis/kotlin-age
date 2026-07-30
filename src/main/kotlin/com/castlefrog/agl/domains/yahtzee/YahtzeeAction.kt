@@ -2,7 +2,7 @@ package com.castlefrog.agl.domains.yahtzee
 
 import com.castlefrog.agl.Action
 
-sealed class YahtzeeAction : Action<YahtzeeAction>
+sealed class YahtzeeAction : Action
 
 /**
  * The roll action controls which dice get rolled and which are kept for next
@@ -10,8 +10,6 @@ sealed class YahtzeeAction : Action<YahtzeeAction>
  * Indicated quantity of each die number to not roll again.
  */
 data class YahtzeeRollAction(val selected: ByteArray = ByteArray(YahtzeeState.N_VALUES)) : YahtzeeAction() {
-
-    override fun copy(): YahtzeeRollAction = copy(selected = selected)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -37,8 +35,6 @@ data class YahtzeeSelectAction(val scoreCategory: YahtzeeScoreCategory) : Yahtze
     override fun toString(): String {
         return scoreCategory.toString()
     }
-
-    override fun copy(): YahtzeeSelectAction = this
 
     companion object {
         /** list of all possible select actions. */

@@ -2,9 +2,7 @@ package com.castlefrog.agl.domains.hex
 
 import com.castlefrog.agl.Action
 
-data class HexAction(val x: Byte, val y: Byte) : Action<HexAction> {
-
-    override fun copy(): HexAction = this
+data class HexAction(val x: Byte, val y: Byte) : Action {
 
     override fun toString(): String {
         return (0x41 + x).toChar() + y.toString()

@@ -5,7 +5,7 @@ package com.castlefrog.agl
  * A simulator is associated with a domain specific state and action
  * type.
  */
-interface Simulator<S : State<S>, A : Action<A>> {
+interface Simulator<S : State<S>, A : Action> {
     /**
      * @return an initial state in the domain
      */

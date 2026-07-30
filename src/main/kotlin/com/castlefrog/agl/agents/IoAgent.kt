@@ -10,7 +10,7 @@ import java.util.Scanner
 class IoAgent(
     private val scanner: Scanner = Scanner(System.`in`),
 ) : Agent {
-    override fun <S : State<S>, A : Action<A>> selectAction(
+    override fun <S : State<S>, A : Action> selectAction(
         playerId: Int,
         state: S,
         simulator: Simulator<S, A>

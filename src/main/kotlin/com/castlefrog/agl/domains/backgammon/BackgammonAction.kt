@@ -2,11 +2,7 @@ package com.castlefrog.agl.domains.backgammon
 
 import com.castlefrog.agl.Action
 
-data class BackgammonAction(val moves: Set<BackgammonMove>) : Action<BackgammonAction> {
-
-    override fun copy(): BackgammonAction {
-        return copy(moves = HashSet(this.moves))
-    }
+data class BackgammonAction(val moves: Set<BackgammonMove>) : Action {
 
     override fun toString(): String {
         val output = StringBuilder()

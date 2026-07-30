@@ -2,9 +2,7 @@ package com.castlefrog.agl.domains.havannah
 
 import com.castlefrog.agl.Action
 
-data class HavannahAction(val x: Byte, val y: Byte) : Action<HavannahAction> {
-
-    override fun copy(): HavannahAction = this
+data class HavannahAction(val x: Byte, val y: Byte) : Action {
 
     override fun toString(): String {
         return "" + (0x41 + x).toChar() + y

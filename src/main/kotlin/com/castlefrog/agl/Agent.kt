@@ -15,5 +15,5 @@ interface Agent {
      * @return selected action from the current state, or null
      *         if the agent had no legal actions to choose
      */
-    fun <S : State<S>, A : Action<A>> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>): A?
+    fun <S : State<S>, A : Action> selectAction(playerId: Int, state: S, simulator: Simulator<S, A>): A?
 }

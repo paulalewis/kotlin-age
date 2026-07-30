@@ -9,12 +9,6 @@ import org.junit.Test
 class Connect4ActionTest {
 
     @Test
-    fun copy() {
-        val action = Connect4Action.valueOf(2)
-        assertSame(action.copy(), action)
-    }
-
-    @Test
     fun valueOf() {
         assertSame(Connect4Action.valueOf(3), Connect4Action.valueOf(3))
     }
