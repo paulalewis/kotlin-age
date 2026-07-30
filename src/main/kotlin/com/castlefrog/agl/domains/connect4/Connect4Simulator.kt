@@ -23,17 +23,17 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
                 (diagonal2 and (diagonal2 shr 2 * (height + 2))) or
                 (vertical and (vertical shr 2)) != 0L
             ) {
-                return if (i == 0) AdversarialRewards.BLACK_WINS else AdversarialRewards.WHITE_WINS
+                return if (i == 0) AdversarialRewards.blackWins() else AdversarialRewards.whiteWins()
             }
         }
-        return AdversarialRewards.NEUTRAL
+        return AdversarialRewards.neutral()
     }
 
     override fun calculateLegalActions(state: Connect4State): List<Set<Connect4Action>> {
         val legalActions: List<MutableSet<Connect4Action>> = listOf(mutableSetOf(), mutableSetOf())
         val rewards = calculateRewards(state)
         val columnHeights = calculateColumnHeights(state)
-        if (rewards.contentEquals(AdversarialRewards.NEUTRAL)) {
+        if (rewards.contentEquals(AdversarialRewards.neutral())) {
             (0 until Connect4State.WIDTH)
                 .filter { 1L shl columnHeights[it] and ABOVE_TOP_ROW == 0L }
                 .forEach { legalActions[state.agentTurn].add(Connect4Action.valueOf(it)) }

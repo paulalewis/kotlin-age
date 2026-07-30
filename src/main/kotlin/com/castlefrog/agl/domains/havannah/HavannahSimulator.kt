@@ -90,9 +90,9 @@ class HavannahSimulator(
                     }
                     if (nCorners >= 2 || nSides >= 3) {
                         return if (state.locations[x][y] == HavannahState.LOCATION_BLACK) {
-                            AdversarialRewards.BLACK_WINS
+                            AdversarialRewards.blackWins()
                         } else {
-                            AdversarialRewards.WHITE_WINS
+                            AdversarialRewards.whiteWins()
                         }
                     }
                 }
@@ -132,21 +132,21 @@ class HavannahSimulator(
                 if (!otherState.isLocationEmpty(x, y) && !visited2[x][y]) {
                     if (dfsCornersSides(x, y, otherState, visited2, corners, sides, actions) == 0) {
                         return if (otherState.agentTurn == HavannahState.TURN_BLACK) {
-                            AdversarialRewards.WHITE_WINS
+                            AdversarialRewards.whiteWins()
                         } else {
-                            AdversarialRewards.BLACK_WINS
+                            AdversarialRewards.blackWins()
                         }
                     }
                 }
             }
         }
-        return AdversarialRewards.NEUTRAL
+        return AdversarialRewards.neutral()
     }
 
     override fun calculateLegalActions(state: HavannahState): List<Set<HavannahAction>> {
         val legalActions = arrayListOf<MutableSet<HavannahAction>>(mutableSetOf(), mutableSetOf())
         val rewards = calculateRewards(state)
-        if (rewards.contentEquals(AdversarialRewards.NEUTRAL)) {
+        if (rewards.contentEquals(AdversarialRewards.neutral())) {
             var count = 0
             var tempAction: HavannahAction? = null
             for (y in 0 until size) {

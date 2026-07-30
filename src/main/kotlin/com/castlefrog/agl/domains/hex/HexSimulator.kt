@@ -27,16 +27,16 @@ class HexSimulator(
         for (i in 0 until state.boardSize) {
             if (locations[0][i].toInt() == HexState.LOCATION_BLACK && !visited[0][i]) {
                 if (dfsSides(0, i, locations, visited, actions) and 3 == 3) {
-                    return AdversarialRewards.BLACK_WINS
+                    return AdversarialRewards.blackWins()
                 }
             }
             if (locations[i][0].toInt() == HexState.LOCATION_WHITE && !visited[i][0]) {
                 if (dfsSides(i, 0, locations, visited, actions) and 12 == 12) {
-                    return AdversarialRewards.WHITE_WINS
+                    return AdversarialRewards.whiteWins()
                 }
             }
         }
-        return AdversarialRewards.NEUTRAL
+        return AdversarialRewards.neutral()
     }
 
     override fun calculateLegalActions(state: HexState): List<Set<HexAction>> {
@@ -44,7 +44,7 @@ class HexSimulator(
         legalActions.add(mutableSetOf())
         legalActions.add(mutableSetOf())
         val rewards = calculateRewards(state)
-        if (rewards.contentEquals(AdversarialRewards.NEUTRAL)) {
+        if (rewards.contentEquals(AdversarialRewards.neutral())) {
             (0 until state.boardSize).forEach { i ->
                 (0 until state.boardSize)
                     .filter { state.isLocationEmpty(i, it) || (pieRule && isSecondMove(state)) }
