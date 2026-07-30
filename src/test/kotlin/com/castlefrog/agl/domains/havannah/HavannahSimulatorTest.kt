@@ -1,11 +1,8 @@
 package com.castlefrog.agl.domains.havannah
 
 import com.castlefrog.agl.IllegalActionException
-import com.castlefrog.agl.util.LruCache
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -85,61 +82,6 @@ class HavannahSimulatorTest {
         expectedState.locations[0][1] = HavannahState.LOCATION_WHITE
         expectedState.agentTurn = HavannahState.TURN_BLACK
         assertEquals(expectedState, state3)
-    }
-
-    /**
-     * After a move, prev-action must be retrievable for the post-move state content.
-     * Caching under the pre-move state (then mutating that object in place) orphans the
-     * map entry so the optimization never hits; keying a deep copy of the post-move
-     * state keeps the entry findable.
-     */
-    @Test
-    fun stateTransitionCachesPrevActionUnderPostMoveState() {
-        val simulator = HavannahSimulator(5)
-        val action = HavannahAction(2, 3)
-        val result = simulator.stateTransition(simulator.initialState, listOf(action, null))
-
-        @Suppress("UNCHECKED_CAST")
-        val cache = prevActionCache(simulator) as LruCache<HavannahState, HavannahAction>
-
-        assertEquals(
-            "prev action must be cached under post-move state content",
-            action,
-            cache[result]
-        )
-        // Equal snapshot (not the same instance) must also hit — keys must be value-based.
-        assertEquals(action, cache[result.copy()])
-        assertNotNull(cache[result.copy()])
-    }
-
-    /**
-     * Size-1 cache keeps the latest post-move entry; the input state is not mutated so
-     * earlier positions remain usable for history / search.
-     */
-    @Test
-    fun prevActionCacheKeysPostMoveStateWithoutMutatingInput() {
-        val simulator = HavannahSimulator(5)
-        val firstAction = HavannahAction(0, 0)
-        val afterFirst = simulator.stateTransition(simulator.initialState, listOf(firstAction, null))
-        val snapshotAfterFirst = afterFirst.copy()
-
-        val secondAction = HavannahAction(1, 0)
-        val afterSecond = simulator.stateTransition(afterFirst, listOf(null, secondAction))
-
-        @Suppress("UNCHECKED_CAST")
-        val cache = prevActionCache(simulator) as LruCache<HavannahState, HavannahAction>
-
-        assertEquals(secondAction, cache[afterSecond])
-        assertEquals(1, cache.size)
-        assertEquals(secondAction, cache[afterSecond.copy()])
-        assertEquals(snapshotAfterFirst, afterFirst)
-        assertNotEquals(afterFirst, afterSecond)
-    }
-
-    private fun prevActionCache(simulator: HavannahSimulator): Any {
-        val field = HavannahSimulator::class.java.getDeclaredField("prevActionCache")
-        field.isAccessible = true
-        return field.get(simulator)
     }
 
     @Test

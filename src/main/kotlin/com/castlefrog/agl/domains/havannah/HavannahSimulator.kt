@@ -4,7 +4,6 @@ import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
 import com.castlefrog.agl.requireLegalAction
-import com.castlefrog.agl.util.LruCache
 import kotlin.math.max
 import kotlin.math.min
 
@@ -14,7 +13,7 @@ class HavannahSimulator(
 ) : Simulator<HavannahState, HavannahAction> {
 
     /** keep track of prev action for performance reasons */
-    private val prevActionCache = LruCache<HavannahState, HavannahAction>(1)
+    private var prevActionCache: HavannahAction? = null
     private val size = 2 * base - 1
     private val actions: Array<Array<HavannahAction>> = HavannahAction.generateActions(size)
 
@@ -56,7 +55,7 @@ class HavannahSimulator(
         get() = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
 
     override fun calculateRewards(state: HavannahState): IntArray {
-        val prevAction = prevActionCache[state]
+        val prevAction = prevActionCache
         val visited = Array(size) { BooleanArray(size) }
         val bounds = if (prevAction != null) {
             val xMin = prevAction.x.toInt()
@@ -179,8 +178,7 @@ class HavannahSimulator(
         val nextState = state.copy()
         nextState.locations[action.x.toInt()][action.y.toInt()] = (nextState.agentTurn + 1).toByte()
         nextState.agentTurn = nextPlayerTurnSequential(nextState.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
-        // Snapshot key so the cache entry stays valid even if the caller later mutates [nextState].
-        prevActionCache[nextState.copy()] = action
+        prevActionCache = action
         return nextState
     }
 
