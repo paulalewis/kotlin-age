@@ -8,25 +8,17 @@ import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.random.Random
 
-/**
- * Classic game of Backgammon
- */
 class BackgammonSimulator(private val random: Random = Random) : Simulator<BackgammonState, BackgammonAction> {
 
     override val initialState: BackgammonState
         get() {
-            val agentTurn: Int = random.nextInt(2)
-            val dice: ByteArray = byteArrayOf(
-                when (random.nextInt(15)) {
-                    0 -> 1
-                    1, 2 -> 2
-                    3, 4, 5 -> 3
-                    6, 7, 8, 9 -> 4
-                    else -> 5
-                },
-                (random.nextInt(BackgammonState.N_DIE_FACES)).toByte()
-            )
-            return BackgammonState(dice = dice, agentTurn = agentTurn)
+            // Player 0's die (stored as die0).
+            val die0 = random.nextInt(BackgammonState.N_DIE_FACES)
+            // Player 1's die: uniform over the n-1 faces that are not die0.
+            val offset = random.nextInt(BackgammonState.N_DIE_FACES - 1)
+            val die1 = if (offset >= die0) offset + 1 else offset
+            val dice: ByteArray = byteArrayOf(die0.toByte(), die1.toByte())
+            return BackgammonState(dice = dice, agentTurn = if (die0 > die1) 0 else 1)
         }
 
     override fun calculateRewards(state: BackgammonState): IntArray {

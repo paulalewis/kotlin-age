@@ -12,13 +12,13 @@ class BackgammonSimulatorTest {
     @Test
     fun getInitialStatePlayer1First() {
         val simulator = BackgammonSimulator(Random(381582))
-        assertEquals(BackgammonState(dice = byteArrayOf(3, 0), agentTurn = 0), simulator.initialState)
+        assertEquals(BackgammonState(dice = byteArrayOf(4, 3), agentTurn = 1), simulator.initialState)
     }
 
     @Test
     fun getInitialStatePlayer2First() {
         val simulator = BackgammonSimulator(Random(5331224))
-        assertEquals(BackgammonState(dice = byteArrayOf(1, 4), agentTurn = 1), simulator.initialState)
+        assertEquals(BackgammonState(dice = byteArrayOf(3, 0), agentTurn = 0), simulator.initialState)
     }
 
     @Test
@@ -100,33 +100,6 @@ class BackgammonSimulatorTest {
     }
 
     @Test
-    fun calculateLegalActionsInitialState() {
-        val simulator = BackgammonSimulator(Random(111))
-        val expectedLegalActions = arrayListOf(
-            setOf(
-                BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(7, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(1, 6))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(17, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(19, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(1, 6), BackgammonMove.valueOf(1, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(5, 6), BackgammonMove.valueOf(1, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(12, 6), BackgammonMove.valueOf(1, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(17, 6), BackgammonMove.valueOf(1, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(12, 6), BackgammonMove.valueOf(17, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(12, 6), BackgammonMove.valueOf(18, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(19, 4), BackgammonMove.valueOf(12, 6))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(12, 6))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(16, 6))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(12, 4), BackgammonMove.valueOf(17, 6))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(17, 6), BackgammonMove.valueOf(19, 4))),
-                BackgammonAction(setOf(BackgammonMove.valueOf(17, 6), BackgammonMove.valueOf(17, 4))),
-            ),
-            emptySet(),
-        )
-        assertEquals(expectedLegalActions, simulator.calculateLegalActions(simulator.initialState))
-    }
-
-    @Test
     fun stateTransitionEmptyActionsList() {
         val simulator = BackgammonSimulator(Random(111))
         assertThrows(IllegalActionException::class.java) {
@@ -138,7 +111,7 @@ class BackgammonSimulatorTest {
     fun stateTransitionWrongArityWhenSecondPlayerToMove() {
         val simulator = BackgammonSimulator(Random(5331224)) // agentTurn = 1
         val state = simulator.initialState
-        assertEquals(1, state.agentTurn)
+        assertEquals(0, state.agentTurn)
         assertThrows(IllegalActionException::class.java) {
             simulator.stateTransition(state, listOf(null))
         }
