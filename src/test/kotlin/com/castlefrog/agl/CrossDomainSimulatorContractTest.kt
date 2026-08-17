@@ -96,7 +96,7 @@ class CrossDomainSimulatorContractTest(
                     SimulatorContract.assertDomainContracts(
                         simulator = DraughtsSimulator(),
                         mutateNested = { state: DraughtsState ->
-                            state.set(1, 2, DraughtsState.EMPTY)
+                            state.set(0, 2, DraughtsState.EMPTY)
                         }
                     )
                 }

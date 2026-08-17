@@ -4,8 +4,8 @@ import com.castlefrog.agl.Action
 
 /**
  * A single step move or jump from one dark square to another.
- * Multi-jumps are played as successive actions while [DraughtsState.mustContinueFrom]
- * forces the same piece to keep capturing.
+ * Multi-jumps are played as successive actions while [DraughtsState.mustContinueFromX]
+ * forces the same piece to keep capturing. Kings may slide or jump any distance.
  */
 data class DraughtsAction(
     val fromX: Int,

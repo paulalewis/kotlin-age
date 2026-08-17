@@ -9,20 +9,20 @@ import org.junit.Test
 class DraughtsStateTest {
 
     @Test
-    fun initialBoardHasTwelveMenEach() {
+    fun initialBoardHasTwentyMenEach() {
         val state = DraughtsState()
-        var black = 0
         var white = 0
+        var black = 0
         for (x in 0 until DraughtsState.SIZE) {
             for (y in 0 until DraughtsState.SIZE) {
                 when (state.get(x, y)) {
-                    DraughtsState.BLACK_MAN -> black++
                     DraughtsState.WHITE_MAN -> white++
+                    DraughtsState.BLACK_MAN -> black++
                 }
             }
         }
-        assertEquals(12, black)
-        assertEquals(12, white)
+        assertEquals(20, white)
+        assertEquals(20, black)
     }
 
     @Test
@@ -43,7 +43,18 @@ class DraughtsStateTest {
         val copy = state.copy()
         assertEquals(state, copy)
         assertNotSame(state.board, copy.board)
-        copy.set(1, 0, DraughtsState.EMPTY)
+        copy.set(0, 0, DraughtsState.EMPTY)
         assertNotEquals(state, copy)
+    }
+
+    @Test
+    fun pendingCapturesCopiedIndependently() {
+        val state = DraughtsState()
+        state.pendingCaptures.add(DraughtsState.captureKey(2, 2))
+        val copy = state.copy()
+        assertEquals(state, copy)
+        copy.pendingCaptures.add(DraughtsState.captureKey(4, 4))
+        assertNotEquals(state, copy)
+        assertEquals(1, state.pendingCaptures.size)
     }
 }
