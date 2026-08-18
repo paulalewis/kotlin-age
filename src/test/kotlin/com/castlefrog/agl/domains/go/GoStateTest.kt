@@ -32,4 +32,19 @@ class GoStateTest {
         val state = GoState(boardSize = 2)
         assertEquals(". .\n. .", state.toString())
     }
+
+    @Test
+    fun defaultBoardSizeIs19() {
+        assertEquals(19, GoState().boardSize)
+    }
+
+    @Test
+    fun copyIsolatesPositionHistory() {
+        val state = GoState(boardSize = 3)
+        state.recordCurrentColoring()
+        val copy = state.copy()
+        assertEquals(state, copy)
+        copy.positionHistory[0][0] = GoState.LOCATION_BLACK
+        assertNotEquals(state.positionHistory[0][0], copy.positionHistory[0][0])
+    }
 }

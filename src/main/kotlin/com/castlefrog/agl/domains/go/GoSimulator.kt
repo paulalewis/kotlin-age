@@ -6,12 +6,14 @@ import com.castlefrog.agl.domains.nextPlayerTurnSequential
 import com.castlefrog.agl.requireLegalAction
 
 /**
- * Go with area scoring after two consecutive passes.
+ * Tromp–Taylor Go (logical rules), with a configurable square board.
  *
- * Rules modeled: alternate turns, capture by removing groups with no liberties,
- * simple ko (no immediate recapture of a single-stone ko), no suicide unless the
- * move captures, pass allowed. Scoring is Chinese-style area score (stones +
- * surrounded empty points); higher score wins. Komi is applied for white.
+ * Default board is 19×19. A turn is a pass, or a play that does not repeat an
+ * earlier whole-board coloring (positional superko). A play colors an empty
+ * point, then clears opponent stones with no liberties, then own stones with
+ * no liberties — suicide is legal when the resulting coloring is new. Two
+ * consecutive passes end the game. Scoring is area (stones + empty points that
+ * reach only that color). [komi] is added to white (7 by default).
  */
 class GoSimulator(
     val boardSize: Int = GoState.DEFAULT_BOARD_SIZE,
@@ -25,7 +27,11 @@ class GoSimulator(
     }
 
     override val initialState: GoState
-        get() = GoState(boardSize = boardSize)
+        get() {
+            val state = GoState(boardSize = boardSize)
+            state.recordCurrentColoring()
+            return state
+        }
 
     override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS
 
@@ -53,7 +59,6 @@ class GoSimulator(
         for (x in 0 until state.boardSize) {
             for (y in 0 until state.boardSize) {
                 if (state.get(x, y) != GoState.LOCATION_EMPTY) continue
-                if (x == state.koX && y == state.koY) continue
                 if (isLegalPlacement(state, x, y, stone)) {
                     legal[turn].add(GoAction.place(x, y))
                 }
@@ -69,80 +74,63 @@ class GoSimulator(
         val next = state.copy()
         if (action.isPass) {
             next.consecutivePasses += 1
-            next.koX = -1
-            next.koY = -1
             next.agentTurn = nextPlayerTurnSequential(agentTurn, NUMBER_OF_PLAYERS).toByte()
             return next
         }
         next.consecutivePasses = 0
+        next.recordCurrentColoring()
         val stone = if (agentTurn == 0) GoState.LOCATION_BLACK else GoState.LOCATION_WHITE
-        val opponent = if (agentTurn == 0) GoState.LOCATION_WHITE else GoState.LOCATION_BLACK
-        next.set(action.x, action.y, stone)
-
-        var captured = 0
-        var lastCapturedX = -1
-        var lastCapturedY = -1
-        for ((dx, dy) in ORTHO) {
-            val nx = action.x + dx
-            val ny = action.y + dy
-            if (!next.isOnBoard(nx, ny)) continue
-            if (next.get(nx, ny) != opponent) continue
-            val group = collectGroup(next, nx, ny)
-            if (liberties(next, group).isEmpty()) {
-                for ((gx, gy) in group) {
-                    next.set(gx, gy, GoState.LOCATION_EMPTY)
-                    captured += 1
-                    lastCapturedX = gx
-                    lastCapturedY = gy
-                }
-            }
-        }
+        val captured = applyPlacement(next, action.x, action.y, stone)
         if (agentTurn == 0) {
             next.capturedByBlack += captured
         } else {
             next.capturedByWhite += captured
         }
-
-        // Simple ko: single stone captured and the played stone has exactly one liberty.
-        if (captured == 1) {
-            val playedGroup = collectGroup(next, action.x, action.y)
-            if (playedGroup.size == 1 && liberties(next, playedGroup).size == 1) {
-                next.koX = lastCapturedX
-                next.koY = lastCapturedY
-            } else {
-                next.koX = -1
-                next.koY = -1
-            }
-        } else {
-            next.koX = -1
-            next.koY = -1
-        }
-
+        next.positionHistory.add(next.boardSnapshot())
         next.agentTurn = nextPlayerTurnSequential(agentTurn, NUMBER_OF_PLAYERS).toByte()
         return next
     }
 
-    private fun isLegalPlacement(state: GoState, x: Int, y: Int, stone: Byte): Boolean {
-        val trial = state.copy()
-        trial.set(x, y, stone)
+    /**
+     * Place [stone] at ([x], [y]), clear opponent stones that do not reach empty,
+     * then clear own stones that do not reach empty. Returns opponent stones removed.
+     */
+    private fun applyPlacement(state: GoState, x: Int, y: Int, stone: Byte): Int {
+        state.set(x, y, stone)
         val opponent = if (stone == GoState.LOCATION_BLACK) GoState.LOCATION_WHITE else GoState.LOCATION_BLACK
-        var captures = false
-        for ((dx, dy) in ORTHO) {
-            val nx = x + dx
-            val ny = y + dy
-            if (!trial.isOnBoard(nx, ny)) continue
-            if (trial.get(nx, ny) != opponent) continue
-            val group = collectGroup(trial, nx, ny)
-            if (liberties(trial, group).isEmpty()) {
-                captures = true
+        val captured = clearColor(state, opponent)
+        clearColor(state, stone)
+        return captured
+    }
+
+    private fun clearColor(state: GoState, color: Byte): Int {
+        val toRemove = ArrayList<Pair<Int, Int>>()
+        val visited = Array(state.boardSize) { BooleanArray(state.boardSize) }
+        for (x in 0 until state.boardSize) {
+            for (y in 0 until state.boardSize) {
+                if (state.get(x, y) != color || visited[x][y]) continue
+                val group = collectGroup(state, x, y)
                 for ((gx, gy) in group) {
-                    trial.set(gx, gy, GoState.LOCATION_EMPTY)
+                    visited[gx][gy] = true
+                }
+                if (liberties(state, group).isEmpty()) {
+                    toRemove.addAll(group)
                 }
             }
         }
-        val ownGroup = collectGroup(trial, x, y)
-        val ownLibs = liberties(trial, ownGroup)
-        return captures || ownLibs.isNotEmpty()
+        for ((gx, gy) in toRemove) {
+            state.set(gx, gy, GoState.LOCATION_EMPTY)
+        }
+        return toRemove.size
+    }
+
+    private fun isLegalPlacement(state: GoState, x: Int, y: Int, stone: Byte): Boolean {
+        val trial = GoState(
+            boardSize = state.boardSize,
+            board = Array(state.boardSize) { state.board[it].copyOf() }
+        )
+        applyPlacement(trial, x, y, stone)
+        return !state.coloringHasOccurred(trial.boardSnapshot())
     }
 
     private fun areaScore(state: GoState, color: Byte): Double {
@@ -204,7 +192,7 @@ class GoSimulator(
         private const val NUMBER_OF_PLAYERS = 2
         private const val MIN_BOARD_SIZE = 2
         private const val MAX_BOARD_SIZE = 19
-        private const val DEFAULT_KOMI = 6.5
+        private const val DEFAULT_KOMI = 7.0
         private val ORTHO = listOf(0 to 1, 0 to -1, 1 to 0, -1 to 0)
 
         internal fun collectGroup(state: GoState, x: Int, y: Int): List<Pair<Int, Int>> {
