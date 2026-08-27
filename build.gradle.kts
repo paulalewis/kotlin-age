@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.castlefrog.agl"
-version = "1.0.3"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
