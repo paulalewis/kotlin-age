@@ -25,7 +25,7 @@ class SimulatorRequireLegalActionTest {
     fun throwsWhenActionsListTooShort() {
         assertThrows(IllegalActionException::class.java) {
             requireLegalAction(
-                actions = emptyList<DummyAction?>(),
+                actions = emptyList(),
                 agentTurn = 0,
                 legalForPlayer = setOf(DummyAction(1)),
                 state = "state"

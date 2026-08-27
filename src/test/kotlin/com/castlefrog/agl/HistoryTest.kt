@@ -36,7 +36,7 @@ internal class HistoryTest {
     @Test
     fun addDefensivelyCopiesActionsList() {
         val history = History<TestAction>()
-        val mutableActions = mutableListOf<TestAction?>(TestAction(2), null)
+        val mutableActions = mutableListOf(TestAction(2), null)
         history.add(mutableActions)
 
         mutableActions[0] = TestAction(1)
