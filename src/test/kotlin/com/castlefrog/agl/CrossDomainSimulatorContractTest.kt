@@ -1,7 +1,5 @@
 package com.castlefrog.agl
 
-import com.castlefrog.agl.domains.backgammon.BackgammonSimulator
-import com.castlefrog.agl.domains.backgammon.BackgammonState
 import com.castlefrog.agl.domains.chess.ChessSimulator
 import com.castlefrog.agl.domains.chess.ChessState
 import com.castlefrog.agl.domains.connect4.Connect4Simulator
@@ -17,7 +15,6 @@ import com.castlefrog.agl.domains.hex.HexState
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import kotlin.random.Random
 
 /**
  * Parameterized harness: every domain must satisfy [SimulatorContract].
@@ -64,17 +61,6 @@ class CrossDomainSimulatorContractTest(
                         simulator = HavannahSimulator(base = 5),
                         mutateNested = { state: HavannahState ->
                             state.locations[0][0] = HavannahState.LOCATION_BLACK
-                        }
-                    )
-                }
-            ),
-            arrayOf(
-                "Backgammon",
-                {
-                    SimulatorContract.assertDomainContracts(
-                        simulator = BackgammonSimulator(Random(111)),
-                        mutateNested = { state: BackgammonState ->
-                            state.locations[0] = (state.locations[0] - 1).toByte()
                         }
                     )
                 }

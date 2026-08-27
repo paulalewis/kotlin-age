@@ -1,7 +1,5 @@
 package com.castlefrog.agl.domains
 
-import kotlin.random.Random
-
 /**
  * Standard two-player zero-sum reward vectors.
  *
@@ -30,8 +28,4 @@ object AdversarialRewards {
 
 fun nextPlayerTurnSequential(playerTurn: Int, nPlayers: Int): Int {
     return (playerTurn + 1) % nPlayers
-}
-
-fun nextPlayerTurnRandom(random: Random, nPlayers: Int): Int {
-    return random.nextInt(nPlayers)
 }

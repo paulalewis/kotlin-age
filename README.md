@@ -2,9 +2,9 @@
 
 This is a Kotlin framework for creating turn based
 domains and custom agents to play in those domains.
+It is designed for deterministic domains with perfect information.
 
 Domains:
-- [Backgammon](https://en.wikipedia.org/wiki/Backgammon)
 - [Chess](https://en.wikipedia.org/wiki/Chess)
 - [Connect 4](https://en.wikipedia.org/wiki/Connect4)
 - [International Draughts](https://en.wikipedia.org/wiki/International_draughts)
@@ -44,7 +44,7 @@ You should see each test listed as `PASSED` / `FAILED`, then a summary like:
 
 ```text
 Test result: SUCCESS
-Test summary: 137 tests, 137 succeeded, 0 failed, 0 skipped
+Test summary: 163 tests, 163 succeeded, 0 failed, 0 skipped
 ```
 
 Useful variants:
