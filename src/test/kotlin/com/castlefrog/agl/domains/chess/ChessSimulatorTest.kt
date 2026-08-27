@@ -50,6 +50,27 @@ class ChessSimulatorTest {
     }
 
     @Test
+    fun quietCheckmateThatTicksClockTo100IsWinNotDraw() {
+        val simulator = ChessSimulator()
+        val state = ChessState()
+        // KR vs K: white king a6, white rook h7, black king a8. Quiet Rh7-h8# mates.
+        for (x in 0 until 8) for (y in 0 until 8) state.set(x, y, ChessState.EMPTY)
+        state.set(0, 5, ChessState.KING.toByte())
+        state.set(7, 6, ChessState.ROOK.toByte())
+        state.set(0, 7, (-ChessState.KING).toByte())
+        state.agentTurn = ChessState.TURN_WHITE
+        state.castlingRights = 0
+        state.enPassantX = -1
+        state.halfmoveClock = 99
+        val mated = simulator.stateTransition(state, listOf(ChessAction(7, 6, 7, 7), null))
+        assertEquals(100, mated.halfmoveClock)
+        assertEquals(ChessState.TURN_BLACK, mated.agentTurn)
+        assertTrue(simulator.isInCheck(mated, 1))
+        assertTrue(simulator.calculateLegalActions(mated)[1].isEmpty())
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(mated))
+    }
+
+    @Test
     fun cannotLeaveKingInCheck() {
         val simulator = ChessSimulator()
         val state = ChessState()
