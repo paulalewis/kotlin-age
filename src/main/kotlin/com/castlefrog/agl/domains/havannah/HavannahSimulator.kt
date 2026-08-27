@@ -4,20 +4,14 @@ import com.castlefrog.agl.Simulator
 import com.castlefrog.agl.domains.AdversarialRewards
 import com.castlefrog.agl.domains.nextPlayerTurnSequential
 import com.castlefrog.agl.requireLegalAction
-import kotlin.math.max
-import kotlin.math.min
 
 class HavannahSimulator(
     val base: Int = 10,
     val pieRule: Boolean = true
 ) : Simulator<HavannahState, HavannahAction> {
 
-    /** keep track of prev action for performance reasons */
-    private var prevActionCache: HavannahAction? = null
     private val size = 2 * base - 1
     private val actions: Array<Array<HavannahAction>> = HavannahAction.generateActions(size)
-
-    private data class Bounds(val xMin: Int, val xMax: Int, val yMin: Int, val yMax: Int)
 
     private val corners: Array<IntArray>
         get() = arrayOf(
@@ -55,19 +49,9 @@ class HavannahSimulator(
         get() = HavannahState(base, Array(2 * base - 1) { ByteArray(2 * base - 1) }, HavannahState.TURN_BLACK)
 
     override fun calculateRewards(state: HavannahState): IntArray {
-        val prevAction = prevActionCache
         val visited = Array(size) { BooleanArray(size) }
-        val bounds = if (prevAction != null) {
-            val xMin = prevAction.x.toInt()
-            val yMin = prevAction.y.toInt()
-            val xMax = xMin + 1
-            val yMax = yMin + 1
-            Bounds(xMin = xMin, xMax = xMax, yMin = yMin, yMax = yMax)
-        } else {
-            Bounds(xMin = 0, xMax = size, yMin = 0, yMax = size)
-        }
-        for (y in bounds.yMin until bounds.yMax) {
-            for (x in bounds.xMin until bounds.xMax) {
+        for (y in 0 until size) {
+            for (x in 0 until size) {
                 // Checks: non empty location - hasn't been visited
                 if (!state.isLocationEmpty(x, y) && !visited[x][y]) {
                     var result = dfsCornersSides(x, y, state, visited, corners, sides, actions)
@@ -115,19 +99,9 @@ class HavannahSimulator(
             }
         }
 
-        val bounds2 = if (prevAction != null) {
-            val xMin = max(prevAction.x - 1, 0)
-            val yMin = max(prevAction.y - 1, 0)
-            val xMax = min(prevAction.x + 2, size)
-            val yMax = min(prevAction.y + 2, size)
-            Bounds(xMin = xMin, xMax = xMax, yMin = yMin, yMax = yMax)
-        } else {
-            Bounds(xMin = 0, xMax = size, yMin = 0, yMax = size)
-        }
-
         val visited2 = Array(size) { BooleanArray(size) }
-        for (y in bounds2.yMin until bounds2.yMax) {
-            for (x in bounds2.xMin until bounds2.xMax) {
+        for (y in 0 until size) {
+            for (x in 0 until size) {
                 if (!otherState.isLocationEmpty(x, y) && !visited2[x][y]) {
                     if (dfsCornersSides(x, y, otherState, visited2, corners, sides, actions) == 0) {
                         return if (otherState.agentTurn == HavannahState.TURN_BLACK) {
@@ -178,7 +152,6 @@ class HavannahSimulator(
         val nextState = state.copy()
         nextState.locations[action.x.toInt()][action.y.toInt()] = (nextState.agentTurn + 1).toByte()
         nextState.agentTurn = nextPlayerTurnSequential(nextState.agentTurn.toInt(), NUMBER_OF_PLAYERS).toByte()
-        prevActionCache = action
         return nextState
     }
 
