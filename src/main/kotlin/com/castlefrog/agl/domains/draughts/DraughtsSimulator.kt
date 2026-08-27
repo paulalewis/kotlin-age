@@ -73,7 +73,7 @@ class DraughtsSimulator : Simulator<DraughtsState, DraughtsAction> {
             for (jump in generateJumps(state, x, y, piece)) {
                 val captured = state.pendingCaptures.toMutableSet()
                 captured.add(DraughtsState.captureKey(jump.capX, jump.capY))
-                val len = 1 + maxCaptureLength(state, jump.toX, jump.toY, piece, captured)
+                val len = 1 + maxCaptureLength(state, jump.toX, jump.toY, piece, captured, x, y)
                 if (len > bestLen) {
                     bestLen = len
                     best.clear()
@@ -118,15 +118,17 @@ class DraughtsSimulator : Simulator<DraughtsState, DraughtsAction> {
         x: Int,
         y: Int,
         piece: Byte,
-        captured: Set<Int>
+        captured: Set<Int>,
+        originX: Int,
+        originY: Int
     ): Int {
-        val jumps = generateJumps(state, x, y, piece, captured)
+        val jumps = generateJumps(state, x, y, piece, captured, originX, originY)
         if (jumps.isEmpty()) return 0
         var best = 0
         for (jump in jumps) {
             val nextCaptured = captured.toMutableSet()
             nextCaptured.add(DraughtsState.captureKey(jump.capX, jump.capY))
-            val len = 1 + maxCaptureLength(state, jump.toX, jump.toY, piece, nextCaptured)
+            val len = 1 + maxCaptureLength(state, jump.toX, jump.toY, piece, nextCaptured, originX, originY)
             if (len > best) best = len
         }
         return best
@@ -137,16 +139,25 @@ class DraughtsSimulator : Simulator<DraughtsState, DraughtsAction> {
         x: Int,
         y: Int,
         piece: Byte,
-        captured: Set<Int> = state.pendingCaptures
+        captured: Set<Int> = state.pendingCaptures,
+        originX: Int = -1,
+        originY: Int = -1
     ): List<Jump> {
         return if (state.isKing(piece)) {
-            generateKingJumps(state, x, y, captured)
+            generateKingJumps(state, x, y, captured, originX, originY)
         } else {
-            generateManJumps(state, x, y, captured)
+            generateManJumps(state, x, y, captured, originX, originY)
         }
     }
 
-    private fun generateManJumps(state: DraughtsState, x: Int, y: Int, captured: Set<Int>): List<Jump> {
+    private fun generateManJumps(
+        state: DraughtsState,
+        x: Int,
+        y: Int,
+        captured: Set<Int>,
+        originX: Int,
+        originY: Int
+    ): List<Jump> {
         val jumps = mutableListOf<Jump>()
         val turn = state.agentTurn.toInt()
         for ((dx, dy) in DIAGONALS) {
@@ -157,19 +168,26 @@ class DraughtsSimulator : Simulator<DraughtsState, DraughtsAction> {
             if (!state.isOnBoard(jx, jy)) continue
             if (!isOpponent(state, mx, my, turn)) continue
             if (captured.contains(DraughtsState.captureKey(mx, my))) continue
-            if (state.get(jx, jy) != DraughtsState.EMPTY) continue
+            if (!isClearForLanding(state, jx, jy, originX, originY)) continue
             jumps.add(Jump(x, y, jx, jy, mx, my))
         }
         return jumps
     }
 
-    private fun generateKingJumps(state: DraughtsState, x: Int, y: Int, captured: Set<Int>): List<Jump> {
+    private fun generateKingJumps(
+        state: DraughtsState,
+        x: Int,
+        y: Int,
+        captured: Set<Int>,
+        originX: Int,
+        originY: Int
+    ): List<Jump> {
         val jumps = mutableListOf<Jump>()
         val turn = state.agentTurn.toInt()
         for ((dx, dy) in DIAGONALS) {
             var cx = x + dx
             var cy = y + dy
-            while (state.isOnBoard(cx, cy) && state.get(cx, cy) == DraughtsState.EMPTY) {
+            while (state.isOnBoard(cx, cy) && isClearForLanding(state, cx, cy, originX, originY)) {
                 cx += dx
                 cy += dy
             }
@@ -180,13 +198,25 @@ class DraughtsSimulator : Simulator<DraughtsState, DraughtsAction> {
             val capY = cy
             var lx = cx + dx
             var ly = cy + dy
-            while (state.isOnBoard(lx, ly) && state.get(lx, ly) == DraughtsState.EMPTY) {
+            while (state.isOnBoard(lx, ly) && isClearForLanding(state, lx, ly, originX, originY)) {
                 jumps.add(Jump(x, y, lx, ly, capX, capY))
                 lx += dx
                 ly += dy
             }
         }
         return jumps
+    }
+
+    /** Origin stays occupied on the board during search; treat it as empty so a cycle may land there. */
+    private fun isClearForLanding(
+        state: DraughtsState,
+        x: Int,
+        y: Int,
+        originX: Int,
+        originY: Int
+    ): Boolean {
+        if (x == originX && y == originY) return true
+        return state.get(x, y) == DraughtsState.EMPTY
     }
 
     private fun forEachOwnPiece(state: DraughtsState, body: (x: Int, y: Int, piece: Byte) -> Unit) {
