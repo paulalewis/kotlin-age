@@ -83,6 +83,51 @@ class DraughtsSimulatorTest {
     }
 
     @Test
+    fun majorityCaptureCountsCycleThatLandsOnOrigin() {
+        val simulator = DraughtsSimulator()
+        val state = emptyBoard()
+        // 4-jump loop: last landing is the origin. Without vacating origin the
+        // engine counts this as 3 and incorrectly ties a real 3-capture.
+        state.set(2, 4, DraughtsState.WHITE_MAN)
+        state.set(3, 5, DraughtsState.BLACK_MAN)
+        state.set(5, 5, DraughtsState.BLACK_MAN)
+        state.set(5, 3, DraughtsState.BLACK_MAN)
+        state.set(3, 3, DraughtsState.BLACK_MAN)
+        // Disjoint 3-capture.
+        state.set(9, 3, DraughtsState.WHITE_MAN)
+        state.set(8, 4, DraughtsState.BLACK_MAN)
+        state.set(6, 6, DraughtsState.BLACK_MAN)
+        state.set(4, 8, DraughtsState.BLACK_MAN)
+        state.agentTurn = DraughtsState.TURN_WHITE
+        val legal = simulator.calculateLegalActions(state)[0]
+        assertTrue(legal.contains(DraughtsAction(2, 4, 4, 6)))
+        assertTrue(legal.contains(DraughtsAction(2, 4, 4, 2)))
+        assertFalse(legal.contains(DraughtsAction(9, 3, 7, 5)))
+    }
+
+    @Test
+    fun kingWindmillCycleThatReturnsToOriginIsForced() {
+        val simulator = DraughtsSimulator()
+        val state = emptyBoard()
+        // 4-jump windmill around (2,4). Extra men at (6,8) and (8,6) give the
+        // (4,2) branch length 4 without returning home. The (4,6) branch is a
+        // true return-to-origin cycle and is only length 4 if origin is vacated.
+        state.set(2, 4, DraughtsState.WHITE_KING)
+        state.set(3, 5, DraughtsState.BLACK_MAN)
+        state.set(5, 5, DraughtsState.BLACK_MAN)
+        state.set(5, 3, DraughtsState.BLACK_MAN)
+        state.set(3, 3, DraughtsState.BLACK_MAN)
+        state.set(6, 8, DraughtsState.BLACK_MAN)
+        state.set(8, 6, DraughtsState.BLACK_MAN)
+        state.agentTurn = DraughtsState.TURN_WHITE
+        val legal = simulator.calculateLegalActions(state)[0]
+        assertTrue(legal.contains(DraughtsAction(2, 4, 4, 6)))
+        assertTrue(legal.contains(DraughtsAction(2, 4, 4, 2)))
+        assertFalse(legal.contains(DraughtsAction(2, 4, 5, 7)))
+        assertFalse(legal.contains(DraughtsAction(2, 4, 6, 8)))
+    }
+
+    @Test
     fun capturedPieceStaysDuringMultiJump() {
         val simulator = DraughtsSimulator()
         val state = emptyBoard()
