@@ -104,6 +104,55 @@ class Connect4SimulatorTest {
     }
 
     @Test
+    fun calculateRewardsThreeInARowIsNotAWin() {
+        val simulator = Connect4Simulator()
+        val state = occupy(black = listOf(0 to 0, 1 to 0, 2 to 0))
+        assertArrayEquals(intArrayOf(0, 0), simulator.calculateRewards(state))
+    }
+
+    @Test
+    fun calculateRewardsHorizontalWinOnBottomRow() {
+        val simulator = Connect4Simulator()
+        val state = occupy(black = listOf(0 to 0, 1 to 0, 2 to 0, 3 to 0))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
+    }
+
+    @Test
+    fun calculateRewardsHorizontalWinOnTopRow() {
+        val simulator = Connect4Simulator()
+        val state = occupy(black = listOf(0 to 5, 1 to 5, 2 to 5, 3 to 5))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
+    }
+
+    @Test
+    fun calculateRewardsVerticalWinOnLeftColumn() {
+        val simulator = Connect4Simulator()
+        val state = occupy(black = listOf(0 to 0, 0 to 1, 0 to 2, 0 to 3))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
+    }
+
+    @Test
+    fun calculateRewardsVerticalWinOnRightColumn() {
+        val simulator = Connect4Simulator()
+        val state = occupy(white = listOf(6 to 0, 6 to 1, 6 to 2, 6 to 3))
+        assertArrayEquals(intArrayOf(-1, 1), simulator.calculateRewards(state))
+    }
+
+    @Test
+    fun calculateRewardsRisingDiagonalFromBottomLeft() {
+        val simulator = Connect4Simulator()
+        val state = occupy(black = listOf(0 to 0, 1 to 1, 2 to 2, 3 to 3))
+        assertArrayEquals(intArrayOf(1, -1), simulator.calculateRewards(state))
+    }
+
+    @Test
+    fun calculateRewardsFallingDiagonalFromTopLeft() {
+        val simulator = Connect4Simulator()
+        val state = occupy(white = listOf(0 to 3, 1 to 2, 2 to 1, 3 to 0))
+        assertArrayEquals(intArrayOf(-1, 1), simulator.calculateRewards(state))
+    }
+
+    @Test
     fun calculateLegalActionsFullColumn() {
         val simulator = Connect4Simulator()
         val state = Connect4State(longArrayOf(2688, 5376))
@@ -118,6 +167,21 @@ class Connect4SimulatorTest {
                 ),
                 setOf()
             ), simulator.calculateLegalActions(state))
+    }
+
+    @Test
+    fun calculateLegalActionsOmitsFilledLeftAndRightColumns() {
+        val simulator = Connect4Simulator()
+
+        val leftFull = play(0, 0, 0, 0, 0, 0)
+        val leftMoves = simulator.calculateLegalActions(leftFull)[leftFull.agentTurn]
+        assertTrue(Connect4Action.valueOf(0) !in leftMoves)
+        assertTrue(Connect4Action.valueOf(6) in leftMoves)
+
+        val rightFull = play(6, 6, 6, 6, 6, 6)
+        val rightMoves = simulator.calculateLegalActions(rightFull)[rightFull.agentTurn]
+        assertTrue(Connect4Action.valueOf(6) !in rightMoves)
+        assertTrue(Connect4Action.valueOf(0) in rightMoves)
     }
 
     @Test
@@ -223,5 +287,33 @@ class Connect4SimulatorTest {
         // Correct bottom-row drop in column 3 is bit 21 → 2097152. A corrupted height of 22
         // would place the piece one row higher instead.
         assertEquals(Connect4State(longArrayOf(2097152, 0)), afterDrop)
+    }
+
+    private fun occupy(
+        black: List<Pair<Int, Int>> = emptyList(),
+        white: List<Pair<Int, Int>> = emptyList()
+    ): Connect4State {
+        var blackBoard = 0L
+        var whiteBoard = 0L
+        for ((column, row) in black) {
+            blackBoard = blackBoard or Connect4State.bitMask(column, row)
+        }
+        for ((column, row) in white) {
+            whiteBoard = whiteBoard or Connect4State.bitMask(column, row)
+        }
+        return Connect4State(longArrayOf(blackBoard, whiteBoard))
+    }
+
+    private fun play(vararg columns: Int): Connect4State {
+        val simulator = Connect4Simulator()
+        var state = simulator.initialState
+        for (column in columns) {
+            val action = Connect4Action.valueOf(column)
+            val actions = List(simulator.numberOfPlayers()) { player ->
+                if (player == state.agentTurn) action else null
+            }
+            state = simulator.stateTransition(state, actions)
+        }
+        return state
     }
 }

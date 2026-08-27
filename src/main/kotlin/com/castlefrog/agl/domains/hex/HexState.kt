@@ -17,6 +17,8 @@ data class HexState(
 
         const val TURN_BLACK: Byte = 0
         const val TURN_WHITE: Byte = 1
+
+        private const val BYTE_MASK = 0xff
     }
 
     override fun copy(): HexState {
@@ -41,20 +43,18 @@ data class HexState(
 
     fun getLocation(x: Int, y: Int): Int {
         checkLocationArgs(x, y)
-        val bitLocation = y * boardSize + x
-        val byteLocation = bitLocation / java.lang.Byte.SIZE
+        val index = bitIndex(x, y)
         return when {
-            bitBoards[0][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) != 0 -> LOCATION_BLACK
-            bitBoards[1][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) != 0 -> LOCATION_WHITE
+            isSet(bitBoards[0], index) -> LOCATION_BLACK
+            isSet(bitBoards[1], index) -> LOCATION_WHITE
             else -> LOCATION_EMPTY
         }
     }
 
     fun isLocationEmpty(x: Int, y: Int): Boolean {
         checkLocationArgs(x, y)
-        val bitLocation = y * boardSize + x
-        val byteLocation = bitLocation / java.lang.Byte.SIZE
-        return bitBoards[0][byteLocation].toInt() or bitBoards[1][byteLocation].toInt() and (1 shl bitLocation % java.lang.Byte.SIZE) == LOCATION_EMPTY
+        val index = bitIndex(x, y)
+        return !isSet(bitBoards[0], index) && !isSet(bitBoards[1], index)
     }
 
     private fun isLocationOnBoard(x: Int, y: Int): Boolean {
@@ -62,36 +62,53 @@ data class HexState(
     }
 
     val nPieces: Int
-        get() {
-            return (bitBoards[0].indices).sumOf {
-                Integer.bitCount((bitBoards[0][it].toInt() or bitBoards[1][it].toInt()) and 0xff)
-            }
+        get() = bitBoards[0].indices.sumOf { byteIndex ->
+            val occupied = (bitBoards[0][byteIndex].toInt() or bitBoards[1][byteIndex].toInt()) and BYTE_MASK
+            Integer.bitCount(occupied)
         }
 
     fun setLocation(x: Int, y: Int, value: Int) {
         checkLocationArgs(x, y)
-        val bitLocation = y * boardSize + x
-        val byteLocation = bitLocation / java.lang.Byte.SIZE
-        val byteShift = bitLocation % java.lang.Byte.SIZE
+        val index = bitIndex(x, y)
         when (value) {
             LOCATION_EMPTY -> {
-                bitBoards[0][byteLocation] =
-                    (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
-                bitBoards[1][byteLocation] =
-                    (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+                clearBit(bitBoards[0], index)
+                clearBit(bitBoards[1], index)
             }
             LOCATION_BLACK -> {
-                bitBoards[0][byteLocation] = (bitBoards[0][byteLocation].toInt() or (1 shl byteShift)).toByte()
-                bitBoards[1][byteLocation] =
-                    (bitBoards[1][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
+                setBit(bitBoards[0], index)
+                clearBit(bitBoards[1], index)
             }
             LOCATION_WHITE -> {
-                bitBoards[0][byteLocation] =
-                    (bitBoards[0][byteLocation].toInt() and (1 shl byteShift xor 0xff)).toByte()
-                bitBoards[1][byteLocation] = (bitBoards[1][byteLocation].toInt() or (1 shl byteShift)).toByte()
+                clearBit(bitBoards[0], index)
+                setBit(bitBoards[1], index)
             }
         }
     }
+
+    private fun bitIndex(x: Int, y: Int): Int = y * boardSize + x
+
+    private fun isSet(board: ByteArray, bitIndex: Int): Boolean {
+        val bits = board[byteIndex(bitIndex)].toInt()
+        return (bits and bitMask(bitIndex)) != 0
+    }
+
+    private fun setBit(board: ByteArray, bitIndex: Int) {
+        val i = byteIndex(bitIndex)
+        board[i] = (board[i].toInt() or bitMask(bitIndex)).toByte()
+    }
+
+    private fun clearBit(board: ByteArray, bitIndex: Int) {
+        val i = byteIndex(bitIndex)
+        board[i] = (board[i].toInt() and clearMask(bitIndex)).toByte()
+    }
+
+    private fun byteIndex(bitIndex: Int): Int = bitIndex / java.lang.Byte.SIZE
+
+    private fun bitMask(bitIndex: Int): Int = 1 shl (bitIndex % java.lang.Byte.SIZE)
+
+    /** 8-bit mask with the target bit cleared; matches historical `xor 0xff` clearing. */
+    private fun clearMask(bitIndex: Int): Int = bitMask(bitIndex) xor BYTE_MASK
 
     private fun checkLocationArgs(x: Int, y: Int) {
         if (!isLocationOnBoard(x, y))

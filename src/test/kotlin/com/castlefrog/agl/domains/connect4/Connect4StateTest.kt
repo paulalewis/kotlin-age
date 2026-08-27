@@ -8,6 +8,39 @@ import org.junit.Test
 class Connect4StateTest {
 
     @Test
+    fun bitIndexMatchesBoardDiagram() {
+        assertEquals(0, Connect4State.bitIndex(0, 0))
+        assertEquals(5, Connect4State.bitIndex(0, 5))
+        assertEquals(7, Connect4State.bitIndex(1, 0))
+        assertEquals(14, Connect4State.bitIndex(2, 0))
+        assertEquals(42, Connect4State.bitIndex(6, 0))
+        assertEquals(47, Connect4State.bitIndex(6, 5))
+    }
+
+    @Test
+    fun cornerMasksRenderInExpectedCells() {
+        val state = Connect4State(
+            longArrayOf(
+                Connect4State.bitMask(0, 0) or
+                    Connect4State.bitMask(6, 0) or
+                    Connect4State.bitMask(0, 5) or
+                    Connect4State.bitMask(6, 5),
+                0L
+            )
+        )
+        assertEquals("""
+        |-----------------
+        |: X - - - - - X :
+        |: - - - - - - - :
+        |: - - - - - - - :
+        |: - - - - - - - :
+        |: - - - - - - - :
+        |: X - - - - - X :
+        |-----------------
+        """.trimMargin(), state.toString())
+    }
+
+    @Test
     fun emptyStateAgentTurn0() {
         assertEquals(0, Connect4State().agentTurn)
     }

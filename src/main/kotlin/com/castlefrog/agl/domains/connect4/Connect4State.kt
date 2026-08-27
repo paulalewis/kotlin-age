@@ -40,7 +40,7 @@ class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4Sta
         for (i in HEIGHT - 1 downTo 0) {
             output.append(": ")
             var j = i
-            while (j < (HEIGHT + 1) * WIDTH) {
+            while (j < COLUMN_STRIDE * WIDTH) {
                 val mask = 1L shl j
                 when {
                     (bitBoards[0] and mask) != 0L -> output.append("X")
@@ -48,7 +48,7 @@ class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4Sta
                     else -> output.append("-")
                 }
                 output.append(" ")
-                j += HEIGHT + 1
+                j += COLUMN_STRIDE
             }
             output.append(":\n")
         }
@@ -61,5 +61,13 @@ class Connect4State(val bitBoards: LongArray = LongArray(2)) : State<Connect4Sta
     companion object {
         const val WIDTH = 7
         const val HEIGHT = 6
+
+        /** Bits per column: [HEIGHT] playable rows plus the sentinel row above the top. */
+        const val COLUMN_STRIDE = HEIGHT + 1
+
+        /** Bit index of playable cell ([column] in `0 until WIDTH`, [row] in `0 until HEIGHT`, row 0 is bottom). */
+        fun bitIndex(column: Int, row: Int): Int = row + (column * COLUMN_STRIDE)
+
+        fun bitMask(column: Int, row: Int): Long = 1L shl bitIndex(column, row)
     }
 }
