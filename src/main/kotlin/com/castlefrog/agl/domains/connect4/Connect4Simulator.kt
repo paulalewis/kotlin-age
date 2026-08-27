@@ -11,18 +11,8 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         get() = Connect4State()
 
     override fun calculateRewards(state: Connect4State): IntArray {
-        val height = Connect4State.HEIGHT
         for (i in 0 until NUMBER_OF_PLAYERS) {
-            val bitBoard = state.bitBoards[i]
-            val diagonal1 = bitBoard and (bitBoard shr height)
-            val horizontal = bitBoard and (bitBoard shr height + 1)
-            val diagonal2 = bitBoard and (bitBoard shr height + 2)
-            val vertical = bitBoard and (bitBoard shr 1)
-            if (diagonal1 and (diagonal1 shr 2 * height) or
-                (horizontal and (horizontal shr 2 * (height + 1))) or
-                (diagonal2 and (diagonal2 shr 2 * (height + 2))) or
-                (vertical and (vertical shr 2)) != 0L
-            ) {
+            if (hasConnectFour(state.bitBoards[i])) {
                 return if (i == 0) AdversarialRewards.firstPlayerWins() else AdversarialRewards.secondPlayerWins()
             }
         }
@@ -35,7 +25,7 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
         val columnHeights = calculateColumnHeights(state)
         if (rewards.contentEquals(AdversarialRewards.neutral())) {
             (0 until Connect4State.WIDTH)
-                .filter { 1L shl columnHeights[it] and ABOVE_TOP_ROW == 0L }
+                .filter { isPlayableHeight(columnHeights[it]) }
                 .forEach { legalActions[state.agentTurn].add(Connect4Action.valueOf(it)) }
         }
         return legalActions
@@ -57,8 +47,8 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
     private fun calculateColumnHeights(state: Connect4State): IntArray {
         val bitBoard = state.bitBoards[0] or state.bitBoards[1]
         for (i in 0 until Connect4State.WIDTH) {
-            columnHeights[i] = (Connect4State.HEIGHT + 1) * i
-            while (bitBoard and (1L shl columnHeights[i]) != 0L) {
+            columnHeights[i] = Connect4State.COLUMN_STRIDE * i
+            while ((bitBoard and (1L shl columnHeights[i])) != 0L) {
                 columnHeights[i] += 1
             }
         }
@@ -67,9 +57,31 @@ class Connect4Simulator : Simulator<Connect4State, Connect4Action> {
 
     companion object {
         private const val NUMBER_OF_PLAYERS = 2
-        private const val ALL_LOCATIONS = (1L shl (Connect4State.HEIGHT + 1) * Connect4State.WIDTH) - 1
-        private const val FIRST_COLUMN = (1L shl Connect4State.HEIGHT + 1) - 1
+
+        private const val ALL_LOCATIONS = (1L shl (Connect4State.COLUMN_STRIDE * Connect4State.WIDTH)) - 1
+        private const val FIRST_COLUMN = (1L shl Connect4State.COLUMN_STRIDE) - 1
         private const val BOTTOM_ROW = ALL_LOCATIONS / FIRST_COLUMN
         private const val ABOVE_TOP_ROW = BOTTOM_ROW shl Connect4State.HEIGHT
+
+        private const val VERTICAL_SHIFT = 1
+        private const val HORIZONTAL_SHIFT = Connect4State.COLUMN_STRIDE
+        private const val DIAGONAL_SHIFT = Connect4State.HEIGHT
+        private const val ANTIDIAGONAL_SHIFT = Connect4State.HEIGHT + 2
+
+        private fun hasConnectFour(bitBoard: Long): Boolean {
+            return connects(bitBoard, VERTICAL_SHIFT) ||
+                connects(bitBoard, HORIZONTAL_SHIFT) ||
+                connects(bitBoard, DIAGONAL_SHIFT) ||
+                connects(bitBoard, ANTIDIAGONAL_SHIFT)
+        }
+
+        private fun connects(bitBoard: Long, shift: Int): Boolean {
+            val pairs = bitBoard and (bitBoard shr shift)
+            return (pairs and (pairs shr (2 * shift))) != 0L
+        }
+
+        private fun isPlayableHeight(heightBit: Int): Boolean {
+            return ((1L shl heightBit) and ABOVE_TOP_ROW) == 0L
+        }
     }
 }

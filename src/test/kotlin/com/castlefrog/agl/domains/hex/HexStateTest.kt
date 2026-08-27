@@ -111,6 +111,44 @@ class HexStateTest {
     }
 
     @Test
+    fun cornersRoundTripEmptyBlackWhite() {
+        val corners = listOf(0 to 0, 4 to 0, 0 to 4, 4 to 4)
+        val state = HexState(boardSize = 5)
+        for ((x, y) in corners) {
+            assertTrue(state.isLocationEmpty(x, y))
+            assertEquals(HexState.LOCATION_EMPTY, state.getLocation(x, y))
+
+            state.setLocation(x, y, HexState.LOCATION_BLACK)
+            assertFalse(state.isLocationEmpty(x, y))
+            assertEquals(HexState.LOCATION_BLACK, state.getLocation(x, y))
+
+            state.setLocation(x, y, HexState.LOCATION_WHITE)
+            assertFalse(state.isLocationEmpty(x, y))
+            assertEquals(HexState.LOCATION_WHITE, state.getLocation(x, y))
+
+            state.setLocation(x, y, HexState.LOCATION_EMPTY)
+            assertTrue(state.isLocationEmpty(x, y))
+            assertEquals(HexState.LOCATION_EMPTY, state.getLocation(x, y))
+        }
+        assertEquals(0, state.nPieces)
+    }
+
+    @Test
+    fun adjacentBytesDoNotAlias() {
+        val state = HexState(boardSize = 5)
+        // On a 5×5 board, (2,1) is bit 7 and (3,1) is bit 8 — last bit of one storage
+        // byte and first bit of the next.
+        state.setLocation(2, 1, HexState.LOCATION_BLACK)
+        state.setLocation(3, 1, HexState.LOCATION_WHITE)
+
+        assertEquals(HexState.LOCATION_BLACK, state.getLocation(2, 1))
+        assertEquals(HexState.LOCATION_WHITE, state.getLocation(3, 1))
+        assertTrue(state.isLocationEmpty(1, 1))
+        assertTrue(state.isLocationEmpty(4, 1))
+        assertEquals(2, state.nPieces)
+    }
+
+    @Test
     fun testIsLocationEmptyOutOfRange() {
         assertThrows(IllegalArgumentException::class.java) { hexState.isLocationEmpty(-1, -1) }
     }
