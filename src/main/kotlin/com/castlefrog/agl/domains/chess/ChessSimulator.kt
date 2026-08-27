@@ -20,32 +20,37 @@ class ChessSimulator : Simulator<ChessState, ChessAction> {
     override fun numberOfPlayers(): Int = NUMBER_OF_PLAYERS
 
     override fun calculateRewards(state: ChessState): IntArray {
+        val legal = generateLegalActions(state)
+        if (legal.isEmpty()) {
+            // No legal moves: checkmate if in check, otherwise stalemate.
+            // Mate ends the game immediately; the 50-move rule does not un-mate.
+            return if (isInCheck(state, state.agentTurn.toInt())) {
+                // Side to move loses → opponent wins.
+                if (state.agentTurn.toInt() == 0) {
+                    AdversarialRewards.secondPlayerWins()
+                } else {
+                    AdversarialRewards.firstPlayerWins()
+                }
+            } else {
+                AdversarialRewards.neutral()
+            }
+        }
         if (state.halfmoveClock >= 100) {
             return AdversarialRewards.neutral()
         }
-        val legal = generateLegalActions(state)
-        if (legal.isNotEmpty()) {
-            return AdversarialRewards.neutral()
-        }
-        // No legal moves: checkmate if in check, otherwise stalemate.
-        return if (isInCheck(state, state.agentTurn.toInt())) {
-            // Side to move loses → opponent wins.
-            if (state.agentTurn.toInt() == 0) {
-                AdversarialRewards.secondPlayerWins()
-            } else {
-                AdversarialRewards.firstPlayerWins()
-            }
-        } else {
-            AdversarialRewards.neutral()
-        }
+        return AdversarialRewards.neutral()
     }
 
     override fun calculateLegalActions(state: ChessState): List<Set<ChessAction>> {
         val legal = listOf(mutableSetOf<ChessAction>(), mutableSetOf())
+        val moves = generateLegalActions(state)
+        // Checkmate/stalemate first: mate ends the game immediately.
+        if (moves.isEmpty()) {
+            return legal
+        }
         if (state.halfmoveClock >= 100) {
             return legal
         }
-        val moves = generateLegalActions(state)
         legal[state.agentTurn.toInt()].addAll(moves)
         return legal
     }
